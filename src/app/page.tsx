@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import DarkModeToggler from '@/components/ui/darkModeToggler';
 import { Input } from '@/components/ui/input';
 import React from 'react';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
 
 const Home = () => {
   return (
@@ -22,7 +22,7 @@ const Home = () => {
           <h2 className='py-2'>Username : </h2>
           <Input/> 
           <h2 className='py-2'>Password : </h2>
-          <Input type='password' />
+          <Input type='' />
           </div>
           <Button className='flex justify-center my-3 mx-auto px-10' onClick={() => {
             toast.loading('Loading...')
