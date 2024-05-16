@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    webpack: (config) => {
-        config.externals = [...config.externals, "bcrypt"]
-        return config
-    }
+const nextConfig = { 
+    transpilePackages: ['crypto-js']
 };
 
 export default nextConfig;
