@@ -9,9 +9,7 @@ export function middleware(request: NextRequest) {
      url.pathname = "/login"
      return NextResponse.redirect(url)
    }
-}
- 
-// See "Matching Paths" below to learn more
+} 
 export const config = {
-  matcher: '/dashboard',
+  matcher: '/dashboard' ,
 }

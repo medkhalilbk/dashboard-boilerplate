@@ -15,4 +15,9 @@ model users {
   password String 
   date DateTime
 }
-
+model stacks {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    iconUrl String
+    family String?
+}
