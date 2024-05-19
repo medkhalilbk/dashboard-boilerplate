@@ -4,7 +4,7 @@ import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/themeProvider"
 import { Toaster } from "sonner"
-
+import { SessionProvider } from "next-auth/react"
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -12,7 +12,8 @@ const fontSans = FontSans({
 
 export default function RootLayout({ children } : any) {
   return (
-    <html lang="en" suppressHydrationWarning>
+   <SessionProvider>
+      <html lang="en" suppressHydrationWarning>
       <head />
       <body
         className={cn(
@@ -20,6 +21,7 @@ export default function RootLayout({ children } : any) {
           fontSans.variable
         )}
       > 
+      
      <ThemeProvider
             attribute="class"
             defaultTheme="light" 
@@ -31,5 +33,6 @@ export default function RootLayout({ children } : any) {
       
       </body>
     </html>
+   </SessionProvider>
   )
 }
