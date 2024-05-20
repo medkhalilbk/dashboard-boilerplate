@@ -14,7 +14,7 @@ try {
     return Response.json({message: "Invalid token"}, {status: 401})
    }
    const stacks = await getStacksService();
-    return Response.json({data:stacks, status: 200})
+    return Response.json({stacks:stacks, status: 200})
  
 } catch (error) {
     return Response.json({message: "Server Error"}, {status: 500})

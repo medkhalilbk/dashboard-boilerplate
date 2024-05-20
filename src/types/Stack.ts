@@ -1,4 +1,4 @@
-interface IStack {
+export interface IStack {
     id?: string;    
     name: string;  
     iconUrl: string;  

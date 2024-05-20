@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userSlice from './features/userSlice';
+import  stackSlice  from './features/stackSlice';
+
+import { Reducer } from 'redux'; // Import Reducer from redux
 
 export const store = () => {
   return configureStore({
     reducer: {
-      user: userSlice,
+      user: userSlice, 
+      stacks: stackSlice // Use stackSlice.reducer instead of stackSlice
     },
   });
 };
