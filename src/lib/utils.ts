@@ -25,3 +25,8 @@ export function hashPassword(password: string) {
 export function verifyPassword(hashedPassword: string, password:string):boolean {
     return hashedPassword === hashPassword(password);
 }
+
+export function verifyImageUrl(url:string){
+  let re = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
+  return re.test(url);
+}

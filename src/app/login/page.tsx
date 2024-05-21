@@ -8,12 +8,15 @@ import React from 'react';
 import { toast } from 'sonner';
 import { setUser, destroy } from '../../lib/features/userSlice';
 import { useAppDispatch } from '@/lib/hooks/store';
-import axios, { AxiosResponse } from 'axios';
-import { loginAction } from '@/lib/actions/auth'; 
+import { AxiosResponse } from 'axios';
+import { loginAction } from '@/lib/actions/auth';
+import { useRouter } from 'next/navigation'
+
 const Home = () => {
   const [userNAme, setUserNAme] = React.useState("")
   const [password, setPassword] = React.useState("")
   const dispatch = useAppDispatch()
+  const router = useRouter()
   return (
     <div className='min-h-screen '> 
     <div className='flex justify-end pr-10 pt-10'>
@@ -48,6 +51,7 @@ const Home = () => {
               toast.dismiss()
               toast.success('Login Success')
               dispatch(setUser(res.data.data))
+              router.push('/dashboard')
               })
               .catch((err:any) => {
                 toast.dismiss()

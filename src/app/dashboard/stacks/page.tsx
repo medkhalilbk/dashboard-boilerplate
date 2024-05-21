@@ -1,23 +1,24 @@
 "use client"
 import DashboardLayout from '@/components/dashboardUILayout'
-import { getStacksAction } from '@/lib/actions/stacks'
+import { deleteStackAction, getStacksAction } from '@/lib/actions/stacks'
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from "@/components/ui/progress"
 import { useDispatch, useSelector } from 'react-redux'
-import { setStacks } from '@/lib/features/stackSlice'
-import { IStack } from '@/types/Stack' 
-import DialogAddStack from '@/components/stack-dialog'
+import { deleteStack, setStacks } from '@/lib/features/stackSlice'
+import { IStack } from '@/types/Stack'  
+import { toast } from 'sonner'; 
+import DialogAddStack from '@/components/StackDialog/DialogAddStack'
+import DialogEditStack from '@/components/StackDialog/DialogEditStack'
 type Props = {}
 
 function StacksPage({}: Props) { 
   const dispatch = useDispatch()
   const stacksData = useSelector((state: any) => state.stacks.data)
   const [progress, setProgress] = useState(0)
-  const [loading, setLoading] = useState(true)
-
+  const [loading, setLoading] = useState(true) 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => (prev < 90 ? prev + 10 : prev)) // Increment by 10, max 90
@@ -37,14 +38,11 @@ function StacksPage({}: Props) {
     return () => clearInterval(interval)
   }, [dispatch])
 
-  useEffect(() => {
-    console.log(stacksData)
+  useEffect(() => { 
   }, [stacksData])
 
   return (
     <DashboardLayout>
-      
-     
       <div className='flex w-3/2 py-4'>
         <h1 className="scroll-m-20 text-3xl mr-5 font-extrabold tracking-tight lg:text-3xl">Stacks </h1>
         <DialogAddStack/>
@@ -52,10 +50,10 @@ function StacksPage({}: Props) {
       {loading ? (
         <Progress value={progress} style={{width:"50%" , marginTop:"5%", margin:"auto"}} />
       ) : (
-        <div className='my-5'>
+        <div className='my-5 flex flex-wrap'>
           {stacksData.length > 0 && stacksData.map((stack: IStack, index: number) => {
             return (
-              <Card className="w-[250px]" key={index}>
+              <Card className="w-[250px] m-4" key={index}>
                 <CardHeader>
                   <CardTitle className='text-center'>{stack.name}</CardTitle>
                   <CardDescription>
@@ -64,8 +62,20 @@ function StacksPage({}: Props) {
                 </CardHeader>
                 <CardContent>
                   <div className='flex justify-center'>
-                    <Button className='mr-3'>Delete</Button>
-                    <Button variant="outline">Edit</Button>
+                    <Button className='mr-3' onClick={() => {
+                      console.log(stack.id)
+                       if(stack.id) {
+                        deleteStackAction(stack.id).then((res) => {
+                        console.log(res.data)
+                        if(stack.id){ 
+                        dispatch(deleteStack(stack.id)) 
+                        }
+                        toast.success(res.data.message)
+                        })
+                       }
+                    
+                    }} >Delete</Button>
+                    <DialogEditStack id={stack.id ?? ''} stackNameProps={stack.name} stackUrlProps={stack.iconUrl}/>
                   </div>
                 </CardContent>
               </Card>
@@ -78,3 +88,5 @@ function StacksPage({}: Props) {
   )
 } 
 export default StacksPage
+ 
+

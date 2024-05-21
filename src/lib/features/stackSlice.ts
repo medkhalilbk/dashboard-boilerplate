@@ -25,10 +25,15 @@ export const stackSlice = createSlice({
             state.data = state.data.filter(stack => stack.id !== action.payload)
         },
         updateStack : (state,action:PayloadAction<IStack>) => {
+            console.log("test from reducer")
+            console.log(action.payload)
             state.data = state.data.map(stack => stack.id === action.payload.id ? action.payload : stack)
+        } ,
+        addStack: (state,action:PayloadAction<IStack>) => {
+            state.data = [...state.data, action.payload]
         }
     }
 })
 
-export const { setStacks, destroy, deleteStack, updateStack } = stackSlice.actions
+export const { setStacks, destroy, deleteStack, updateStack , addStack } = stackSlice.actions
 export default stackSlice.reducer
