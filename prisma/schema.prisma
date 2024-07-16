@@ -22,7 +22,7 @@ model Company {
   days                 Day[]
   type                 String     @default("Restaurant")
   specialty            String?
-  menu                 Menu[]
+  Menu                 String[]   @db.ObjectId
   keywords             String[]
 }
 
@@ -47,23 +47,21 @@ enum Day {
 }
 
 model Menu {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  products  Product[]
-  company   Company   @relation(fields: [companyId], references: [id])
-  companyId String    @db.ObjectId
+  products  String[] @db.ObjectId
+  companyId String   @db.ObjectId
+  status    String
 }
 
 model Product {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   price          Float
   description    String
   mainImageUrl   String
   otherImagesUrl String[]
-  supplements    Supplement[]
-  menuId         String       @db.ObjectId
-  Menu           Menu         @relation(fields: [menuId], references: [id])
+  supplements    String[] @db.ObjectId
 }
 
 model Supplement {
@@ -71,6 +69,4 @@ model Supplement {
   name      String
   price     Float
   productId String @db.ObjectId
-
-  Product Product @relation(fields: [productId], references: [id])
 }

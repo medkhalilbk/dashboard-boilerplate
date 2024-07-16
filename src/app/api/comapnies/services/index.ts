@@ -2,7 +2,7 @@ import { Company, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getAllCompanies() {
+export async function getAllCompaniesService() {
   try {
     const companies = await prisma.company.findMany();
     return companies;
@@ -12,7 +12,7 @@ export async function getAllCompanies() {
   }
 }
 
-export async function createCompany(company: Company) {
+export async function createCompanyService(company: Company) {
   try {
     const newCompany = await prisma.company.create({
       data: {
@@ -37,7 +37,7 @@ export async function createCompany(company: Company) {
   }
 }
 
-export async function getCompanyById(id: string) {
+export async function getCompanyByIdService(id: string) {
   try {
     const company = await prisma.company.findUnique({ where: { id: id } });
     return company;
@@ -47,7 +47,7 @@ export async function getCompanyById(id: string) {
   }
 }
 
-export async function updateCompany(id: string, company: Partial<Company>) {
+export async function updateCompanyService(id: string, company: Partial<Company>) {
   try {
     const companyUpdated = await prisma.company.update({
       where: { id },

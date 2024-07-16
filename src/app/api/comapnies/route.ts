@@ -1,4 +1,4 @@
-import { createCompany, getAllCompanies } from "./services";
+import { createCompanyService, getAllCompanies } from "./services";
 
 export async function GET(request: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   try {
     const payload = await request.json();
     console.log(payload);
-    const companyCreated = await createCompany(payload);
+    const companyCreated = await createCompanyService(payload);
     return Response.json({
       message: "Company created succesfully",
       data: companyCreated,

@@ -1,4 +1,4 @@
-import { getCompanyById, updateCompany } from "../services";
+import { getCompanyByIdService, updateCompanyService } from "../services";
 
 export async function GET(
   request: Request,
@@ -6,7 +6,7 @@ export async function GET(
 ) {
   try {
     const companyId = params.id;
-    const company = await getCompanyById(companyId);
+    const company = await getCompanyByIdService(companyId);
     return Response.json({
       data: company,
       status: 200,
@@ -16,14 +16,14 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const companyId = params.id;
     const payload = await request.json();
-    const companyUpdated = await updateCompany(companyId, payload);
+    const companyUpdated = await updateCompanyService(companyId, payload);
     return Response.json({
       message: "company updated succesffully",
       data: companyUpdated,
