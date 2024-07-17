@@ -47,7 +47,10 @@ export async function getCompanyByIdService(id: string) {
   }
 }
 
-export async function updateCompanyService(id: string, company: Partial<Company>) {
+export async function updateCompanyService(
+  id: string,
+  company: Partial<Company>
+) {
   try {
     const companyUpdated = await prisma.company.update({
       where: { id },

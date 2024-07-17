@@ -70,3 +70,30 @@ model Supplement {
   price     Float
   productId String @db.ObjectId
 }
+
+model user {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String
+  password        String
+  role            String
+  isEmailVerfied  Boolean
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  companyId       String?   @db.ObjectId
+  deliveryManId   String?   @db.ObjectId
+  deliveryAddress Location?
+  imgUrl          String?
+}
+
+model deliveryMan {
+  id                   String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName             String
+  phoneNumber          String
+  socialStatus         String?
+  ordersCompleted      Int
+  vehiculeSerialNumber String
+  cin                  String
+  isActive             Boolean
+  contractFile         String?
+}
