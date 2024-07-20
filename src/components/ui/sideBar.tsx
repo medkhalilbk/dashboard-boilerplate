@@ -26,9 +26,9 @@ function SideBar({email}: Props) {
           </li>
           <li>
           <Link 
-      href="/restaurants" 
-      className={pathname === "/restaurants" 
-        ? "flex items-center rounded-lg px-3 bg-blue-200 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700" 
+      href="/dashboard/companies" 
+      className={pathname === "/dashboard/companies" 
+        ? "flex items-center rounded-lg px-3 bg-green-200   py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700" 
         : "flex items-center rounded-lg px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"}
     >
       <svg fill="#000000" width="19" height="19" viewBox="0 -2.89 122.88 122.88" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@ function SideBar({email}: Props) {
           style={{ fill: '#000000' }} 
         />
       </svg>
-      <span className="ml-3 flex-1 whitespace-nowrap">Restaurants</span>
+      <span className="ml-3 flex-1 whitespace-nowrap">Entreprises</span>
     </Link>
           </li>
           <li>

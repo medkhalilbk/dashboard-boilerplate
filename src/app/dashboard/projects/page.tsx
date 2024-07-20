@@ -1,10 +1,12 @@
+"use client"
 import DialogAddProject from '@/components/ProjectsDialog/DialogAddProject'
 import DashboardLayout from '@/components/dashboardUILayout'
 import React from 'react'
+ 
+function ProjectsPage() {
 
-type Props = {}
+ 
 
-function ProjectsPage({}: Props) {
   return (
     <DashboardLayout>
       <div className='flex w-3/2 py-4'>

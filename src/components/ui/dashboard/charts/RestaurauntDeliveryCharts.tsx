@@ -67,7 +67,7 @@ export function RestaurantDeliveryChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Graphique Circulaire des Livraisons</CardTitle>
+        <CardTitle>Restaurants / Livraisons</CardTitle>
         <CardDescription>Nombre de restaurants par nombre de livraisons</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
