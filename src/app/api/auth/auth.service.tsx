@@ -5,7 +5,7 @@ import * as jwt from "jsonwebtoken"
 const prisma = new PrismaClient();
 
 export async function signUpService({ email, password }: { email: string; password: string }) {  
-    const verifyEmail = await prisma.users.findUnique({
+    const verifyEmail = await prisma.User.findUnique({
         where: {
             email: email
         }
@@ -20,7 +20,7 @@ export async function signUpService({ email, password }: { email: string; passwo
         throw new Error("Password must be at least 6 characters long");
     }
     const encryptedPassword = hashPassword(password);
-    const user = await prisma.users.create({
+    const user = await prisma.User.create({
         data: {
             email: email,
             password: encryptedPassword  , 
@@ -30,11 +30,12 @@ export async function signUpService({ email, password }: { email: string; passwo
     return user;  
 }
 export async function authService({email,password} : {email:string,password:string}) {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.User.findUnique({
         where: {
             email: email
         }
     })
+    console.log(user,email)
     if (!user) {
         throw new Error("User not found");
     }

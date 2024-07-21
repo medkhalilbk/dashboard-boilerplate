@@ -9,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
+model Companies{
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   description          String
@@ -46,7 +46,7 @@ enum Day {
   dimanche
 }
 
-model Menu {
+model Menus {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   products  String[] @db.ObjectId
@@ -54,7 +54,7 @@ model Menu {
   status    String
 }
 
-model Product {
+model Products {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   price          Float
@@ -64,14 +64,14 @@ model Product {
   supplements    String[] @db.ObjectId
 }
 
-model Supplement {
+model Supplements {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   price     Float
   productId String @db.ObjectId
 }
 
-model user {
+model Users {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   email           String
@@ -86,7 +86,7 @@ model user {
   imgUrl          String?
 }
 
-model deliveryMan {
+model DeliveryMans {
   id                   String  @id @default(auto()) @map("_id") @db.ObjectId
   fullName             String
   phoneNumber          String
@@ -96,4 +96,23 @@ model deliveryMan {
   cin                  String
   isActive             Boolean
   contractFile         String?
+}
+
+
+model Orders{
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  quantity Int
+  Restaurant String @db.ObjectId
+  price Int
+  createdAt DateTime
+}
+
+model Cart{
+  id String  @id @default(auto()) @map("_id") @db.ObjectId
+  orders String[] @db.ObjectId
+  location Location
+  deliveryMan String @db.ObjectId //this should be the user id not deliveryManId
+  status String
+  createdAt DateTime
 }

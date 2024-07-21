@@ -44,7 +44,7 @@ function StacksPage({}: Props) {
   return (
     <DashboardLayout>
       <div className='flex w-3/2 py-4'>
-        <h1 className="scroll-m-20 text-3xl mr-5 font-extrabold tracking-tight lg:text-3xl">Stacks </h1>
+        <h1 className="scroll-m-20 text-3xl mr-5 font-extrabold tracking-tight lg:text-3xl">Stacks 🛠️ </h1>
         <DialogAddStack/>
       </div>
       {loading ? (

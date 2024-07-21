@@ -1,6 +1,8 @@
 import { Menu } from "./menu";
 
-export interface Company {
+import {Location} from "./location";
+export interface ICompany {
+
   id: string;
   name: string;
   description: string;
@@ -9,19 +11,23 @@ export interface Company {
   availabilityDistance?: number | null;
   mainImage: string;
   otherImages: string[];
-  workHours?: WorkHours | null;
-  days: Day[];
+
+  workHours?: IWorkHours | null;
+  days: IDay[];
   type: string; // Default value "Restaurant"
   specialty?: string | null;
   menu: Menu[];
   keywords: string[];
 }
-export interface WorkHours {
+
+export interface IWorkHours {
+
   start: Date;
   end: Date;
 }
 
-export enum Day {
+
+export enum IDay {
   lundi = "lundi",
   mardi = "mardi",
   mercredi = "mercredi",
