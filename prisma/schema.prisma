@@ -105,7 +105,7 @@ model Orders{
   quantity Int
   Restaurant String @db.ObjectId
   price Int
-  createdAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model Cart{
@@ -114,5 +114,6 @@ model Cart{
   location Location
   deliveryMan String @db.ObjectId //this should be the user id not deliveryManId
   status String
-  createdAt DateTime
+  createdAt  DateTime @default(now())
+
 }
