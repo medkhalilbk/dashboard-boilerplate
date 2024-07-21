@@ -1,4 +1,5 @@
 import { ICompany } from "./company";
+
 import { Product } from "./product";
 
 export interface Menu {
