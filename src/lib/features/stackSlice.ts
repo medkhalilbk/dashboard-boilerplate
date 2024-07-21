@@ -1,5 +1,4 @@
-import { IStack } from './../../types/Stack';
-import type { RootState } from '../store'
+import { IStack } from './../../types/Stack'; 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface Istack {
