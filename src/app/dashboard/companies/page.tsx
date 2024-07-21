@@ -18,7 +18,7 @@ function ComapaniesPage() {
       <div className='flex flex-col w-3/2 py-4'>
       <div className="flex flex-row justify-between items-center my-4">
       <h1 className="scroll-m-20 text-3xl mr-5 font-extrabold tracking-tight lg:text-3xl">Entreprises 🏦</h1>
-      <button onClick={() => {router.push('/dashboard/comapnies/add')}} className="flex-shrink-0 bg-green-200 text-gray- duration-75	 border-gray-300 border rounded-md py-4 px-4 flex items-center justify-center text-sm font-medium hover:bg-green-100 focus:outline-none ">
+      <button onClick={() => {router.push('/dashboard/add-company')}} className="flex-shrink-0 bg-green-200 text-gray- duration-75	 border-gray-300 border rounded-md py-4 px-4 flex items-center justify-center text-sm font-medium hover:bg-green-100 focus:outline-none ">
         <PlusIcon className="h-4 w-4 mr-1" />
    Ajouter 
       </button>

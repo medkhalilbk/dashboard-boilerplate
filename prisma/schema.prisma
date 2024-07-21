@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -8,16 +9,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String? 
-  password String 
-  date DateTime
+model companies {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  description          String
+  phoneNumber          String?
+  location             Location?
+  availabilityDistance Float?
+  mainImage            String
+  otherImages          String[]
+  workHours            WorkHours?
+  days                 Day[]
+  type                 String     @default("Restaurant")
+  specialty            String?
+  Menu                 String[]   @db.ObjectId
+  keywords             String[]
 }
-model stacks {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    name String
-    iconUrl String
-    family String?
+
+type Location {
+  longitude Float
+  latitude  Float
+}
+
+type WorkHours {
+  start DateTime
+  end   DateTime
+}
+
+enum Day {
+  lundi
+  mardi
+  mercredi
+  jeudi
+  vendredi
+  samedi
+  dimanche
+}
+
+model menus {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  products  String[] @db.ObjectId
+  companyId String   @db.ObjectId
+  status    String
+}
+
+model products {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  price          Float
+  description    String
+  mainImageUrl   String
+  otherImagesUrl String[]
+  supplements    String[] @db.ObjectId
+}
+
+model supplements {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  price     Float
+  productId String @db.ObjectId
+}
+
+model User {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  email            String   @unique
+  password         String
+  role             String
+  isEmailVerified  Boolean  @default(false)
+  imgUrl           String?
+  updatedAt        DateTime @default(now())
+  date             DateTime @map("date")
+
+  @@map("users")
 }
