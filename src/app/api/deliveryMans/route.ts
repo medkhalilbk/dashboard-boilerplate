@@ -14,10 +14,31 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+
     try {
-        const deliveryMen = await getAllDeliveryMenService();
-        return Response.json({ message: "delivery men found!", data: deliveryMen, status: 200 });
+        const { deliveryMen, totalItems } = await getAllDeliveryMenService(page, limit);
+
+        if (deliveryMen.length === 0) {
+            return Response.json({ message: "No delivery men found!", status: 404 }, { status: 404 });
+        }
+
+        return Response.json({
+            message: "Delivery men found!",
+            data: {
+                deliveryMans: deliveryMen,
+                pagination: {
+                    page,
+                    limit,
+                    totalPages: Math.ceil(totalItems / limit),
+                    totalItems: totalItems,
+
+                },
+            }
+        }, { status: 200 });
     } catch (error: any) {
-        return Response.json({ message: error.message }, { status: 500 });
+        return Response.json({ message: error.message }), { status: 500 };
     }
 }

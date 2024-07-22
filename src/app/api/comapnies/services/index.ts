@@ -1,58 +1,82 @@
-import { Company, PrismaClient } from "@prisma/client";
+import { ICompany } from "@/types/company";
+import { PrismaClient } from "@prisma/client";
+import { Menu } from "lucide-react";
 
 const prisma = new PrismaClient();
 
-export async function getAllCompaniesService() {
+export async function getAllCompaniesService(page: number, limit: number) {
   try {
-    const companies = await prisma.company.findMany();
-    return companies;
+    const offset = (page - 1) * limit;
+    const companies = await prisma.companies.findMany({
+      skip: offset,
+      take: limit,
+    });
+    const totalItems = await prisma.companies.count();
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      companies,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems,
+      },
+    };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
-export async function createCompanyService(company: Company) {
+export async function createCompanyService(company: ICompany) {
   try {
-    const newCompany = await prisma.company.create({
-      data: {
-        name: company.name,
-        description: company.description,
-        phoneNumber: company.phoneNumber,
-        location: company.location,
-        availabilityDistance: company.availabilityDistance,
-        mainImage: company.mainImage,
-        otherImages: company.otherImages,
-        workHours: company.workHours,
-        type: company.type,
-        specialty: company.specialty,
-        keywords: company.keywords,
-      },
+    const newCompany = await prisma.companies.create({
+      data: company
     });
-
     return newCompany;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating company:", error);
-    throw error;
+    throw JSON.parse(error);
   }
 }
 
 export async function getCompanyByIdService(id: string) {
   try {
-    const company = await prisma.company.findUnique({ where: { id: id } });
-    return company;
+    const company = await prisma.companies.findUnique({
+      where: { id: id },
+    });
+
+    if (!company) {
+      return null
+    }
+    const Menu = company.Menu.length > 0
+      ? await prisma.menus.findMany({
+        where: {
+          id: {
+            in: company.Menu,
+          },
+        },
+      })
+      : [];
+
+    return {
+      ...company,
+      Menu,
+    };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
+
 export async function updateCompanyService(
   id: string,
-  company: Partial<Company>
+  company: Partial<ICompany>
 ) {
   try {
-    const companyUpdated = await prisma.company.update({
+    const companyUpdated = await prisma.companies.update({
       where: { id },
       data: { ...company },
     });

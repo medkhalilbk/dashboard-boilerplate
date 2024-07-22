@@ -13,15 +13,15 @@ model Companies{
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   description          String
-  phoneNumber          String?
-  location             Location?
-  availabilityDistance Float?
-  mainImage            String
+  phoneNumber          String
+  location             Location
+  availabilityDistance Float
+  mainImage            String?
   otherImages          String[]
   workHours            WorkHours?
   days                 Day[]
   type                 String     @default("Restaurant")
-  specialty            String?
+  specialty            String
   Menu                 String[]   @db.ObjectId
   keywords             String[]
 }
@@ -51,7 +51,7 @@ model Menus {
   name      String
   products  String[] @db.ObjectId
   companyId String   @db.ObjectId
-  status    String
+  isActive  Boolean
 }
 
 model Products {
@@ -68,7 +68,6 @@ model Supplements {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   price     Float
-  productId String @db.ObjectId
 }
 
 model Users {
@@ -76,24 +75,31 @@ model Users {
   name            String
   email           String
   password        String
-  role            String
-  isEmailVerfied  Boolean
-  createdAt       DateTime?
+  role            Roles 
+  isEmailVerified  Boolean
+  createdAt       DateTime @default(now())
   updatedAt       DateTime?
   companyId       String?   @db.ObjectId
   deliveryManId   String?   @db.ObjectId
   deliveryAddress Location?
   imgUrl          String?
+  isDeleted       Boolean @default(false)
 }
 
+enum Roles {
+user
+deliveryMan
+companyAdmin
+superAdmin
+}
 model DeliveryMans {
   id                   String  @id @default(auto()) @map("_id") @db.ObjectId
   fullName             String
   phoneNumber          String
   socialStatus         String?
-  ordersCompleted      Int
-  vehiculeSerialNumber String
-  cin                  String
+  ordersCompleted      Int @default(0)
+  vehiculeSerialNumber String?
+  cin                  String @unique
   isActive             Boolean
   contractFile         String?
 }
@@ -104,16 +110,25 @@ model Orders{
   productId String   @db.ObjectId
   quantity Int
   Restaurant String @db.ObjectId
-  price Int
+  price Float
   createdAt DateTime @default(now())
 }
 
-model Cart{
+model Carts{
   id String  @id @default(auto()) @map("_id") @db.ObjectId
   orders String[] @db.ObjectId
   location Location
-  deliveryMan String @db.ObjectId //this should be the user id not deliveryManId
-  status String
+  totalPrice Float
+  clientId String @db.ObjectId
+  deliveryManAccountId String @db.ObjectId //this should be the user id not deliveryManId
+  status CartStatus
   createdAt  DateTime @default(now())
+}
 
+enum CartStatus {
+step1//accepta el request of delivering
+step2//mechi ll company chyhez 
+step3//hazha mel company
+step4//fi thneya
+step5//wselt
 }

@@ -7,6 +7,10 @@ export async function GET(
   try {
     const companyId = params.id;
     const company = await getCompanyByIdService(companyId);
+    if (!company) {
+      return Response.json({ message: "company not found" }, { status: 404 });
+
+    }
     return Response.json({
       data: company,
       status: 200,

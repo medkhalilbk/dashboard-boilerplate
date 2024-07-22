@@ -1,4 +1,4 @@
-import { Menu } from "./menu";
+import { IMenu } from "./menu";
 import { Supplement } from "./supplement";
 
 export interface Product {
@@ -10,5 +10,5 @@ export interface Product {
     otherImagesUrl: string[];
     supplements: Supplement[];
     menuId: string;
-    Menu: Menu;
+    Menu: IMenu;
   }

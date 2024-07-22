@@ -1,22 +1,21 @@
-import { Menu } from "./menu";
 
 import {Location} from "./location";
+import { IMenu } from "./menu";
 export interface ICompany {
 
   id: string;
   name: string;
   description: string;
-  phoneNumber?: string | null;
-  location?: Location | null;
-  availabilityDistance?: number | null;
+  phoneNumber: string ;
+  location: Location
+  availabilityDistance: number 
   mainImage: string;
   otherImages: string[];
-
   workHours?: IWorkHours | null;
   days: IDay[];
-  type: string; // Default value "Restaurant"
-  specialty?: string | null;
-  menu: Menu[];
+  type?: string;
+  specialty: string
+  Menu: string[];
   keywords: string[];
 }
 
