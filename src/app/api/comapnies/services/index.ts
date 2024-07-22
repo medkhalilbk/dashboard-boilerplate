@@ -1,6 +1,5 @@
 import { ICompany } from "@/types/company";
 import { PrismaClient } from "@prisma/client";
-import { Menu } from "lucide-react";
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,3 @@
-import { Iuser } from "@/lib/features/userSlice";
 import { IUser } from "@/types/User";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
@@ -27,7 +26,7 @@ export async function addUserService(user: IUser) {
   }
 }
 
-export async function updateUserService(id: string, data: Partial<Iuser>) {
+export async function updateUserService(id: string, data: Partial<IUser>) {
   try {
     const user = await prisma.users.update({
       where: { id, isDeleted: false },
