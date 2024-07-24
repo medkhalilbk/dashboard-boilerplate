@@ -9,8 +9,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Companies{
-  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+model Companies {
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   description          String
   phoneNumber          String
@@ -18,11 +18,11 @@ model Companies{
   availabilityDistance Float
   mainImage            String?
   otherImages          String[]
-  workHours            WorkHours?
+  workHours            WorkHours
   days                 Day[]
-  type                 String     @default("Restaurant")
+  type                 String    @default("Restaurant")
   specialty            String
-  Menu                 String[]   @db.ObjectId
+  Menu                 String[]  @db.ObjectId
   keywords             String[]
 }
 
@@ -32,8 +32,8 @@ type Location {
 }
 
 type WorkHours {
-  start DateTime
-  end   DateTime
+  start String
+  end   String
 }
 
 enum Day {
@@ -65,9 +65,9 @@ model Products {
 }
 
 model Supplements {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  price     Float
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  price Float
 }
 
 model Users {
@@ -75,60 +75,60 @@ model Users {
   name            String
   email           String
   password        String
-  role            Roles 
-  isEmailVerified  Boolean
-  createdAt       DateTime @default(now())
+  role            Roles
+  isEmailVerified Boolean
+  createdAt       DateTime  @default(now())
   updatedAt       DateTime?
   companyId       String?   @db.ObjectId
   deliveryManId   String?   @db.ObjectId
   deliveryAddress Location?
   imgUrl          String?
-  isDeleted       Boolean @default(false)
+  isDeleted       Boolean   @default(false)
 }
 
 enum Roles {
-user
-deliveryMan
-companyAdmin
-superAdmin
+  user
+  deliveryMan
+  companyAdmin
+  superAdmin
 }
+
 model DeliveryMans {
   id                   String  @id @default(auto()) @map("_id") @db.ObjectId
   fullName             String
   phoneNumber          String
   socialStatus         String?
-  ordersCompleted      Int @default(0)
+  ordersCompleted      Int     @default(0)
   vehiculeSerialNumber String?
-  cin                  String @unique
+  cin                  String  @unique
   isActive             Boolean
   contractFile         String?
 }
 
-
-model Orders{
-  id  String  @id @default(auto()) @map("_id") @db.ObjectId
-  productId String   @db.ObjectId
-  quantity Int
-  Restaurant String @db.ObjectId
-  price Float
-  createdAt DateTime @default(now())
-}
-
-model Carts{
-  id String  @id @default(auto()) @map("_id") @db.ObjectId
-  orders String[] @db.ObjectId
-  location Location
-  totalPrice Float
-  clientId String @db.ObjectId
-  deliveryManAccountId String @db.ObjectId //this should be the user id not deliveryManId
-  status CartStatus
+model Orders {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId  String   @db.ObjectId
+  quantity   Int
+  Restaurant String   @db.ObjectId
+  price      Float
   createdAt  DateTime @default(now())
 }
 
+model Carts {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  orders               String[]   @db.ObjectId
+  location             Location
+  totalPrice           Float
+  clientId             String     @db.ObjectId
+  deliveryManAccountId String     @db.ObjectId //this should be the user id not deliveryManId
+  status               CartStatus
+  createdAt            DateTime   @default(now())
+}
+
 enum CartStatus {
-step1//accepta el request of delivering
-step2//mechi ll company chyhez 
-step3//hazha mel company
-step4//fi thneya
-step5//wselt
+  step1 //accepta el request of delivering
+  step2 //mechi ll company chyhez 
+  step3 //hazha mel company
+  step4 //fi thneya
+  step5 //wselt
 }

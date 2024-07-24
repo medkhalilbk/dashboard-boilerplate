@@ -11,7 +11,7 @@ export interface ICompany {
   availabilityDistance: number 
   mainImage: string;
   otherImages: string[];
-  workHours?: IWorkHours | null;
+  workHours: IWorkHours 
   days: IDay[];
   type?: string;
   specialty: string
