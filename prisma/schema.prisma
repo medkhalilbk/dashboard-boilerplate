@@ -9,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model companies {
+model Companies{
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
   description          String
@@ -46,7 +46,7 @@ enum Day {
   dimanche
 }
 
-model menus {
+model Menus {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   products  String[] @db.ObjectId
@@ -54,7 +54,7 @@ model menus {
   status    String
 }
 
-model products {
+model Products {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   price          Float
@@ -64,23 +64,55 @@ model products {
   supplements    String[] @db.ObjectId
 }
 
-model supplements {
+model Supplements {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   price     Float
   productId String @db.ObjectId
 }
 
-model User {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  email            String   @unique
-  password         String
-  role             String
-  isEmailVerified  Boolean  @default(false)
-  imgUrl           String?
-  updatedAt        DateTime @default(now())
-  date             DateTime @map("date")
+model Users {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String
+  password        String
+  role            String
+  isEmailVerfied  Boolean
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  companyId       String?   @db.ObjectId
+  deliveryManId   String?   @db.ObjectId
+  deliveryAddress Location?
+  imgUrl          String?
+}
 
-  @@map("users")
+model DeliveryMans {
+  id                   String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName             String
+  phoneNumber          String
+  socialStatus         String?
+  ordersCompleted      Int
+  vehiculeSerialNumber String
+  cin                  String
+  isActive             Boolean
+  contractFile         String?
+}
+
+
+model Orders{
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  quantity Int
+  Restaurant String @db.ObjectId
+  price Int
+  createdAt DateTime
+}
+
+model Cart{
+  id String  @id @default(auto()) @map("_id") @db.ObjectId
+  orders String[] @db.ObjectId
+  location Location
+  deliveryMan String @db.ObjectId //this should be the user id not deliveryManId
+  status String
+  createdAt DateTime
 }
