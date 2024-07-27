@@ -30,3 +30,14 @@ export function verifyImageUrl(url:string){
   let re = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
   return re.test(url);
 }
+
+export function getLongAndLatFromUrl(url:string){
+  const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+  const match = url.match(regex);
+  if (match) {
+    const latitude = parseFloat(match[1]);
+    const longitude = parseFloat(match[2]);
+    return { latitude, longitude };
+  }
+  return null;
+}

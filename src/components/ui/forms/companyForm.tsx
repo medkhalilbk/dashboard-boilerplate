@@ -1,11 +1,23 @@
 "use client"
 import { ICompany, IDay } from '@/types/company';
-import {Input} from '@/components/ui/input';
-import React from 'react';  
-import { useForm, SubmitHandler } from "react-hook-form"
+import { Input } from '@/components/ui/input';
+import React, { useEffect, useState } from 'react';  
+import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { Textarea } from '../textarea';
+import { Slider } from '../slider'; 
+import { Checkbox } from '../checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '../select'; 
+import { getLongAndLatFromUrl } from '@/lib/utils';
 
 const CompanyForm = () => {
-  const { handleSubmit, control, register, formState: { errors } } = useForm<ICompany>({
+  const [distance, setDistance] = useState(0)
+  const [openingTime, setOpeningTime] = useState({ hours: 0, minutes: 0 })
+  const [closingTime, setClosingTime] = useState({ hours: 0, minutes: 0 })
+  const [keywordText,setKeywordText] = useState('')
+  const [keywordsArray, setKeywordsArray] = useState<string[]>([]) 
+  const [location, setLocation] = useState<any>(null)
+  const [errorUrl, seterrorUrl] = useState(false)
+  const { handleSubmit, control,setValue, register, formState: { errors }  } = useForm<ICompany>({
     defaultValues: {
       name: '',
       description: '',
@@ -14,7 +26,7 @@ const CompanyForm = () => {
       availabilityDistance: null,
       mainImage: '',
       otherImages: [],
-      workHours: { start: new Date(), end: new Date() },
+      workHours:  "",
       days: Object.values(IDay),
       type: 'Restaurant',
       specialty: '',
@@ -22,8 +34,30 @@ const CompanyForm = () => {
       keywords: []
     }
   });
+  useEffect(() => { 
+    if(keywordText !== ""){
+      setKeywordsArray(keywordText.split(','))
+    }
+    () => {
+      if(keywordText === ""){
+        setKeywordsArray([])
+      }
+    }
+  }, [keywordText])
+useEffect(() => {   
+  let stringOpeningTime = `${openingTime.hours < 10?  "0"+openingTime.hours : openingTime.hours}:${openingTime.minutes > 10? openingTime.minutes : "0"+openingTime.minutes}` 
+  let stringCloseTime = `${closingTime.hours < 10?  "0"+closingTime.hours : closingTime.hours}:${closingTime.minutes > 10? closingTime.minutes : "0"+closingTime.minutes}`
+  setValue('workHours', `${stringOpeningTime},${stringCloseTime}`)
+}, [openingTime,closingTime])
 
-  const onSubmit = (data: ICompany) => {
+useEffect(()=> {
+
+  if(location) {
+    setValue('location', location)
+  }
+
+} , [location])
+  const onSubmit: SubmitHandler<ICompany> = (data) => {
     console.log(data);
   };
 
@@ -31,85 +65,164 @@ const CompanyForm = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='w-2/3'>
         <label className='my-2 text-lg'>Nom : </label> 
-       <Input {...register('name' , {required:true})} />
-      </div>
-
-      <div>
+        <Input {...register('name', { required: true })} />
+       
         <label className='my-2 text-lg'>Description:</label>
-        <textarea {...register('description', { required: true })} />
+        <Textarea {...register('description', { required: true })} /> 
         {errors.description && <span>Description is required</span>}
-      </div>
-
-      <div>
+        
         <label className='my-2 text-lg'>Tel :</label>
-        <input {...register('phoneNumber')} type='number' />
-      </div>
-
-      <div>
-        <label className='my-2 text-lg'>Location:</label>
-        {/* Add location fields here */}
-      </div>
-
-      <div>
-        <label className='my-2 text-lg'>Availability Distance:</label>
-        <input type="number" {...register('availabilityDistance')} />
-      </div>
-
-      <div>
-        <label className='my-2 text-lg'>Main Image URL:</label>
-        <input {...register('mainImage', { required: true })} />
-        {errors.mainImage && <span>Main Image URL is required</span>}
-      </div>
-
-      <div>
-        <label className='my-2 text-lg'>Other Images URLs:</label>
-        <input {...register('otherImages')} placeholder="Enter URLs separated by commas" />
-      </div>
-
-      <div>
-        <label className='my-2 text-lg'>Work Hours:</label>
-        <div>
-          <label className='my-2 text-lg'>Start:</label>
-          <input type="datetime-local" {...register('workHours.start')} />
+        <Input {...register('phoneNumber')} type='number' />
+        
+        <label className='my-2 text-lg'>Localisation (Lien Google Maps):</label> 
+        <Input  onChange={(input:React.FormEvent<HTMLInputElement>) => {
+          if(getLongAndLatFromUrl(input.currentTarget.value) ){ 
+            setLocation(getLongAndLatFromUrl(input.currentTarget.value))
+            seterrorUrl(false)
+          }else{
+            seterrorUrl(true)
+          }
+        }} type='text' />
+        {errorUrl && <p className='text-red-600 my-2'>Erreur de lien </p>}
+        <label className='my-2 text-lg'>Distance de disponibilité {distance} (KM):</label> 
+        <Slider 
+          className='mb-4'
+          {...register('availabilityDistance')}
+          min={0}
+          max={100}
+          onValueChange={ (value) => {
+            setDistance(value[0])
+          }}
+        />
+    
+        <label className='my-2 text-lg'>Heure d'ouverture : </label>
+        <div className="flex row gap-x-3">
+          <div className="flex flex-col"> 
+            <label className='text-sm'> Heures</label>
+            <Input 
+              onChange={(input: React.FormEvent<HTMLInputElement>) => { 
+                setOpeningTime({ hours: parseInt(input.currentTarget.value), minutes: openingTime.minutes })
+              }} 
+              type="number" 
+              max={23} 
+              min={0}
+            />
+          </div>
+          <div className="flex flex-col"> 
+            <label className='text-sm'> Minutes</label>
+            <Input 
+              onChange={(input: React.FormEvent<HTMLInputElement>) => { 
+                setOpeningTime({ hours: openingTime.hours, minutes: parseInt(input.currentTarget.value) })
+              }} 
+              type="number" 
+              max={59} 
+              min={0}
+            />
+          </div> 
         </div>
-        <div>
-          <label className='my-2 text-lg'>End:</label>
-          <input type="datetime-local" {...register('workHours.end')} />
+ 
+        <label className='my-2 text-lg'>Heure de fermeture : </label>
+        <div className="flex row gap-x-3">
+          <div className="flex flex-col"> 
+            <label className='text-sm'> Heures</label>
+            <Input 
+              onChange={(input: React.FormEvent<HTMLInputElement>) => { 
+                setClosingTime({ hours: parseInt(input.currentTarget.value), minutes: closingTime.minutes })
+              }} 
+              type="number" 
+              max={23} 
+              min={0}
+            />
+          </div>
+          <div className="flex flex-col"> 
+            <label className='text-sm'> Minutes</label>
+            <Input 
+              onChange={(input: React.FormEvent<HTMLInputElement>) => { 
+                setClosingTime({ hours: closingTime.hours, minutes: parseInt(input.currentTarget.value) })
+              }} 
+              type="number" 
+              max={59} 
+              min={0}
+            />
+          </div> 
         </div>
       </div>
 
-      <div>
-        <label className='my-2 text-lg'>Days:</label>
+      <div className='flex flex-col mt-3'> 
         {Object.values(IDay).map(day => (
           <label key={day}>
-            <input type="checkbox" value={day} {...register('days')} />
-            {day}
+            <p className='capitalize'>
+              <Checkbox onClick={() => {
+                
+              }} {...register('days')} value={day} className='mr-2' />
+              {day}
+            </p>
           </label>
         ))}
       </div>
 
       <div>
-        <label className='my-2 text-lg'>Type:</label>
-        <select {...register('type')}>
-          <option value="Restaurant">Restaurant</option>
-          <option value="Cafe">Cafe</option>
-          {/* Add more types as needed */}
-        </select>
-      </div>
+        <label className='my-2 text-lg'>Type d'entreprise :</label>
+        <div className="relative">
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onValueChange={(value) => field.onChange(value)}
+              >
+                <SelectTrigger>
+                  {field.value ? field.value : 'Type'}
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Restaurant">Restaurant</SelectItem>
+                  <SelectItem value="Café">Café</SelectItem>
+                  <SelectItem value="Entreprise" disabled>Entreprise</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+      </div> 
 
       <div>
-        <label className='my-2 text-lg'>Specialty:</label>
-        <input {...register('specialty')} />
-      </div>
-
+  <label className='my-2 text-lg'>Specialité :</label>
+  <div className="relative">
+    <Controller
+      name="specialty"
+      control={control}
+      render={({ field }) => (
+        <Select
+          value={field.value || ""}
+          onValueChange={(value) => field.onChange(value)}
+        >
+          <SelectTrigger>
+            {field.value ? field.value : 'Specialité'}
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Restaurant Tunisien">Restaurant Tunisien</SelectItem>
+            <SelectItem value="Restaurant Méditerranéen">Restaurant Méditerranéen</SelectItem>
+            <SelectItem value="Restaurant Italien">Restaurant Italien</SelectItem>
+            <SelectItem value="Restaurant Oriental">Restaurant Oriental</SelectItem>
+            <SelectItem value="Autre">Autre</SelectItem>
+          </SelectContent>
+        </Select>
+      )}
+    />
+  </div>
+</div>
       <div>
-        <label className='my-2 text-lg'>Menu:</label>
-        {/* Add menu fields here */}
-      </div>
+        <label className='my-2 text-lg'>Mots clé (utiliser , comme séparateur) :</label>
+        <Input onChange={(input:React.FormEvent<HTMLInputElement>) => {
+          setKeywordText(input.currentTarget.value)
+        }} />
+      <div className='my-4'>
+      {keywordsArray.map((keyword, index) => (
+    <span key={index} className='bg-green-200 px-2 py-1 rounded-full text-sm mr-2'>{keyword}</span>
+))}
 
-      <div>
-        <label className='my-2 text-lg'>Keywords:</label>
-        <input {...register('keywords')} placeholder="Enter keywords separated by commas" />
+      </div>     
       </div>
 
       <button type="submit">Submit</button>

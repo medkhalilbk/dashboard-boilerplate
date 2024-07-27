@@ -9,7 +9,7 @@ export interface ICompany {
   availabilityDistance?: number | null;
   mainImage: string;
   otherImages: string[];
-  workHours?: IWorkHours | null;
+  workHours?: string | null;
   days: IDay[];
   type: string; // Default value "Restaurant"
   specialty?: string | null;
