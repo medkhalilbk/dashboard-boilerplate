@@ -62,6 +62,7 @@ model Products {
   mainImageUrl   String
   otherImagesUrl String[]
   supplements    String[] @db.ObjectId
+  inStock        Boolean
 }
 
 model Supplements {

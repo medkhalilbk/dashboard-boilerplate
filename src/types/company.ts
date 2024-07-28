@@ -1,17 +1,17 @@
 
-import {Location} from "./location";
+import { Location } from "./location";
 import { IMenu } from "./menu";
 export interface ICompany {
 
   id: string;
   name: string;
   description: string;
-  phoneNumber: string ;
+  phoneNumber: string;
   location: Location
-  availabilityDistance: number 
+  availabilityDistance: number
   mainImage: string;
   otherImages: string[];
-  workHours: IWorkHours 
+  workHours: IWorkHours
   days: IDay[];
   type?: string;
   specialty: string
@@ -20,9 +20,8 @@ export interface ICompany {
 }
 
 export interface IWorkHours {
-
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
 }
 
 

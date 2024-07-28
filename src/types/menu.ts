@@ -1,11 +1,22 @@
 
 import { ICompany } from "./company";
-import { Product } from "./product";
+import { IProduct } from "./product";
 
 export interface IMenu {
   id: string;
   name: string;
-  products: Product[];
-  company: ICompany;
+  products?: IProduct[];
+  productsId: string[];
+  company?: ICompany;
   companyId: string;
+  isActive: boolean
+}
+
+
+export interface IUpdatedMenu {
+  id: string;
+  name: string;
+  productsId: string[];
+  companyId: string;
+  isActive: boolean
 }
