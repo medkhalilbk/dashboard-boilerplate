@@ -112,3 +112,18 @@ export async function deleteDeliveryManService(deliveryManId: string) {
     throw error;
   }
 }
+
+
+export async function getCartsByDeliveryMan(id: string) {
+  const deliveryManExists = await prisma.deliveryMans.findUnique({
+    where: { id: id }
+  })
+  if (!deliveryManExists) {
+    return null
+  }
+  const carts = await prisma.carts.findMany({ where: { deliveryManAccountId: id } })
+  if (carts.length !== 0) {
+    throw new Error("there is no delivered product for this delivery man ")
+  }
+  return carts
+}

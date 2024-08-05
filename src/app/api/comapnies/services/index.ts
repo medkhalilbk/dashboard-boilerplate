@@ -33,6 +33,7 @@ export async function createCompanyService(company: ICompany) {
     const newCompany = await prisma.companies.create({
       data: company
     });
+    //TODO: update the user with the company id 
     return newCompany;
   } catch (error: any) {
     console.error("Error creating company:", error);
@@ -84,3 +85,12 @@ export async function updateCompanyService(
     throw error;
   }
 }
+
+
+// export async function getOrdersOfComapny(id: string) {
+//   try {
+//     //TODO: 
+//   } catch (error) {
+    
+//   }
+// }
