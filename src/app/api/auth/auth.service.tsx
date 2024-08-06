@@ -5,7 +5,7 @@ import * as jwt from "jsonwebtoken"
 const prisma = new PrismaClient();
 
 export async function signUpService({ email, password }: { email: string; password: string }) {  
-    const verifyEmail = await prisma.User.findUnique({
+    const verifyEmail = await prisma.users.findFirst({
         where: {
             email: email
         }
@@ -20,30 +20,39 @@ export async function signUpService({ email, password }: { email: string; passwo
         throw new Error("Password must be at least 6 characters long");
     }
     const encryptedPassword = hashPassword(password);
-    const user = await prisma.User.create({
+    const user = await prisma.users.create({
         data: {
             email: email,
-            password: encryptedPassword  , 
-            date: new Date()
+            password: encryptedPassword,
+            name: "",  
+            role: "",  
+            isEmailVerified: false  
         }
     });
     return user;  
 }
 export async function authService({email,password} : {email:string,password:string}) {
-    const user = await prisma.User.findUnique({
-        where: {
-            email: email
+   try {
+    const user = await prisma.users.findFirst({
+        where: {  
+            email: email ,
+            isEmailVerified:true,
         }
     })
-    console.log(user,email)
+     let encryptedPassword = hashPassword("KHALILZOUINEKH");
+     console.log(encryptedPassword)
     if (!user) {
         throw new Error("User not found");
     }
     if (!verifyPassword(user.password, password)) {
         throw new Error("Invalid password");
     } 
-    delete user.password;
-    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET, { expiresIn: '1h' });
+    delete (user as { password?: string }).password;
+    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' });
      
     return {user, token};
+   } catch (error) {
+    console.log(error)
+    throw error;
+   }
 }

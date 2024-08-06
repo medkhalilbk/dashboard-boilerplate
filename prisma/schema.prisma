@@ -77,7 +77,7 @@ model Users {
   email           String
   password        String
   role            String
-  isEmailVerfied  Boolean
+  isEmailVerified  Boolean
   createdAt       DateTime?
   updatedAt       DateTime?
   companyId       String?   @db.ObjectId

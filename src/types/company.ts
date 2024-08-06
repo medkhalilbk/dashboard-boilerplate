@@ -1,7 +1,6 @@
 import { Menu } from "./menu";
 
-import {Location} from "./location";
-export interface ICompany {
+import {Location} from "./location"; 
 
 export interface Company {
 
