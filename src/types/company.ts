@@ -2,7 +2,7 @@ import { Menu } from "./menu";
 
 import {Location} from "./location";
  
-export interface Company {
+export interface ICompany {
 
   id: string;
   name: string;
@@ -13,7 +13,7 @@ export interface Company {
   mainImage: string;
   otherImages: string[];
   workHours?: string | null;
-  days: IDay[];
+  days: string[];
 
   type: string; // Default value "Restaurant"
   specialty?: string | null;

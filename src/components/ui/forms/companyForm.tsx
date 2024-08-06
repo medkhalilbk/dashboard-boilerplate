@@ -69,7 +69,7 @@ useEffect(()=> {
 } , [location])
   const onSubmit: SubmitHandler<ICompany> = (data) => {
     console.log(data)
-    submitAction(true)
+    submitAction()
   };
 
   useEffect(() => {

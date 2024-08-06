@@ -1,9 +1,8 @@
 "use client"
 import DashboardLayout from '@/components/dashboardUILayout'
-import { Button } from '@/components/ui/button'
 import CompanyCard from '@/components/ui/companies/CompanyCard'
-import { RootState } from '@/lib/store'
 import { ICompany } from '@/types/company'
+import axios from 'axios'
 import { PlusIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -11,7 +10,27 @@ import { UseSelector, useSelector } from 'react-redux'
  
 
 function ComapaniesPage() {
+
   const companies = useSelector((state: any) => state.company.data) as ICompany[]
+  React.useEffect(()=>{
+
+    async function fetchCompanies(){
+      try {
+        axios.get('/api/companies').then((response) => {
+          console.log(response.data)
+        })
+      } catch (error) {
+        
+      }
+    }
+
+
+    if(companies.length === 0){
+       fetchCompanies()
+    }
+  } ,[companies])
+
+
   const router = useRouter()
   return (
     <DashboardLayout>
