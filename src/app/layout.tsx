@@ -12,8 +12,11 @@ const fontSans = FontSans({
 
 export default function RootLayout({ children } : any) {
   return (
-   <SessionProvider>
-      <html lang="en" suppressHydrationWarning>
+   <SessionProvider> 
+      <html lang="en" suppressHydrationWarning> 
+      
+         
+      <head >
       <link
   rel="stylesheet"
   type="text/css"  
@@ -24,7 +27,7 @@ export default function RootLayout({ children } : any) {
   type="text/css"
   href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
 />
-      <head />
+        </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
