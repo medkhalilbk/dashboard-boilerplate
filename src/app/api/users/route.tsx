@@ -1,4 +1,4 @@
-import { signUpService } from "../auth/signUpService";
+import { signUpService } from "../auth/auth.service";
 export async function POST(request: Request) { 
  try {
   const body = await request.json() ;     

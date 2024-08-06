@@ -38,9 +38,7 @@ export async function authService({email,password} : {email:string,password:stri
             email: email ,
             isEmailVerified:true,
         }
-    })
-     let encryptedPassword = hashPassword("KHALILZOUINEKH");
-     console.log(encryptedPassword)
+    }) 
     if (!user) {
         throw new Error("User not found");
     }

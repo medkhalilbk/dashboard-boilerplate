@@ -1,12 +1,7 @@
 import { Menu } from "./menu";
 
-<<<<<<< HEAD
-import {Location} from "./location"; 
-
-=======
 import {Location} from "./location";
  
->>>>>>> 54bf4cde51022cdce10a0589abdc12f0eae33682
 export interface Company {
 
   id: string;

@@ -32,8 +32,8 @@ type Location {
 }
 
 type WorkHours {
-  start DateTime
-  end   DateTime
+  start String
+  end   String
 }
 
 enum Day {

@@ -1,10 +1,10 @@
-import { Company, PrismaClient } from "@prisma/client";
+import {PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function getAllCompaniesService() {
   try {
-    const companies = await prisma.company.findMany();
+    const companies = await prisma.companies.findMany();
     return companies;
   } catch (error) {
     console.log(error);
@@ -12,9 +12,9 @@ export async function getAllCompaniesService() {
   }
 }
 
-export async function createCompanyService(company: Company) {
+export async function createCompanyService(company: any) {
   try {
-    const newCompany = await prisma.company.create({
+    const newCompany = await prisma.companies.create({
       data: {
         name: company.name,
         description: company.description,
@@ -39,7 +39,7 @@ export async function createCompanyService(company: Company) {
 
 export async function getCompanyByIdService(id: string) {
   try {
-    const company = await prisma.company.findUnique({ where: { id: id } });
+    const company = await prisma.companies.findUnique({ where: { id: id } });
     return company;
   } catch (error) {
     console.log(error);
@@ -47,9 +47,9 @@ export async function getCompanyByIdService(id: string) {
   }
 }
 
-export async function updateCompanyService(id: string, company: Partial<Company>) {
+export async function updateCompanyService(id: string, company: any) {
   try {
-    const companyUpdated = await prisma.company.update({
+    const companyUpdated = await prisma.companies.update({
       where: { id },
       data: { ...company },
     });

@@ -6,6 +6,7 @@ export async function POST(request: Request) {
   const body = await request.json() ;     
   const login = await authService(body)
   cookies().set("token", login.token, {httpOnly: true, sameSite: "strict"})
+  cookies().set("role", login.user.role, {httpOnly: true, sameSite: "strict"})
   return Response.json({ message:"Login succeeded!" , data : login , status: 200 })
  } catch (error:any) { 
   return Response.json({ message:error.message}, { status: 500 })

@@ -1,8 +1,8 @@
-import { createCompanyService, getAllCompanies } from "./services";
+import { createCompanyService, getAllCompaniesService } from "./services";
 
 export async function GET(request: Request) {
   try {
-    const companies = await getAllCompanies();
+    const companies = await getAllCompaniesService();
     return Response.json({
       data: companies,
       status: 200,
