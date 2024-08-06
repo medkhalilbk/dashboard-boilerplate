@@ -1,36 +1,31 @@
-import { Menu } from "./menu";
 
-import {Location} from "./location";
- 
+import { Location } from "./location";
+import { IMenu } from "./menu";
 export interface ICompany {
 
   id: string;
   name: string;
   description: string;
-  phoneNumber?: string | null;
-  location?: Location | null;
-  availabilityDistance?: number | null;
+  phoneNumber: string;
+  location: Location
+  availabilityDistance: number
   mainImage: string;
   otherImages: string[];
-  workHours?: {
-    start:string,
-    end:string
-  };
-  days: string[];
-
-  type: string; // Default value "Restaurant"
-  specialty?: string | null;
-  menu: Menu[];
+  workHours: IWorkHours
+  days: IDay[];
+  type?: string;
+  specialty: string
+  Menu: string[];
   keywords: string[];
 }
-export interface IWorkHours {
 
-  start: Date;
-  end: Date;
+export interface IWorkHours {
+  start: string;
+  end: string;
 }
 
-export enum IDay {
 
+export enum IDay {
   lundi = "lundi",
   mardi = "mardi",
   mercredi = "mercredi",
