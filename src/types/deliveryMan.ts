@@ -1,10 +1,11 @@
 export interface IDeliveryMan {
     id: string;
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    isEmailVerified: boolean;
-    imgUrl: string;
-    deliveryManData: any;
+    fullName: string;
+    phoneNumber: string;
+    socialStatus?: string;
+    ordersCompleted: number;
+    vehiculeSerialNumber?: string;
+    cin: string;
+    isActive: boolean;
+    contractFile?: string;
   }
