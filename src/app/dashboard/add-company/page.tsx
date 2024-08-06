@@ -1,11 +1,17 @@
+"use client"
 import DashboardLayout from '@/components/dashboardUILayout';
 import CompanyForm from '@/components/ui/forms/companyForm';
-import React from 'react';
+import ImageCompany from '@/components/ui/forms/ImageCompany';
+import React, { useState } from 'react';
 
 const AddCompanyPage: React.FC = () => {
+    const [dataFormIsSet, setDataFormIsSet] = useState(false)
     return (
     <DashboardLayout> 
-        <CompanyForm/>
+        {!dataFormIsSet && <CompanyForm submitAction={setDataFormIsSet}/>}
+        
+{dataFormIsSet && <ImageCompany/>}        
+   
     </DashboardLayout>
     );
 };

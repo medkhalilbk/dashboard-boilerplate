@@ -1,5 +1,5 @@
 "use client"
-import { ICompany, IDay } from '@/types/company';
+import { Iuser } from '@/lib/features/userSlice';
 import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';  
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
