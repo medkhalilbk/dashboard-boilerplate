@@ -11,7 +11,7 @@ import { getLongAndLatFromUrl } from '@/lib/utils';
 import { Button } from '../button';
 
 type CompanyFormProps = {
-  submitAction: () => void;
+  submitAction: any
 };
 
 const CompanyForm = ({ submitAction }: CompanyFormProps) => {
@@ -32,7 +32,7 @@ const CompanyForm = ({ submitAction }: CompanyFormProps) => {
       availabilityDistance: null,
       mainImage: '',
       otherImages: [],
-      workHours:  "",
+      workHours:  {},
       days: [],
       type: 'Restaurant',
       specialty: '',
@@ -57,7 +57,7 @@ const CompanyForm = ({ submitAction }: CompanyFormProps) => {
 useEffect(() => {   
   let stringOpeningTime = `${openingTime.hours < 10?  "0"+openingTime.hours : openingTime.hours}:${openingTime.minutes > 10? openingTime.minutes : "0"+openingTime.minutes}` 
   let stringCloseTime = `${closingTime.hours < 10?  "0"+closingTime.hours : closingTime.hours}:${closingTime.minutes > 10? closingTime.minutes : "0"+closingTime.minutes}`
-  setValue('workHours', `${stringOpeningTime},${stringCloseTime}`)
+  setValue('workHours', { start: stringOpeningTime, end: stringCloseTime })
 }, [openingTime,closingTime])
 
 useEffect(()=> {
@@ -69,7 +69,7 @@ useEffect(()=> {
 } , [location])
   const onSubmit: SubmitHandler<ICompany> = (data) => {
     console.log(data)
-    submitAction()
+    submitAction(true)
   };
 
   useEffect(() => {

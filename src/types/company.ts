@@ -12,7 +12,10 @@ export interface ICompany {
   availabilityDistance?: number | null;
   mainImage: string;
   otherImages: string[];
-  workHours?: string | null;
+  workHours?: {
+    start:string,
+    end:string
+  };
   days: string[];
 
   type: string; // Default value "Restaurant"
