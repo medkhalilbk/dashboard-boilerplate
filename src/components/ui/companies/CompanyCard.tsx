@@ -5,7 +5,9 @@ import AvatarComp from '../avatar';
 import { Button } from '../button';
 import { EditIcon, EyeIcon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
+import axios from 'axios';
+import { UseDispatch, useDispatch } from 'react-redux';
+import { deleteCompany } from '@/lib/features/companySlice';
 interface CompanyCardProps {
     id:string,
     name: string;
@@ -18,6 +20,8 @@ interface CompanyCardProps {
 
 const CompanyCard: React.FC<CompanyCardProps> = ({ id,name, description, speciality, mainImage, keywords, phoneNumber }) => {
 const router = useRouter()
+const dispatch = useDispatch()
+
     return (
         <Card>
             <CardHeader>
@@ -35,7 +39,11 @@ const router = useRouter()
                     <Button variant={"ghost"}>  
                     <EditIcon/>
                     </Button>
-                    <Button variant={"destructive"}>  
+                    <Button variant={"destructive"} onClick={() => {
+                        axios.delete(`http://localhost:3000/api/companies/${id}`).then(() => {
+                            dispatch(deleteCompany({id}))
+                        })
+                    }} >  
                     <TrashIcon/>
                     </Button>
                 

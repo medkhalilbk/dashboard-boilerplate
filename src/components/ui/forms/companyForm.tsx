@@ -9,6 +9,9 @@ import { Checkbox } from '../checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '../select'; 
 import { getLongAndLatFromUrl } from '@/lib/utils';
 import { Button } from '../button';
+import { createCompanyRequest } from '@/lib/actions/company';
+import { useDispatch } from 'react-redux';
+import { addCompany } from '@/lib/features/companySlice';
 
 type CompanyFormProps = {
   submitAction: any
@@ -23,20 +26,24 @@ const CompanyForm = ({ submitAction }: CompanyFormProps) => {
   const [days, setDays] = useState<string[]>([])
   const [location, setLocation] = useState<any>(null)
   const [errorUrl, seterrorUrl] = useState(false)
+  const dispatch = useDispatch()
   const { handleSubmit, control,setValue, register, formState: { errors }  } = useForm<ICompany>({
     defaultValues: {
       name: '',
       description: '',
       phoneNumber: '',
-      location: null,
-      availabilityDistance: null,
+      location: {
+        latitude: 0,
+        longitude: 0,
+      },
+      availabilityDistance: 0,
       mainImage: '',
       otherImages: [],
       workHours:  {},
       days: [],
       type: 'Restaurant',
       specialty: '',
-      menu: [],
+      Menu: [],
       keywords: []
     }
   });
@@ -68,8 +75,13 @@ useEffect(()=> {
 
 } , [location])
   const onSubmit: SubmitHandler<ICompany> = (data) => {
-    console.log(data)
-    submitAction(true)
+    createCompanyRequest(data).then((res) => {
+      dispatch(addCompany({...data,id:res.data.id})) 
+      submitAction(res.data.id)
+    }).catch((error) => {
+      console.log(error)
+    })
+    
   };
 
   useEffect(() => {
@@ -77,18 +89,18 @@ useEffect(()=> {
   } , [days])
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='w-2/3'>
-        <label className='my-2 text-lg'>Nom : </label> 
+      <div className=''>
+        <label className='my-2 '>Nom : </label> 
         <Input {...register('name', { required: true })} />
        
-        <label className='my-2 text-lg'>Description:</label>
+        <label className='my-2 '>Description:</label>
         <Textarea {...register('description', { required: true })} /> 
         {errors.description && <span>Description is required</span>}
         
-        <label className='my-2 text-lg'>Tel :</label>
+        <label className='my-2 '>Tel :</label>
         <Input {...register('phoneNumber')} type='number' />
         
-        <label className='my-2 text-lg'>Localisation (Lien Google Maps):</label> 
+        <label className='my-2 '>Localisation (Lien Google Maps):</label> 
         <Input  onChange={(input:React.FormEvent<HTMLInputElement>) => {
           if(getLongAndLatFromUrl(input.currentTarget.value) ){ 
             setLocation(getLongAndLatFromUrl(input.currentTarget.value))
@@ -98,7 +110,7 @@ useEffect(()=> {
           }
         }} type='text' />
         {errorUrl && <p className='text-red-600 my-2'>Erreur de lien </p>}
-        <label className='my-2 text-lg'>Distance de disponibilité {distance} (KM):</label> 
+        <label className='my-2 '>Distance de disponibilité {distance} (KM):</label> 
         <Slider 
           className='mb-4'
           {...register('availabilityDistance')}
@@ -109,7 +121,7 @@ useEffect(()=> {
           }}
         />
     
-        <label className='my-2 text-lg'>Heure d'ouverture : </label>
+        <label className='my-2 '>Heure d'ouverture : </label>
         <div className="flex row gap-x-3">
           <div className="flex flex-col"> 
             <label className='text-sm'> Heures</label>
@@ -135,7 +147,7 @@ useEffect(()=> {
           </div> 
         </div>
  
-        <label className='my-2 text-lg'>Heure de fermeture : </label>
+        <label className='my-2 '>Heure de fermeture : </label>
         <div className="flex row gap-x-3">
           <div className="flex flex-col"> 
             <label className='text-sm'> Heures</label>
@@ -160,9 +172,7 @@ useEffect(()=> {
             />
           </div> 
         </div>
-      </div>
-
-      <div className='flex flex-col mt-3'> 
+        <div className='flex flex-col mt-3'> 
         {Object.values(IDay).map(day => (
           <label key={day}>
             <p className='capitalize'>
@@ -176,7 +186,7 @@ useEffect(()=> {
       </div>
 
       <div>
-        <label className='my-2 text-lg'>Type d'entreprise :</label>
+        <label className='my-2 '>Type d'entreprise :</label>
         <div className="relative">
           <Controller
             name="type"
@@ -201,7 +211,7 @@ useEffect(()=> {
       </div> 
 
       <div>
-  <label className='my-2 text-lg'>Specialité :</label>
+  <label className='my-2 '>Specialité :</label>
   <div className="relative">
     <Controller
       name="specialty"
@@ -227,7 +237,7 @@ useEffect(()=> {
   </div>
 </div>
       <div>
-        <label className='my-2 text-lg'>Mots clé (utiliser ,  ou espace comme séparateur) :</label>
+        <label className='my-2 '>Mots clé (utiliser ,  ou espace comme séparateur) :</label>
         <Input onChange={(input:React.FormEvent<HTMLInputElement>) => {
           setKeywordText(input.currentTarget.value)
         }} />
@@ -239,6 +249,9 @@ useEffect(()=> {
       </div>     
       </div>
   <Button type='submit' variant={"default"} > Suivant </Button>
+      </div>
+
+
     </form>
   );
 };

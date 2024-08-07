@@ -8,4 +8,5 @@ export interface IDeliveryMan {
     cin: string;
     isActive: boolean;
     contractFile?: string;
+    userInfo?:any
   }

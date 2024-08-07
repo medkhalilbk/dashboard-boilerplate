@@ -1,4 +1,4 @@
-import { getCompanyByIdService, updateCompanyService } from "../services";
+import { deleteCompanyService, getCompanyByIdService, updateCompanyService } from "../services";
 
 export async function GET(
   request: Request,
@@ -28,6 +28,7 @@ export async function PATCH(
     const companyId = params.id;
     const payload = await request.json();
     const companyUpdated = await updateCompanyService(companyId, payload);
+    console.log(payload)
     return Response.json({
       message: "company updated succesffully",
       data: companyUpdated,
@@ -35,6 +36,21 @@ export async function PATCH(
     });
   } catch (error: any) {
     console.log(error);
+    return Response.json({ message: error.message }, { status: 500 });
+  }
+}
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const companyId = params.id;
+    await deleteCompanyService(companyId);
+    return Response.json({
+      message: "company deleted succesfully",
+      status: 200,
+    });
+  } catch (error: any) {
     return Response.json({ message: error.message }, { status: 500 });
   }
 }

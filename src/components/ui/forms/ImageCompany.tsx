@@ -10,28 +10,151 @@ import {
 import {Input} from '../input'
 import React, { useState } from 'react';
 import { useRef } from "react";
-const MainImageUploader: React.FC = () => {
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setSelectedImage(file);
-        }
-    };
+import { Button } from "../button";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { updateCompany } from "@/lib/features/companySlice";
+import { ICompany } from "@/types/company";
+const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void }> = ({ uploadAction }) => {
+	const [selectedImage, setSelectedImage] = useState<File | null>(null);
+	const [uploading, setUploading] = useState(false);
+	const [uploadSuccess, setUploadSuccess] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
+	const [otherImages, setOtherImages] = useState<File[]>([]);
+	const [otherImagesUploadSuccess, setOtherImagesUploadSuccess] = useState<string[]>([]);
+	const [otherImagesUploadError, setOtherImagesUploadError] = useState<string[]>([]);
+  
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	  const file = event.target.files?.[0];
+	  if (file) {
+		setSelectedImage(file);
+	  }
+	};
+  
+	const handleOtherImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	  const files = event.target.files;
+	  if (files) {
+		setOtherImages(Array.from(files));
+	  }
+	};
+  
+	const handleUpload = async () => {
+	  if (selectedImage) {
+		await uploadMainImage();
+	  }
+	  if (otherImages.length > 0) {
+		await uploadOtherImages();
+	  }
+	};
+  
+	const uploadMainImage = async () => {
+	  if (!selectedImage) {
+		setUploadError("No image selected");
+		return;
+	  }
+	  setUploading(true);
+	  setUploadSuccess(false);
+	  setUploadError(null);
+	  const formData = new FormData();
+	  formData.append("file", selectedImage);
+	  try {
+		const response = await fetch("/api/upload", {
+		  method: "POST",
+		  body: formData,
+		});
+  
+		if (response.ok) {
+		  setUploadSuccess(true);
+		  setSelectedImage(null);
+		  const body = await response.json();
+		  uploadAction({mainImage: body.URL});
+		} else {
+		  const errorData = await response.json();
+		  setUploadError(errorData.message || "Upload failed");
+		}
+	  } catch (error) {
+		setUploadError("Upload failed. Please try again.");
+	  } finally {
+		setUploading(false);
+	  }
+	};
+  
+	const uploadOtherImages = async () => {
+	  if (!otherImages.length) {
+		setUploadError("No images selected");
+		return;
+	  }
+	  setUploading(true);
+	  setOtherImagesUploadSuccess([]);
+	  setOtherImagesUploadError([]);
+  
+	  const uploadPromises = otherImages.map(async (image) => {
+		const formData = new FormData();
+		formData.append("file", image);
+		try {
+		  const response = await fetch("/api/upload", {
+			method: "POST",
+			body: formData,
+		  });
+  
+		  if (response.ok) {
+			const body = await response.json();
+			setOtherImagesUploadSuccess((prev) => [...prev, body.URL]);
+			return body.URL;
+		  } else {
+			const errorData = await response.json();
+			setOtherImagesUploadError((prev) => [...prev, errorData.message || "Upload failed"]);
+		  }
+		} catch (error) {
+		  setOtherImagesUploadError((prev) => [...prev, "Upload failed. Please try again."]);
+		}
+	  });
+  
+	  let results = await Promise.all(uploadPromises);
+	  uploadAction((prev:any) => ({ ...prev, otherImages: results }));
+	  setUploading(false); 
+	};
+  
+	return (
+	  <div className='flex flex-col space-y-8'>
+		<Input type="file" accept="image/*" onChange={handleImageChange} />
+		{selectedImage && (
+		  <div className='mx-auto'>
+			<img className='rounded-full' width={300} src={URL.createObjectURL(selectedImage)} alt="Selected" />
+			<p className='my-8'>Main Image: {selectedImage.name}</p>
+		  </div>
+		)}
+		
+		<h2 className='my-3'>Ajouter les autres images: </h2>
+		<Input type="file" accept="image/*" multiple onChange={handleOtherImagesChange} />
+		{otherImages.length > 0 && (
+		  <div className='flex flex-wrap gap-4 mx-auto'>
+			{otherImages.map((image, index) => (
+			  <div key={index}>
+				<img className='rounded' width={100} src={URL.createObjectURL(image)} alt={`Other ${index}`} />
+				<p className='my-4'>{image.name}</p>
+			  </div>
+			))}
+		  </div>
+		)}
 
-
-    return (
-        <div className='flex flex-col  space-y-8'>
-            <Input type="file" accept='images/*' onChange={handleImageChange} />
-            {selectedImage && (
-                <div className='mx-auto'>
-                    <img className='rounded-full ' width={300} src={URL.createObjectURL(selectedImage)} alt="Selected" />
-                    <p className='my-8'>Image principale : {selectedImage.name}</p>
-                </div>
-            )}
-        </div>
-    );
-};
+		<Button onClick={handleUpload} disabled={uploading}>
+		  {uploading ? "En cours..." : "Telecharger les images"}
+		</Button> 
+  
+		 
+		{otherImagesUploadError.length > 0 && (
+		  <div className="text-red-500">
+			<p>Some other images failed to upload:</p>
+			{otherImagesUploadError.map((error, index) => (
+			  <p key={index}>{error}</p>
+			))}
+		  </div>
+		)}
+	  </div>
+	);
+  };
+   
 const SVGAddbutton: React.FC = () => {
     return(
         <svg width={120} version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
@@ -212,71 +335,37 @@ const SVGAddbutton: React.FC = () => {
 }
 
 
-const OtherImageUploader: React.FC = () => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [image, setImage] = useState<string | ArrayBuffer | null>(null);
-  
-    // Function to handle file selection
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImage(reader.result); // Set image data for preview
-        };
-        reader.readAsDataURL(file); // Read file as base64
-      }
-    };
-  
-    // Function to trigger file input click
-    const handleClick = () => {
-      fileInputRef.current?.click();
-    };
-    return (
-        <Card className="w-[350px] mt-5">
-          <CardHeader> 
-          </CardHeader>
-          <CardContent>
-            <div
-              onClick={handleClick}
-              className="flex justify-center items-center h-[200px] cursor-pointer border border-dashed border-gray-300"
-            >
-              {image ? (
-                <img src={image as string} alt="Preview" className="w-full h-full object-cover" />
-              ) : (
-                <SVGAddbutton /> // Adjust SVGAddbutton or any placeholder as needed
-              )}
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden" // Hide the file input
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            {/* Add any footer content here */}
-          </CardFooter>
-        </Card>
-      );
-    };
  
-export default function ImageCompany() {
-    return (
-        <div className='flex flex-col'>
-         <h2 className='my-3'>Ajouter une image principale </h2>
-         <MainImageUploader/>
-         <div className="flex flex-row space-x-3 mx-auto">
-         <OtherImageUploader/>
-         <OtherImageUploader/>
-         <OtherImageUploader/>
 
-         </div>
+export default function ImageCompany({ companyId }: { companyId: string }) {
+    const [imagesObject, setImagesObject] = useState<Object| null>(null); 
+	const dispatch = useDispatch()
+
+	React.useEffect(() => {
+
+		async function uploadImages(imagesObject: Object, companyId: string) {
+			try {
+				let {data} = await axios.patch('/api/companies/' + companyId, imagesObject)
+				return data
+			} catch (error) {
+			 return error
+			}
+		}
+
+	 if (imagesObject) {
+		 uploadImages(imagesObject, companyId).then((res:ICompany) => {
+			 dispatch(updateCompany(res))
+		 }).catch((err) => {
+			 
+		 })
+	 }
+	} , [imagesObject])
+    return (
+        <div className='flex flex-col'>  
+            <h2 className='my-3'>Ajouter une image principale </h2>
+            <MainImageUploader uploadAction={setImagesObject} />
         </div>
     );
 }
 
-
-
-
+ 

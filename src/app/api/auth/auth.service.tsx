@@ -38,7 +38,7 @@ export async function authService({email,password} : {email:string,password:stri
             email: email ,
             isEmailVerified:true,
         }
-    }) 
+    })  
     if (!user) {
         throw new Error("User not found");
     }

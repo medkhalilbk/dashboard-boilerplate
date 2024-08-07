@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '../button';
 
 interface UserFormProps {
-    onSubmit: any;
+    onSubmit: (user: User) => void;
 }
 
 interface DeliveryManData {
@@ -25,6 +25,16 @@ interface User {
 }
 
 const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
+    const [errorsObject, setErrorsObject] = useState({
+        name: false,
+        email: false,
+        password: false,
+        phoneNumber: false,
+        socialStatus: false,
+        cin: false,
+        isActive: false,
+    });
+
     const [user, setUser] = useState<User>({
         name: '',
         email: '',
@@ -38,7 +48,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
             socialStatus: '',
             cin: '',
             isActive: true,
-        }
+        },
     });
 
     const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,9 +70,25 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
         }));
     };
 
+    const validateForm = () => {
+        const errors: any = {
+            name: !user.name.trim(),
+            email: !user.email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/),
+            password: user.password.length < 8 || !user.password.match(/[a-zA-Z]/) || !user.password.match(/[0-9]/),
+            phoneNumber: !user.deliveryManData.phoneNumber.match(/^[0-9]{8}$/),
+            socialStatus: !user.deliveryManData.socialStatus.trim(),
+            cin: !user.deliveryManData.cin.trim(),
+        };
+
+        setErrorsObject(errors);
+        return !Object.values(errors).some(Boolean);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(user);
+        if (validateForm()) {
+            onSubmit(user);
+        }
     };
 
     return (
@@ -77,8 +103,9 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="name"
                     value={user.name}
                     onChange={handleUserChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
+                {errorsObject.name && <small className="text-red-500">Le nom ne doit pas être vide</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -90,8 +117,9 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="email"
                     value={user.email}
                     onChange={handleUserChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
+                {errorsObject.email && <small className="text-red-500">Format email incorrect</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -103,15 +131,13 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="password"
                     value={user.password}
                     onChange={handleUserChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
-                <small className='text-red-500'>
-                    Mot de passe doit contenir au moins 8 caractères et au moins une lettre et un chiffre.
-                </small>
+                {errorsObject.password && <small className="text-red-500">Mot de passe doit contenir au moins 8 caractères et au moins une lettre et un chiffre.</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                    Telephone:
+                    Téléphone:
                 </label>
                 <input
                     type="text"
@@ -119,8 +145,9 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="phoneNumber"
                     value={user.deliveryManData.phoneNumber}
                     onChange={handleDeliveryManDataChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
+                {errorsObject.phoneNumber && <small className="text-red-500">Le numéro de téléphone doit contenir 8 chiffres</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="socialStatus" className="block text-sm font-medium text-gray-700">
@@ -132,8 +159,9 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="socialStatus"
                     value={user.deliveryManData.socialStatus}
                     onChange={handleDeliveryManDataChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
+                {errorsObject.socialStatus && <small className="text-red-500">Le statut social ne doit pas être vide</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="cin" className="block text-sm font-medium text-gray-700">
@@ -145,7 +173,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     name="cin"
                     value={user.deliveryManData.cin}
                     onChange={handleDeliveryManDataChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
             </div>
             <div className="mb-4">
@@ -156,13 +184,13 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                         name="isActive"
                         checked={user.deliveryManData.isActive}
                         onChange={handleDeliveryManDataChange}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-indigo-600 focus:ring-black border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-sm text-gray-600">Actif?</span>
+                    <span className="ml-2 text-sm text-gray-600">Actif</span>
                 </label>
             </div>
             <div className="mb-4">
-                <Button>
+                <Button type="submit">
                     Suivant
                 </Button>
             </div>

@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto'
 
 import { NextRequest, NextResponse } from "next/server";
 const Bucket = process.env.AWS_BUCKET_NAME;
+const AWS_REGION = process.env.AWS_REGION;
 const s3 = new S3Client({
     region: process.env.AWS_REGION,
     credentials: {
@@ -24,19 +25,22 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const files = formData.getAll("file") as File[];
-        console.log(files)
-        console.log()
-        if (files[0].type == "image/jpeg" || files[0].type == "image/png" || files[0].type == "image/webp") {
+        if(files.length > 1) {
+            return NextResponse.json({ message: "Only one file is allowed" }, { status: 400 });
+        }
+
+        if (files[0].type == "image/jpeg" || files[0].type == "image/png" || files[0].type == "image/webp" || files[0].type == "image/jpg") {
             var FileId = randomUUID()
             let url = ""
             const response = await Promise.all(
                 files.map(async (file) => {
                     console.log(FileId)
                     const Body = (await file.arrayBuffer()) as Buffer;
-                    url = ` https://${Bucket}.s3.amazonaws.com/${FileId}${getFileExtension(file.name)}`
-                    s3.send(new PutObjectCommand({ Bucket, Key: `${FileId}${getFileExtension(file.name)}`, Body }))
+                    url = `https://${Bucket}.s3.${AWS_REGION}.amazonaws.com/${FileId}${getFileExtension(file.name)}`
+                    s3.send(new PutObjectCommand({ Bucket, Key: `${FileId}${getFileExtension(file.name)}`, Body , ContentType:files[0].type}))
                 })
             );
+        
             return NextResponse.json({ message: "File uploaded successfully", URL: url }, { status: 200 });
         } else if (files[0].type == "application/pdf") {
             let FileId = randomUUID()
@@ -44,7 +48,7 @@ export async function POST(request: NextRequest) {
             const response = await Promise.all(
                 files.map(async (file) => {
                     const Body = (await file.arrayBuffer()) as Buffer;
-                    url = ` https://${Bucket}.s3.amazonaws.com/Contracts/${FileId}${getFileExtension(file.name)}`
+                    url = `https://${Bucket}.s3.amazonaws.com/Contracts/${FileId}${getFileExtension(file.name)}`
                     s3.send(new PutObjectCommand({ Bucket, Key: `Contracts/${FileId}${getFileExtension(file.name)}`, Body })).then((res) => {
                         console.log(res)
                     });

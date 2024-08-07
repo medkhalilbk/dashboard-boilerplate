@@ -4,13 +4,14 @@ import  stackSlice  from './features/stackSlice';
 
 import { Reducer } from 'redux'; // Import Reducer from redux
 import companySlice from './features/companySlice';
-
+import deliveryManSlice from './features/deliveryManSlice';
 export const store = () => {
   return configureStore({
     reducer: {
       user: userSlice, 
-      stacks: stackSlice, // Use stackSlice.reducer instead of stackSlice
-      company:companySlice
+      stacks: stackSlice,  
+      company:companySlice,
+      deliveryMan:deliveryManSlice
     },
   });
 };

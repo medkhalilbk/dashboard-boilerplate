@@ -5,13 +5,11 @@ import ImageCompany from '@/components/ui/forms/ImageCompany';
 import React, { useState } from 'react';
 
 const AddCompanyPage: React.FC = () => {
-    const [dataFormIsSet, setDataFormIsSet] = useState(false)
+    const [comapnyId, setCompanyId] = useState(null)
     return (
-    <DashboardLayout> 
-        {!dataFormIsSet && <CompanyForm submitAction={setDataFormIsSet}/>}
-        
-{dataFormIsSet && <ImageCompany/>}        
-   
+    <DashboardLayout>  
+        {!comapnyId && <CompanyForm submitAction={setCompanyId}/>}
+        {comapnyId && <ImageCompany companyId={comapnyId}  />}         
     </DashboardLayout>
     );
 };

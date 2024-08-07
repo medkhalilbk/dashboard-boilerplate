@@ -58,3 +58,13 @@ export async function updateCompanyService(id: string, company: any) {
     throw error;
   }
 }
+
+
+export async function deleteCompanyService(id:string) {
+  try {
+    await prisma.companies.delete({ where: { id } });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

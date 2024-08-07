@@ -12,7 +12,7 @@ export interface ICompany {
   mainImage: string;
   otherImages: string[];
   workHours: IWorkHours
-  days: IDay[];
+  days: string[];
   type?: string;
   specialty: string
   Menu: string[];
