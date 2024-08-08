@@ -11,6 +11,7 @@ import { useAppDispatch } from '@/lib/hooks/store';
 import { AxiosResponse } from 'axios';
 import { loginAction } from '@/lib/actions/auth';
 import { useRouter } from 'next/navigation'
+import { error } from 'console';
 
 const Home = () => {
   const [userNAme, setUserNAme] = React.useState("")
@@ -49,14 +50,26 @@ const Home = () => {
               .then((res:AxiosResponse) => { 
               console.log(res.data)
               toast.dismiss()
+              if(res.data.data.user.role == "superAdmin") {
+                return router.push('/dashboard')
+               }
+               if(res.data.data.user.role == "companyAdmin"){
+                return  router.push("/company-dashboard")
+               }
+               if(res.data.data.user.role  == "user"){
+                throw new Error("Vous ne pouvez pas se connecter autant qu'utilisateur.")
+               }
               toast.success('Login Success')
-              dispatch(setUser(res.data.data))
-              router.push('/dashboard')
+              dispatch(setUser(res.data.data)) 
               })
               .catch((err:any) => {
                 toast.dismiss()
                 console.log(err)
-                toast.error(err?.response.data.message)
+                if(err.message){ 
+                  toast.error(err.message)
+                }else{
+                  toast.error(err?.response.data.message) 
+                }
               }) 
           }}>Login</Button> 
          </div>

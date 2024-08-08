@@ -8,6 +8,8 @@ import Image from 'next/image';
 import Slider from "react-slick";
 import { Button } from '@/components/ui/button';
 import { ArrowLeftCircle, PrinterIcon } from 'lucide-react';
+import { GoogleMap } from "@react-google-maps/api";
+import { MapProvider } from '@/components/MapProvider';
 
 
 const Page = () => {
@@ -19,7 +21,11 @@ const Page = () => {
         slidesToScroll: 1,
         centerMode:true,
       };
-
+        const defaultMapContainerStyle = {
+        width: '100%',
+        height: '80vh',
+        borderRadius: '15px 0px 0px 15px',
+    };
     const params = useParams<{ id: string }>();
     const [company, setCompany] = React.useState<ICompany | null>(null);
 
@@ -67,6 +73,23 @@ const Page = () => {
                         <Image style={{margin:"auto"}} src={img} alt={`image ${index}`} width={500} height={200} />
                     </div>))}
     </Slider>
+
+                    
+            <h2 className="text-xl font-semibold">Localisation  👇 </h2>
+                    {JSON.stringify(company?.location)}
+                    <GoogleMap
+                        options={{
+                            zoomControl: true,
+                            tilt: 0,
+                            gestureHandling: 'auto',
+                            mapTypeId: 'satellite',
+                        }}
+                        zoom={18}
+                        center={{ lat: company?.location?.latitude || 0, lng: company?.location?.longitude || 0 }}
+                        mapContainerStyle={defaultMapContainerStyle}
+                    >
+                    </GoogleMap>
+
             <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {company?.keywords}</p>
         </div>
     </div>
