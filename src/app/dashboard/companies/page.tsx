@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
  
-
 function CompaniesPage() {
   const companies = useSelector((state: any) => state.company.data) as ICompany[]
   const dispatch = useDispatch()

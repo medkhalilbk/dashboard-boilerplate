@@ -43,8 +43,8 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
 
     const description = `Email: ${email} | Statut Social: ${socialStatus} | Orders Completed: ${ordersCompleted}`;
 
-    return (
-        <Card>
+    return (  
+        <Card className='my-4'>
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">

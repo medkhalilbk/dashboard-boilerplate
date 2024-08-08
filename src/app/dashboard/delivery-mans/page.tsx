@@ -51,8 +51,7 @@ const DeliveryMansPage: React.FC = () => {
   <span className="font-medium">{serverError}</span> 
 </div>}
           {deliveryMansState.map((d:IDeliveryMan) => { 
-            return <DeliverymanCard deliveryman={d} />
-            
+            return <DeliverymanCard deliveryman={d} /> 
           })}
     </DashboardLayout>
     );
