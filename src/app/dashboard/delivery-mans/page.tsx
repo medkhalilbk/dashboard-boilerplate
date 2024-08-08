@@ -3,8 +3,8 @@ import DashboardLayout from '@/components/dashboardUILayout';
 import DeliverymanCard from '@/components/ui/deliveryMan/DeliveryManCard';
 import DeliveryManForm from '@/components/ui/forms/deliveryForm';
 import { setDeliveryMen } from '@/lib/features/deliveryManSlice';
-import { IDeliveryMan } from '@/types/DeliveryMan';
-import axios from 'axios';
+import { IDeliveryMan } from '@/types/deliveryMan';
+import axios, { Axios } from 'axios';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -14,18 +14,20 @@ const DeliveryMansPage: React.FC = () => {
    const deliveryMansState = useSelector((state :any) => state.deliveryMan.data as IDeliveryMan[])
    const dispatch = useDispatch()
    const router = useRouter()
-
+   const [serverError, setServerError] = useState("")
     React.useEffect(() => {
         async function fetchData() {
           try {
             let {data} = await axios.get('/api/deliveryMans') 
             return data
-          } catch (error) {
-            console.error("error fetching deliveryman data" , error)
+          } catch (error:any) {
+           throw error
           }
         }
         fetchData().then((resnpose :any) => {
         dispatch(setDeliveryMen(resnpose.data.deliveryMans))
+        }).catch((error:any) => {
+          return  setServerError(error.response.data.message)
         })
     } , [])
 
@@ -45,10 +47,13 @@ const DeliveryMansPage: React.FC = () => {
           </button>
           </div>
           </div>
-          {deliveryMansState.map((d:IDeliveryMan) => {
+          {serverError && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <span className="font-medium">{serverError}</span> 
+</div>}
+          {deliveryMansState.map((d:IDeliveryMan) => { 
             return <DeliverymanCard deliveryman={d} />
+            
           })}
-         {/* <DeliveryManForm onSubmit={setDataFormIsSet} /> */}
     </DashboardLayout>
     );
 };

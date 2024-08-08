@@ -4,6 +4,7 @@ import { createDeliveryManService, getAllDeliveryMenService } from "./services"
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
+        console.log(payload)
         const userId = payload.userId; // Assuming userId is sent in the payload
         const deliveryManData = payload.deliveryManData; // Assuming deliveryManData is the data for creating a delivery man
         const { user, deliveryMan } = await createDeliveryManService(deliveryManData, userId);
@@ -22,7 +23,7 @@ export async function GET(request: Request) {
         const { deliveryMen, totalItems } = await getAllDeliveryMenService(page, limit);
 
         if (deliveryMen.length === 0) {
-            return Response.json({ message: "No delivery men found!", status: 404 }, { status: 404 });
+            return Response.json({ message: "Aucun livreurs existant!", status: 404 }, { status: 404 });
         }
 
         return Response.json({

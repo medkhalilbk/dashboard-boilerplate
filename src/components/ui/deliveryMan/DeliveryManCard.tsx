@@ -4,7 +4,7 @@ import AvatarComp from '../avatar';
 import { EditIcon, EyeIcon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../button';
-import { IDeliveryMan } from '@/types/DeliveryMan';
+import { IDeliveryMan } from '@/types/deliveryMan';
 import { MobileIcon } from '@radix-ui/react-icons';
 
 interface DeliverymanCardProps {
@@ -27,8 +27,7 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
         userInfo
     } = deliveryman;
 
-    const {
-        deliveryAddress,
+    const { 
         name,
         email,
         password,

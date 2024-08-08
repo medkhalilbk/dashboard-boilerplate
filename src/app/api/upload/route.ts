@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
                 files.map(async (file) => {
                     const Body = (await file.arrayBuffer()) as Buffer;
                     url = `https://${Bucket}.s3.amazonaws.com/Contracts/${FileId}${getFileExtension(file.name)}`
-                    s3.send(new PutObjectCommand({ Bucket, Key: `Contracts/${FileId}${getFileExtension(file.name)}`, Body })).then((res) => {
+                    s3.send(new PutObjectCommand({ Bucket, Key: `Contracts/${FileId}${getFileExtension(file.name)}`, Body , ContentType:files[0].type})).then((res) => {
                         console.log(res)
                     });
                 })

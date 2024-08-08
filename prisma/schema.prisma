@@ -104,6 +104,7 @@ model DeliveryMans {
   cin                  String  @unique
   isActive             Boolean
   contractFile         String?
+  isDeleted            Boolean?
 }
 
 

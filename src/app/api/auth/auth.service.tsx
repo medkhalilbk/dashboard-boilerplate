@@ -25,7 +25,7 @@ export async function signUpService({ email, password }: { email: string; passwo
             email: email,
             password: encryptedPassword,
             name: "",  
-            role: "",  
+            role: "user",  
             isEmailVerified: false  
         }
     });

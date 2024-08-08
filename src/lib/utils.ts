@@ -23,6 +23,7 @@ export function hashPassword(password: string) {
 
 
 export function verifyPassword(hashedPassword: string, password:string):boolean {
+    console.log(hashPassword(password))
     return hashedPassword === hashPassword(password);
 }
 
