@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Button } from '../button';
+import { createDeliveryManAccount } from '@/lib/actions/auth';
 
 interface UserFormProps {
     onSubmit: (user: User) => void;
@@ -34,7 +35,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
         cin: false,
         isActive: false,
     });
-
+    const [serverError,setServerError] = useState({error:false,message:""})
     const [user, setUser] = useState<User>({
         name: '',
         email: '',
@@ -77,7 +78,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
             password: user.password.length < 8 || !user.password.match(/[a-zA-Z]/) || !user.password.match(/[0-9]/),
             phoneNumber: !user.deliveryManData.phoneNumber.match(/^[0-9]{8}$/),
             socialStatus: !user.deliveryManData.socialStatus.trim(),
-            cin: !user.deliveryManData.cin.trim(),
+            cin:!user.deliveryManData.cin.match(/^[0-9]{8}$/),
         };
 
         setErrorsObject(errors);
@@ -88,12 +89,23 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
         e.preventDefault();
         if (validateForm()) {
             onSubmit(user);
+            createDeliveryManAccount(user)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((error:any) => {
+                setServerError({
+                    error:true,
+                    message:error.response.data.message
+                })
+            })
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white shadow-md rounded-lg">
             <div className="mb-4">
+                {serverError.error && <div className="text-red-500 text-sm mb-4">{serverError.message}</div>}
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                     Nom complet:
                 </label>
@@ -175,6 +187,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                     onChange={handleDeliveryManDataChange}
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
+                {errorsObject.cin && <small className="text-red-500">Le CIN doit contenir 8 chiffres</small>}
             </div>
             <div className="mb-4">
                 <label htmlFor="isActive" className="flex items-center">

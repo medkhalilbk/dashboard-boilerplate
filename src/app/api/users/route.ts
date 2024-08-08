@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     try {
         const payload = await request.json()
         const user = await addUserService(payload)
-        return Response.json({ message: "user creted !", data: user, status: 200 })
+        return Response.json({ message: "user created !", data: user, status: 200 })
     } catch (error: any) {
         return Response.json({ message: error.message }, { status: 500 })
     }

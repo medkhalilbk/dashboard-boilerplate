@@ -6,6 +6,18 @@ const prisma = new PrismaClient();
 
 export async function addUserService(user: IUser) {
   try {
+
+    const verifyEmailExists = await prisma.users.findFirst({
+      where:{
+        email: user.email
+      }
+    })
+
+    if(verifyEmailExists){
+      throw new Error('Email existe déja')
+    }
+
+
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
     const response = await prisma.users.create({
