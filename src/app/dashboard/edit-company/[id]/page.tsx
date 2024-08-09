@@ -2,7 +2,7 @@
 import DashboardLayout from '@/components/dashboardUILayout';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { ICompany } from '@/types/company';
+import { ICompany, IDay } from '@/types/company';
 import axios from 'axios';
 import CompanyForm from '@/components/ui/forms/companyForm';
 import { Input } from '@/components/ui/input';
@@ -12,9 +12,15 @@ import { set } from 'date-fns';
 import { Slider } from '@/components/ui/slider';
 import { getLongAndLatFromUrl, getUrlFromLongAndLat } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { EditIcon } from 'lucide-react';
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Page: React.FC = () => {
     const { id } = useParams() as { id: string };
+    const [days,setDays] = useState<string[]>([])
     const [company, setCompany] = useState<ICompany>();
     const [distance, setDistance] = useState(0)
     const [openingTime, setOpeningTime] = useState({ hours: 0, minutes: 0 })
@@ -50,7 +56,11 @@ const Page: React.FC = () => {
             setClosingTime(extractHoursAndMinutes(company.workHours.end))
             setValue("type", company.type)
             setValue("specialty", company.specialty)
+            let string = getUrlFromLongAndLat({longitude:company?.location.longitude,latitude:company?.location.latitude})
+            console.log(string)
         }
+         
+        
     },[company])
 
     const { handleSubmit, control,setValue, register, formState: { errors }  } = useForm<ICompany>({
@@ -78,6 +88,15 @@ const Page: React.FC = () => {
                 
         <label className='my-2 '>Idendifiant unique : </label> 
     <Input disabled {...register('id', { required: true })} />
+    <Card className='w-1/2 mx-auto my-2'>
+    <CardHeader className='flex justify-between'>
+    <span></span> {/* This span is for spacing */}
+    <Button size={"icon"} className='ml-auto' color='red'><EditIcon/></Button>
+</CardHeader>
+      <CardContent>
+        <Image className='mx-auto' src={company?.mainImage || ""} width={400} height={400} alt='Image principale'/>
+      </CardContent>
+    </Card>
         <label className='my-2 '>Nom : </label> 
     <Input {...register('name', { required: true })} />
     <label className='my-2 '>Description:</label>
@@ -151,7 +170,7 @@ const Page: React.FC = () => {
       </div> 
     </div>
 
-   {/* {location && <>
+   {location && <>
     <label className='my-2 '>Localisation (Lien Google Maps):</label> 
     <Input  value={getUrlFromLongAndLat(location)} onChange={(input:React.FormEvent<HTMLInputElement>) => {
       if(getLongAndLatFromUrl(input.currentTarget.value)){ 
@@ -161,7 +180,7 @@ const Page: React.FC = () => {
         seterrorUrl(true)
       }
     }} type='text' />
-    {errorUrl && <p className='text-red-600 my-2'>Erreur de lien </p>}</>} */}
+    {errorUrl && <p className='text-red-600 my-2'>Erreur de lien </p>}</>}
 
 <div>
     <label className='my-2 '>Type d'entreprise :</label>
@@ -211,8 +230,19 @@ const Page: React.FC = () => {
         <SelectItem value="Autre">Autre</SelectItem>
       </SelectContent>
     </Select>
+    
   )}
 />
+{Object.values(IDay).map(day => (
+          <label key={day}>
+            <p className='capitalize'>
+              <Checkbox checked={company?.days.includes(day)} onClick={() => {
+                setDays([...days, day])
+              }}  value={day} className='mr-2' />
+              {day}
+            </p>
+          </label>
+        ))}
 </div>
 </div>
         </div>

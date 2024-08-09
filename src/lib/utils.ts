@@ -32,14 +32,21 @@ export function verifyImageUrl(url:string){
   return re.test(url);
 }
 
-export function getLongAndLatFromUrl(url:string){
-  const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-  const match = url.match(regex);
+export function getLongAndLatFromUrl(url: string) {
+  const regex1 = /@(-?\d+\.\d+),(-?\d+\.\d+)/;  // For coordinates after @ symbol
+  const regex2 = /\/maps\?q=(-?\d+\.\d+),(-?\d+\.\d+)/; // For Google Maps URL format
+
+  let match = url.match(regex1);
+  if (!match) {
+    match = url.match(regex2);
+  }
+
   if (match) {
     const latitude = parseFloat(match[1]);
     const longitude = parseFloat(match[2]);
     return { latitude, longitude };
   }
+  
   return null;
 }
 export function getUrlFromLongAndLat({latitude , longitude} : {latitude:number,longitude:number}): string {

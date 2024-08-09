@@ -27,6 +27,7 @@ export async function createCompanyService(company: any) {
         type: company.type,
         specialty: company.specialty,
         keywords: company.keywords,
+        days: company.days,
       },
     });
 
