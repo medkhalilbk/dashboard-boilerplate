@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Slider from "react-slick";
 import { Button } from '@/components/ui/button';
 import { ArrowLeftCircle, PrinterIcon } from 'lucide-react';
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import { MapProvider } from '@/components/MapProvider';
 
 
@@ -67,30 +67,31 @@ const Page = () => {
             <p className="text-gray-700"><span className="font-medium">Distance de disponibilité :</span> {company?.availabilityDistance}</p>
             <p className="text-gray-700"><span className="font-medium">Heures de travail :</span> {company?.workHours?.start} - {company?.workHours?.end}</p>
             <p className="text-gray-700"><span className="font-medium">Autre Images :</span> </p>
-            <Slider {...settings}>
+            <Slider {...settings} className='my-2'>
                 {company?.otherImages?.map((img, index) => (
                     <div key={index} className='flex justify-center'>
                         <Image style={{margin:"auto"}} src={img} alt={`image ${index}`} width={500} height={200} />
                     </div>))}
     </Slider>
+    <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {company?.keywords}</p>
 
                     
             <h2 className="text-xl font-semibold">Localisation  👇 </h2>
-                    {JSON.stringify(company?.location)}
+                    {company?.location && <MapProvider>
                     <GoogleMap
                         options={{
                             zoomControl: true,
                             tilt: 0,
                             gestureHandling: 'auto',
-                            mapTypeId: 'satellite',
+                            mapTypeId: "roadmap",
                         }}
                         zoom={18}
-                        center={{ lat: company?.location?.latitude || 0, lng: company?.location?.longitude || 0 }}
+                        center={{ lat:company.location.latitude,lng:company.location.longitude }}
                         mapContainerStyle={defaultMapContainerStyle}
                     >
+                        <Marker position={{ lat:36.7338927,lng:10.3162137 }} />
                     </GoogleMap>
-
-            <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {company?.keywords}</p>
+                    </MapProvider>}
         </div>
     </div>
 </DashboardLayout>

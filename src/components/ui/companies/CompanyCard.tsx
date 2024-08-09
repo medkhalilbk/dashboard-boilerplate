@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { UseDispatch, useDispatch } from 'react-redux';
 import { deleteCompany } from '@/lib/features/companySlice';
+import Swal from 'sweetalert2';
 interface CompanyCardProps {
     id:string,
     name: string;
@@ -31,22 +32,50 @@ const dispatch = useDispatch()
                         <CardTitle style={{marginLeft:10}}>{name}</CardTitle>
                     </div>
                     <div className="flex items-center space-x-2"> 
-                    <Button variant={"default"}>  
-                    <EyeIcon onClick={() => {
-                        router.push(`/dashboard/company-details/${id}`)
-                    }}/>
+                    <Button onClick={() => {
+                        router.push(`/dashboard/companies/${id}`)
+                    }} variant={"default"}>  
+                    <EyeIcon />
                     </Button>
-                    <Button variant={"ghost"}>  
+                    <Button variant={"ghost"} onClick={() => {
+                      router.push(`/dashboard/edit-company/${id}`)
+                    }} >  
                     <EditIcon/>
                     </Button>
                     <Button variant={"destructive"} onClick={() => {
-                        axios.delete(`http://localhost:3000/api/companies/${id}`).then(() => {
+                      Swal.fire({
+                        title: 'Êtes-vous sûr?',
+                        text: "Vous ne pourrez pas revenir en arrière!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Oui, supprimez-le!'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.delete(`/api/companies/${id}`).then(() => {
+                                dispatch(deleteCompany({id}))
+                            })
+                          .then((response) => {
                             dispatch(deleteCompany({id}))
-                        })
+                            Swal.fire(
+                              'Supprimé!',
+                              'Votre entreprise a été supprimée.',
+                              'success'
+                            )
+                          })
+                          .catch((error) => {
+                            Swal.fire(
+                              'Erreur!',
+                              'Une erreur s\'est produite lors de la suppression.',
+                              'error'
+                            )
+                          })
+                        }
+                      })
                     }} >  
                     <TrashIcon/>
                     </Button>
-                
                     </div>
                 </div>
             </CardHeader>
