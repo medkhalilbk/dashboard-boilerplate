@@ -42,6 +42,6 @@ export function getLongAndLatFromUrl(url:string){
   }
   return null;
 }
-export function getUrlFromLongAndLat(latitude: number, longitude: number): string {
-  return `https://maps.google.com/@${latitude},${longitude}`;
+export function getUrlFromLongAndLat({latitude , longitude} : {latitude:number,longitude:number}): string {
+  return `https://www.google.com/maps?q=${latitude},${longitude}`;
 }
