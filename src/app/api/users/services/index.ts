@@ -63,9 +63,7 @@ export async function getAllUsersService(page: number, limit: number) {
     const users = await prisma.users.findMany({
       skip: offset,
       take: limit,
-      where: {
-        isDeleted: false
-      }
+    
     });
     const totalItems = await prisma.companies.count();
     const totalPages = Math.ceil(totalItems / limit);

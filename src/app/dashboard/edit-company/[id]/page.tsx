@@ -17,7 +17,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { EditIcon } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
-
+import Swal from 'sweetalert2'; 
 const Page: React.FC = () => {
     const { id } = useParams() as { id: string };
     const [days,setDays] = useState<string[]>([])
@@ -56,6 +56,7 @@ const Page: React.FC = () => {
             setClosingTime(extractHoursAndMinutes(company.workHours.end))
             setValue("type", company.type)
             setValue("specialty", company.specialty)
+            setValue("mainImage" , company.mainImage)
             let string = getUrlFromLongAndLat({longitude:company?.location.longitude,latitude:company?.location.latitude})
             console.log(string)
         }
@@ -63,7 +64,7 @@ const Page: React.FC = () => {
         
     },[company])
 
-    const { handleSubmit, control,setValue, register, formState: { errors }  } = useForm<ICompany>({
+    const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm<ICompany>({
         defaultValues: {
           name: '',
           description: '',
@@ -84,17 +85,52 @@ const Page: React.FC = () => {
         }
       });
       const DataForm : React.FC = () => {
-        return     <div>
-                
+        return  <div> 
         <label className='my-2 '>Idendifiant unique : </label> 
     <Input disabled {...register('id', { required: true })} />
-    <Card className='w-1/2 mx-auto my-2'>
-    <CardHeader className='flex justify-between'>
-    <span></span> {/* This span is for spacing */}
-    <Button size={"icon"} className='ml-auto' color='red'><EditIcon/></Button>
+    <Card className='w-fit mx-auto my-2'>
+    <CardHeader className='flex flex-row items-center justify-around'> 
+    <h3>Image principale</h3>
+    <Button onClick={() => {
+      Swal.fire({
+        title:"Remplacer l'image",
+        input:"file",
+        inputAttributes:{
+          accept:"image/*"
+        },
+        showCancelButton:true,
+        cancelButtonText:"Annuler",
+        confirmButtonColor:"#009737",
+        confirmButtonText:"Remplacer",
+      }).then((result) => {
+        if(result.isConfirmed){
+          console.log(result.value)
+          const formData = new FormData();
+          formData.append("file",result.value)
+          fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          }).then((response) => {
+            if(response.ok){
+              response.json().then((data) => { 
+                setValue("mainImage",data.URL)
+                if(company){ 
+                  setTimeout(() => {
+                    
+                  setCompany({...company,mainImage:data.URL})
+                  }, 1000);
+                }
+              })
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+      })
+    }} size={"icon"} className='ml-auto' color='red'><EditIcon/></Button>
 </CardHeader>
       <CardContent>
-        <Image className='mx-auto' src={company?.mainImage || ""} width={400} height={400} alt='Image principale'/>
+        <img className='mx-auto' src={getValues("mainImage") } width={400} height={400} alt='Image principale'/>
       </CardContent>
     </Card>
         <label className='my-2 '>Nom : </label> 
@@ -210,7 +246,7 @@ const Page: React.FC = () => {
   </div> 
   <div>
 <label className='my-2 '>Specialité :</label>
-<div className="relative">
+<div className="relative my-2">
 <Controller
   name="specialty"
   control={control}
@@ -233,6 +269,12 @@ const Page: React.FC = () => {
     
   )}
 />
+
+<div className="carrousel">
+ 
+</div>
+
+<div className='my-2'>
 {Object.values(IDay).map(day => (
           <label key={day}>
             <p className='capitalize'>
@@ -244,6 +286,11 @@ const Page: React.FC = () => {
           </label>
         ))}
 </div>
+</div>
+</div>
+<div className="flex justify-center">
+<Button className='flex justify-center' size={"lg"} onClick={handleSubmit((data) => {})}> Suivant </Button>
+
 </div>
         </div>
       }
