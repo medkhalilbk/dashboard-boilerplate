@@ -20,9 +20,7 @@ export async function createDeliveryManService(data: IDeliveryMan, userId: strin
   }
 
 }
-export async function getAllDeliveryMenService(page: number, limit: number) {
-  // i want to get all delivery mans even if they are deleted to show them in dashboard
-  // whene i delete a deliveryman i got an error because it deleted only the user not deliveryman 
+export async function getAllDeliveryMenService(page: number, limit: number) { 
   const skip = (page - 1) * limit;
   const take = limit;
 
@@ -30,7 +28,9 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
     const deliveryMen = await prisma.deliveryMans.findMany({
       skip,
       take,
-
+      where:{
+        isDeleted:false
+      }
     });
 
     const users = await prisma.users.findMany({
@@ -97,6 +97,7 @@ export async function deleteDeliveryManService(deliveryManId: string) {
       where: { id: user!.id },
       data: {
         deliveryManId: null,
+        isDeleted:true
       },
     });
 
@@ -104,7 +105,8 @@ export async function deleteDeliveryManService(deliveryManId: string) {
     const deletedDeliveryMan = await prisma.deliveryMans.update({
       where: { id: deliveryManId },
       data: {
-        isActive: false
+        isActive: false, 
+        isDeleted: true,
       }
     });
 
