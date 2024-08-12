@@ -1,5 +1,5 @@
-import { PayloadAction,createSlice } from "@reduxjs/toolkit";
-import { IDeliveryMan } from "@/types/DeliveryMan";
+import { IDeliveryMan } from '@/types/deliveryMan';
+import { PayloadAction,createSlice } from "@reduxjs/toolkit"; 
 
 interface DeliveryManState {
     data: IDeliveryMan[];

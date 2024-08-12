@@ -89,7 +89,7 @@ const Page = () => {
                         center={{ lat:company.location.latitude,lng:company.location.longitude }}
                         mapContainerStyle={defaultMapContainerStyle}
                     >
-                        <Marker position={{ lat:36.7338927,lng:10.3162137 }} />
+                        <Marker position={{ lat:company.location.latitude,lng:company.location.longitude}} />
                     </GoogleMap>
                     </MapProvider>}
         </div>

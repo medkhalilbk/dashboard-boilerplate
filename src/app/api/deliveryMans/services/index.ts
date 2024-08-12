@@ -21,6 +21,8 @@ export async function createDeliveryManService(data: IDeliveryMan, userId: strin
 
 }
 export async function getAllDeliveryMenService(page: number, limit: number) {
+  // i want to get all delivery mans even if they are deleted to show them in dashboard
+  // whene i delete a deliveryman i got an error because it deleted only the user not deliveryman 
   const skip = (page - 1) * limit;
   const take = limit;
 

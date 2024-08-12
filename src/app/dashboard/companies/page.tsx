@@ -1,6 +1,7 @@
 "use client"
 import DashboardLayout from '@/components/dashboardUILayout'
 import CompanyCard from '@/components/ui/companies/CompanyCard'
+import { Spinner } from '@/components/ui/spinner'
 import { addCompany } from '@/lib/features/companySlice'
 import { ICompany } from '@/types/company'
 import axios from 'axios'
@@ -50,8 +51,8 @@ function CompaniesPage() {
             Ajouter 
           </button>
         </div>
-     
-        {companies.map((company: ICompany) => (
+      {!companies.length && <Spinner size="large" />}
+      {companies.length > 0 && companies.map((company: ICompany) => (
           <div className="my-2" key={company.id}> 
             <CompanyCard 
             id={company.id}

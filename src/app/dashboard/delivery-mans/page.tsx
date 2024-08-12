@@ -2,6 +2,7 @@
 import DashboardLayout from '@/components/dashboardUILayout'; 
 import DeliverymanCard from '@/components/ui/deliveryMan/DeliveryManCard';
 import DeliveryManForm from '@/components/ui/forms/deliveryForm';
+import { Spinner } from '@/components/ui/spinner';
 import { setDeliveryMen } from '@/lib/features/deliveryManSlice';
 import { IDeliveryMan } from '@/types/deliveryMan';
 import axios, { Axios } from 'axios';
@@ -50,6 +51,7 @@ const DeliveryMansPage: React.FC = () => {
           {serverError && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
   <span className="font-medium">{serverError}</span> 
 </div>}
+          {deliveryMansState.length == 0 && <Spinner size="large" />}
           {deliveryMansState.map((d:IDeliveryMan) => { 
             return <DeliverymanCard deliveryman={d} /> 
           })}

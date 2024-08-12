@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from '../button';
 import { IDeliveryMan } from '@/types/deliveryMan';
 import { MobileIcon } from '@radix-ui/react-icons';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { deleteDeliveryMan } from '@/lib/features/deliveryManSlice';
 
 interface DeliverymanCardProps {
     deliveryman: IDeliveryMan;
@@ -39,10 +43,10 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
         deliveryManId,
         imgUrl,
         isDeleted
-    } = userInfo;
+    } = userInfo || {};
 
     const description = `Email: ${email} | Statut Social: ${socialStatus} | Orders Completed: ${ordersCompleted}`;
-
+    const dispatch = useDispatch()
     return (  
         <Card className='my-4'>
             <CardHeader>
@@ -53,18 +57,52 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button variant={"default"}>
-                            <EyeIcon onClick={() => router.push(`/dashboard/company-details/${id}`)} />
+                            <EyeIcon onClick={() => {
+                                if(!userInfo){
+                                  return  Swal.fire({
+                                        title:"Erreur lors de la redirection",
+                                        text:"L'id de l'utilisateur n'est pas défini",
+                                        icon:"error",
+                                    })
+                                }    
+                                router.push(`/dashboard/delivery-mans/${userInfo.id}`) 
+                                }} />
                         </Button>
-                        <Button variant={"ghost"}>
+                        <Button variant={"ghost"} onClick={() => {
+                            router.push("/dashboard/edit-delivery-man/"+userInfo.id)
+                        }} >
                             <EditIcon />
                         </Button>
-                        <Button variant={"destructive"}>
+                        <Button variant={"destructive"} onClick={() => {
+                            Swal.fire({
+                                title:"Vouz voulez vraiement supprimer ce livreur?",
+                                icon:"warning",
+                                showCancelButton:true,
+                                confirmButtonText:"Oui",
+                            }).then((response) => {
+                                if(response.isConfirmed){
+                                    axios.delete(`/api/deliveryMans/${id}`).then(() => {
+                                        Swal.fire({
+                                            title:"Livreur supprimé avec succès",
+                                            icon:"success",
+                                        })
+                                        dispatch(deleteDeliveryMan({id}))
+                                    }).catch((err) => {
+                                        Swal.fire({
+                                            title:"Erreur lors de la suppression",
+                                            text:err.response.data.message,
+                                            icon:"error",
+                                        })
+                                    })
+                                }
+                            })
+                        }} >
                             <TrashIcon />
                         </Button>
                     </div>
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent> 
                 <CardDescription>{description}</CardDescription>
             </CardContent>
             <CardFooter>

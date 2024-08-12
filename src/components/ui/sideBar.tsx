@@ -12,7 +12,8 @@ function SideBar({email}: Props) {
     <aside id="sidebar" className="fixed left-0 top-0 z-40 h-screen w-64  " aria-label="Sidebar">
       <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-700 dark:bg-stone-950">
         <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
-          <Image src={"/logo.png"} height={100} width={200} alt='logo' /> 
+          <Link href={"/dashboard"}>
+          <Image src={"/logo.png"} height={100} width={200} alt='logo' /> </Link>
         </div>
         <ul className="space-y-2 text-sm font-medium">
           <li>

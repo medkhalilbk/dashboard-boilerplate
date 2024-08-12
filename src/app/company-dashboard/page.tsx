@@ -1,11 +1,16 @@
+import SiderBarCompany from '@/components/ui/SideBarCompany';
 import React from 'react';
-
-const RandomPage: React.FC = () => {
+type DashboardProps = {
+    children: React.ReactNode;
+  };
+const RandomPage: React.FC<DashboardProps> = ({ children }) => {
     return (
-        <div>
-            <h1>Random Page</h1>
-            <p>This is a random page component.</p>
+        <div className="flex ">
+        <SiderBarCompany/> 
+        <div className="flex-1 overflow-hidden p-4 ml-64">
+          {children}
         </div>
+      </div>
     );
 };
 
