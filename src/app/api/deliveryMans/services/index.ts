@@ -20,7 +20,7 @@ export async function createDeliveryManService(data: IDeliveryMan, userId: strin
   }
 
 }
-export async function getAllDeliveryMenService(page: number, limit: number) { 
+export async function getAllDeliveryMenService(page: number, limit: number) {
   const skip = (page - 1) * limit;
   const take = limit;
 
@@ -28,8 +28,8 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
     const deliveryMen = await prisma.deliveryMans.findMany({
       skip,
       take,
-      where:{
-        isDeleted:false
+      where: {
+        isDeleted: false
       }
     });
 
@@ -41,7 +41,9 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
         isDeleted: false,
       },
     });
-
+    console.log(users)
+    console.log("object")
+    console.log(deliveryMen)
     return {
       deliveryMen: deliveryMen.map((dm) => ({
         ...dm,
@@ -97,7 +99,7 @@ export async function deleteDeliveryManService(deliveryManId: string) {
       where: { id: user!.id },
       data: {
         deliveryManId: null,
-        isDeleted:true
+        isDeleted: true
       },
     });
 
@@ -105,7 +107,7 @@ export async function deleteDeliveryManService(deliveryManId: string) {
     const deletedDeliveryMan = await prisma.deliveryMans.update({
       where: { id: deliveryManId },
       data: {
-        isActive: false, 
+        isActive: false,
         isDeleted: true,
       }
     });
