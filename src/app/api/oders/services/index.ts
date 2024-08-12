@@ -31,7 +31,6 @@ export async function addOrderService(order: IOrder) {
         throw error;
     }
 }
-
 export async function getAllOrdersService(limit: number, page: number) {
     try {
         const offset = (page - 1) * limit;
@@ -41,15 +40,35 @@ export async function getAllOrdersService(limit: number, page: number) {
             return null;
         }
 
+        // Fetch orders with pagination
         const orders = await prisma.orders.findMany({
             skip: offset,
             take: limit,
         });
 
+        // Fetch related data for each order
+        const ordersWithDetails = await Promise.all(
+            orders.map(async (order) => {
+                const Restaurant = await prisma.companies.findUnique({
+                    where: { id: order.Restaurant },
+                });
+
+                const productId = await prisma.products.findUnique({
+                    where: { id: order.productId },
+                });
+
+                return {
+                    ...order,
+                    Restaurant,
+                    productId,
+                };
+            })
+        );
+
         const totalPages = Math.ceil(totalItems / limit);
 
         return {
-            orders,
+            orders: ordersWithDetails,
             pagination: {
                 page,
                 limit,
