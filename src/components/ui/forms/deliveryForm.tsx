@@ -174,6 +174,21 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                 {errorsObject.socialStatus && <small className="text-red-500">Le statut social ne doit pas être vide</small>}
             </div>
             <div className="mb-4">
+                {/* Update this to vehicule number */}
+                <label htmlFor="socialStatus" className="block text-sm font-medium text-gray-700">
+                    Serie de vehicule:
+                </label>
+                <input
+                    type="text"
+                    id="socialStatus"
+                    name="socialStatus"
+                    value={user.deliveryManData.socialStatus}
+                    onChange={handleDeliveryManDataChange}
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
+                />
+                {errorsObject.socialStatus && <small className="text-red-500">Le statut social ne doit pas être vide</small>}
+            </div>
+            <div className="mb-4">
                 <label htmlFor="cin" className="block text-sm font-medium text-gray-700">
                     CIN:
                 </label>

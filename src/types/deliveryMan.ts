@@ -5,7 +5,6 @@ export interface IDeliveryMan {
     socialStatus?: string;
     ordersCompleted: number;
     vehiculeSerialNumber?: string;
-    isDeleted:true,
     cin: string;
     isActive: boolean;
     contractFile?: string;

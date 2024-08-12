@@ -40,7 +40,7 @@ const DeliveryManDataComponent : React.FC<{data:DeliveryManData,
         <div className="grid grid-cols-2">
             <div className="image-wrapper">
                 <img src={imgUrl} className='m-auto rounded-full' width={200} alt="Image livreur"/> 
-        <h2 className="text-xl font-bold mb-4 text-center my-2">{name}</h2>
+        <h2 className="text-xl font-bold mb-4 text-center my-2">{data.fullName || name}</h2>
         <h2 className="text-xl font-bold mb-4 text-center my-2">{email}</h2>
             </div>
             <div>
