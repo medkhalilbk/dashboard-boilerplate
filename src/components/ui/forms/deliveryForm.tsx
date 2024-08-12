@@ -12,6 +12,7 @@ interface DeliveryManData {
     socialStatus: string;
     cin: string;
     isActive: boolean;
+    vehiculeSerialNumber: string;
 }
 interface User {
     name: string;
@@ -47,6 +48,7 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
             socialStatus: '',
             cin: '',
             isActive: true,
+            vehiculeSerialNumber: '',
         },
     });
 
@@ -180,9 +182,9 @@ const DeliveryManForm: React.FC<UserFormProps> = ({ onSubmit }) => {
                 </label>
                 <input
                     type="text"
-                    id="socialStatus"
-                    name="socialStatus"
-                    value={user.deliveryManData.socialStatus}
+                    id="vehiculeSerialNumber"
+                    name="vehiculeSerialNumber"
+                    value={user.deliveryManData.vehiculeSerialNumber}
                     onChange={handleDeliveryManDataChange}
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />

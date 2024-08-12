@@ -30,9 +30,7 @@ const DeliveryMansPage: React.FC = () => {
         }).catch((error:any) => {
           return  setServerError(error.response.data.message)
         })
-    } , [])
-
-
+    } , []) 
     const [dataFormIsSet, setDataFormIsSet] = useState(false)
     return (
     <DashboardLayout>  
@@ -51,7 +49,7 @@ const DeliveryMansPage: React.FC = () => {
           {serverError && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
   <span className="font-medium">{serverError}</span> 
 </div>}
-          {deliveryMansState.length == 0 && <Spinner size="large" />}
+          {deliveryMansState.length == 0 && !serverError && <Spinner size="large" />}
           {deliveryMansState.map((d:IDeliveryMan) => { 
             return <DeliverymanCard deliveryman={d} /> 
           })}
