@@ -15,7 +15,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { updateCompany } from "@/lib/features/companySlice";
 import { ICompany } from "@/types/company";
-const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void }> = ({ uploadAction }) => {
+import Swal from "sweetalert2";
+const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void, setStep:any }> = ({ uploadAction,setStep }) => {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 	const [uploading, setUploading] = useState(false);
 	const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -45,6 +46,16 @@ const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void }> = ({ 
 	  if (otherImages.length > 0) {
 		await uploadOtherImages();
 	  }
+	  Swal.fire({
+		title: "Images telechargées",
+		icon: "success", 
+	  }).then(() => {
+		setSelectedImage(null);
+		setOtherImages([]);
+		setOtherImagesUploadSuccess([]);
+		setOtherImagesUploadError([]);
+		setStep(3)
+	  })
 	};
   
 	const uploadMainImage = async () => {
@@ -159,7 +170,7 @@ const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void }> = ({ 
 
  
 
-export default function ImageCompany({ companyId }: { companyId: string }) {
+export default function ImageCompany({ companyId,setStep }: { companyId: string,setStep: (step: number) => void }) {
     const [imagesObject, setImagesObject] = useState<Object| null>(null); 
 	const dispatch = useDispatch()
 
@@ -185,7 +196,7 @@ export default function ImageCompany({ companyId }: { companyId: string }) {
     return (
         <div className='flex flex-col'>  
             <h2 className='my-3'>Ajouter une image principale </h2>
-            <MainImageUploader uploadAction={setImagesObject} />
+            <MainImageUploader uploadAction={setImagesObject} setStep={setStep} />
         </div>
     );
 }

@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/lib/utils";
 import { verifyPassword } from "@/lib/utils";
 import * as jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 
 export async function signUpService({ email, password }: { email: string; password: string }) {  
@@ -42,7 +44,7 @@ export async function authService({email,password} : {email:string,password:stri
     if (!user) {
         throw new Error("User not found");
     }
-    if (!verifyPassword(user.password, password)) {
+    if (!bcrypt.compareSync(password,user.password)) {
         throw new Error("Invalid password");
     } 
     delete (user as { password?: string }).password;

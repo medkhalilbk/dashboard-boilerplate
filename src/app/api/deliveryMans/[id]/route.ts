@@ -23,6 +23,7 @@ export async function PATCH(request: Request,
   try {
     const deliveryManId = params.id;
     const body = await request.json();
+    console.log(deliveryManId, body)
     const deliveryMan = await updateDeliveryManService(deliveryManId, body)
     if (!deliveryMan) {
       return Response.json({ message: "DeliveryMan not found" }, { status: 404 })

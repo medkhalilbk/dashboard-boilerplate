@@ -5,6 +5,7 @@ interface DeliveryManData {
     socialStatus: string;
     cin: string;
     isActive: boolean;
+    vehiculeSerialNumber?: string;
 }
 
 interface User {
@@ -38,6 +39,7 @@ export async function createDeliveryManAccount(userInformation: User) {
             phoneNumber: userInformation.deliveryManData.phoneNumber,
             socialStatus: userInformation.deliveryManData.socialStatus,
             cin: userInformation.deliveryManData.cin,
+            vehiculeSerialNumber: userInformation.deliveryManData.vehiculeSerialNumber,
             isActive: userInformation.deliveryManData.isActive,  
             },
             userId: id

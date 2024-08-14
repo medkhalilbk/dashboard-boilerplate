@@ -12,25 +12,29 @@ import { getLongAndLatFromUrl, getUrlFromLongAndLat } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Card, CardContent, CardHeader } from '@/components/ui/card'; 
 import { Button } from '@/components/ui/button';
-import { EditIcon, TrashIcon } from 'lucide-react';
+import { ArrowLeftCircle, EditIcon, TrashIcon } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
 import Swal from 'sweetalert2';  
 import { MapProvider } from '@/components/MapProvider';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Spinner } from '@/components/ui/spinner';
+import UpdateImages from '@/components/ui/companies/UpdateImages';
 const Page: React.FC = () => {
     const { id } = useParams() as { id: string };
     const [days,setDays] = useState<string[]>([])
     const [company, setCompany] = useState<ICompany>();
+    const [account,setAccount] = useState<any>()
     const [updatedCompany,setUpdatedCompany] = useState<any>()
     const [keywordText,setKeywordText] = useState('')
     const [keywordsArray, setKeywordsArray] = useState<string[]>([]) 
+    const [step, setStep] = useState(1)
     const [distance, setDistance] = useState(0)
     const [openingTime, setOpeningTime] = useState({ hours: 0, minutes: 0 })
     const [closingTime, setClosingTime] = useState({ hours: 0, minutes: 0 }) 
     const [location, setLocation] = useState<any>({longitude:0,latitude:0})
     const [errorUrl, seterrorUrl] = useState(false)
     const [dataIsSet,setDataIsSet] = useState(false)
+    const router = useRouter()
     function extractHoursAndMinutes(timeString:string) {
         const [hours, minutes] = timeString.split(':');
         return { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10) };
@@ -42,11 +46,13 @@ const Page: React.FC = () => {
                 setCompany(response.data.data);
                 setDistance(response.data.data.availabilityDistance)
                 setLocation(response.data.data.location)
+                console.log(response.data.data)
             })
             .catch((error) => {
                 console.log(error);
             });
     }, [id]);
+
 
 
     
@@ -71,6 +77,14 @@ const Page: React.FC = () => {
          
         
     },[company]) 
+
+    React.useEffect(() => {
+      axios.get("/api/companies/"+id+"/user").then((res:any) =>{
+        setAccount(res.data.data)
+      }).catch((err) => {
+        setAccount(null)
+      })
+    } , [])
   
     const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm<ICompany | any>({
         defaultValues: {
@@ -146,7 +160,7 @@ const Page: React.FC = () => {
     <label className='my-2 '>Description:</label>
     <Textarea {...register('description', { required: true })} /> 
     {errors.description && <span>Description is required</span>}
-            <label className='my-2 '>Mots clé (utiliser ,  ou espace comme séparateur) :</label>
+            <label className='my-2 '>Mots clé (utiliser "," séparateur) :</label>
        <Input {...register("keywords")} /> 
     <label className='my-2 '>Telephone :</label>
     <Input {...register('phoneNumber', { required: true })} /> 
@@ -318,166 +332,58 @@ const Page: React.FC = () => {
 </div> 
 <div className="flex justify-center">
 <Button type='submit' className='flex justify-center' size={"lg"} onClick={handleSubmit((data) => {
-  setUpdatedCompany({...data,workHours:{start:`${openingTime.hours}:${openingTime.minutes}`,end:`${closingTime.hours}:${closingTime.minutes}`},location:location})
+  setUpdatedCompany({...data,workHours:{start:`${openingTime.hours}:${openingTime.minutes}`,end:`${closingTime.hours}:${closingTime.minutes}`},location:location,otherImages:company?.otherImages,keywords:getValues("keywords")})
   setDataIsSet(true)
 })}> Suivant </Button> 
 </div> 
         </div>
       }
 
-      const UpdateImages: React.FC<{ imgs: string[] | undefined }> = ({ imgs }) => {
-        const CustomIcon = () => (
-          <svg width="300px" height="300px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0" fill="none" width="24" height="24" />
-            <g>
-              <path fill='#069537' d="M23 4v2h-3v3h-2V6h-3V4h3V1h2v3h3zm-8.5 7c.828 0 1.5-.672 1.5-1.5S15.328 8 14.5 8 13 8.672 13 9.5s.672 1.5 1.5 1.5zm3.5 3.234l-.513-.57c-.794-.885-2.18-.885-2.976 0l-.655.73L9 9l-3 3.333V6h7V4H6c-1.105 0-2 .895-2 2v12c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2v-7h-2v3.234z"/>
-            </g>
-          </svg>
-        );
-
-        const [imagesArray, setImagesArray] = useState<string[]>(imgs || []);  
-        const router = useRouter()
-        function removeImage(img:string) {
-          setImagesArray(imagesArray.filter((image) => image !== img));
-        } 
-        function updateImage(img:string) {
-          Swal.fire({
-            title:"Remplacer l'image",
-            input:"file",
-            inputAttributes:{
-              accept:"image/*"
-            },
-            showCancelButton:true,
-            cancelButtonText:"Annuler",
-            confirmButtonColor:"#009737",
-            confirmButtonText:"Remplacer",
-          }).then((result) => {
-            if(result.isConfirmed){
-              console.log(result.value)
-              const formData = new FormData();
-              formData.append("file",result.value)
-              fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-              }).then((response) => {
-                if(response.ok){
-                  response.json().then((data) => { 
-                    setImagesArray([...imagesArray.filter((image) => image !== img),data.URL])
-                    if(company){ 
-                      setTimeout(() => { 
-                      updatedCompany({...updatedCompany,otherImages:[...imagesArray.filter((image) => image !== img),data.URL]})
-                      }, 3000);
-                    }
-                  })
-                }
-              }).catch((err) => {
-                console.log(err)
-              })
-            }
-          })
-        }
-        if(imgs == undefined){
-          return <div><div className="text-lg">Pas d'images supplémentaires</div></div>
-        }
-        return <div>
-          <div className="grid grid-cols-3 gap-3">
-            {imagesArray.map((img, index) => (
-              <div key={index} className="relative w-fit">
-                <img src={img} alt="image" className="w-150 h-auto object-cover rounded-lg mx-auto" />
-                <Button
-                  variant="destructive"
-                  className="absolute top-0 right-0"
-                  onClick={() => { 
-                    removeImage(img); 
-                  }}
-                >
-                <TrashIcon/>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="absolute top-0 left-0"
-                  onClick={() => { 
-                    updateImage(img)
-                  }}
-                >
-                <EditIcon/>
-                </Button>
-              </div>
-            ))}
-            <div className="w-200">
-              <Button
-                variant={"outline"}
-                style={{
-                  height:400,
-                  width:400
-                }}
-                onClick={() => {
-                  Swal.fire({
-                    title:"Selectionner une image" , 
-                    input:"file" , 
-                    inputAttributes:{
-                      accept:"image/*"
-                    },
-                    showCancelButton:true,
-                    confirmButtonText:"Confirmer", 
-                    confirmButtonColor:"#009737",
-                  }).then((response) =>{
-                    if(response.isConfirmed){
-                      const formData = new FormData();
-                      formData.append("file",response.value)
-                      let url = URL.createObjectURL(response.value)
-                      fetch("/api/upload", {
-                        method: "POST",
-                        body: formData,
-                      }).then((response) => {
-                        if(response.ok){
-                          response.json().then((data) => {  
-                            setImagesArray([...imagesArray,url])
-                            if(company){ 
-                              setTimeout(() => { 
-                              setUpdatedCompany({...updatedCompany,otherImages:[...updatedCompany.otherImages,data.URL]})
-                              }, 3000);
-                            }
-                          })
-                        }
-                      }).catch((err) => {
-                        console.log(err)
-                      })
-                    }
-                  })
-                }}
-              > 
-              <CustomIcon/>
-              </Button>
-            </div>
-          </div>
-          <Button onClick={() =>{ 
-            let company : any = updatedCompany 
-            company.keywords = company.keywords.split(",")
-            if(company){   
-             axios.patch("/api/companies/" + company.id , {...company,id:undefined}).then(() => {
-              Swal.fire({
-                title:"Succès",
-                text:"Les informations ont été mises à jour",
-                icon:"success",
-                confirmButtonColor:"#009737"
-
-              }).then(() => {
-                router.push("/dashboard/companies")
-              })
-             })
-            }
-          }} className='flex justify-center my-2 mx-auto'>
-            Mettre à jour
-          </Button>
-        </div>;
-      };
+  
 
     return (
         <DashboardLayout> 
+          <div className="row my-5">
+          <Button variant={"destructive"} onClick={() => { 
+        window.history.back();
+    }}><ArrowLeftCircle/>
+      </Button> 
+          </div> 
+          <div className="row my-5">
+          <Button disabled={!account} className='bg-green-600'  onClick={() => { 
+            router.push(`/dashboard/edit-company/${account.id}/account`)
+    }}> Modifier les informations de compte
+      </Button> 
+          </div> 
         {!company && <Spinner size={"large"} />}
         {!dataIsSet && company && <DataForm/>}
-        {dataIsSet && <UpdateImages imgs={updatedCompany?.otherImages}/>}  
+        {dataIsSet && <>
+          <UpdateImages imgs={updatedCompany?.otherImages} setCompany={setUpdatedCompany}/>
+          <div className="flex justify-center  my-8 mx-auto">
+          <Button className='bg-green-500 mx-auto ' onClick={() => {
+          if(updatedCompany){
+            delete updatedCompany.id  
+            if(typeof(updatedCompany.keywords) === "string"){
+              updatedCompany.keywords = updatedCompany.keywords.split(",")
+            }
+            axios.patch(`/api/companies/${id}`,updatedCompany)
+            .then((response) => {
+              console.log(response)
+              Swal.fire({
+                icon: 'success',
+                title: 'Entreprise modifiée avec succès',
+                showConfirmButton: false,
+                timer: 1500
+              })
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          }
+        }} size={"lg"}>Modifier</Button>
+          </div>
+          </> }   
+      
         </DashboardLayout>
     );
 };

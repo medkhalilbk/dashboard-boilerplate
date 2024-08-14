@@ -55,7 +55,7 @@ const Page = () => {
       
     }}> {/* <PrinterIcon/>  */} </Button>
         </div>
-    <div className="p-6 bg-white rounded-lg shadow-md">
+   {company &&   <div className="p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Détail de l'entreprise</h1>
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">Nom : {company?.name}</h2>
@@ -73,7 +73,7 @@ const Page = () => {
                         <Image style={{margin:"auto"}} src={img} alt={`image ${index}`} width={500} height={200} />
                     </div>))}
     </Slider>
-    <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {company?.keywords}</p>
+    <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {(company?.keywords as string[]).join(" ")}</p>
 
                     
             <h2 className="text-xl font-semibold">Localisation  👇 </h2>
@@ -93,7 +93,7 @@ const Page = () => {
                     </GoogleMap>
                     </MapProvider>}
         </div>
-    </div>
+    </div>}
 </DashboardLayout>
 
         </div>

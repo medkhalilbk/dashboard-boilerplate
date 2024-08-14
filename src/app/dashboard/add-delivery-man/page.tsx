@@ -8,12 +8,9 @@ import { ArrowLeftCircle } from 'lucide-react';
 import Swal from 'sweetalert2'  
 import DeliveryFormFiles from '@/components/ui/forms/delvieryFormFiles';
 const AddDeliverymanPage: React.FC = () => {
-    const handleFormSubmit = (formData: any) => { 
-        console.log(formData);
-    };
+ 
    const [userInfos, setUserInfos] = useState<any>(null)
-   React.useEffect(() => {
-    console.log(userInfos)
+   React.useEffect(() => { 
     if (userInfos) {
       Swal.fire({
         title: "<strong>Les informations de livreur</strong>",

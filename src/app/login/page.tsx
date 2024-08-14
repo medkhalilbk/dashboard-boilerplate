@@ -10,8 +10,8 @@ import { setUser, destroy } from '../../lib/features/userSlice';
 import { useAppDispatch } from '@/lib/hooks/store';
 import { AxiosResponse } from 'axios';
 import { loginAction } from '@/lib/actions/auth';
-import { useRouter } from 'next/navigation'
-import { error } from 'console';
+import { useRouter } from 'next/navigation' 
+import Image from 'next/image';
 
 const Home = () => {
   const [userNAme, setUserNAme] = React.useState("")
@@ -19,7 +19,7 @@ const Home = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   return (
-    <div className='min-h-screen '> 
+    <div className='min-h-screen bg-login'> 
     <div className='flex justify-end pr-10 pt-10'>
     <DarkModeToggler/>
     </div>
@@ -28,7 +28,7 @@ const Home = () => {
         <div className="absolute inset-0     mask-image-linear-gradient(180deg,white,rgba(255,255,255,0))"></div>
         <div className="relative   px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
           <div className="mx-auto max-w-md">
-          <MainLogo/>
+          <Image src={"/logo.png"} height={100} width={200} alt='logo' />
           <h2 className='py-2'>Email : </h2>
           <Input onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
   setUserNAme(e.target.value); 
@@ -50,8 +50,14 @@ const Home = () => {
               .then((res:AxiosResponse) => { 
               console.log(res.data)
               toast.dismiss()
+              if(typeof window !== 'undefined') {
+                localStorage.setItem("email", res.data.data.user.email)
+                localStorage.setItem("role", res.data.data.user.role)
+                localStorage.setItem("id" , res.data.data.user.id)
+              }
               if(res.data.data.user.role == "superAdmin") {
                 return router.push('/dashboard')
+                
                }
                if(res.data.data.user.role == "companyAdmin"){
                 return  router.push("/company-dashboard")
@@ -59,13 +65,13 @@ const Home = () => {
                if(res.data.data.user.role  == "user"){
                 throw new Error("Vous ne pouvez pas se connecter autant qu'utilisateur.")
                }
-              toast.success('Login Success')
+              toast.success('Connexion réussie')
               dispatch(setUser(res.data.data)) 
               })
               .catch((err:any) => {
                 toast.dismiss()
                 console.log(err)
-                if(err?.response.data.message)
+                if(err?.response?.data.message)
                 {
                 return  toast.error(err.response.data.message)
                 }{
@@ -73,7 +79,7 @@ const Home = () => {
                 }
                 
               }) 
-          }}>Login</Button> 
+          }}>S'authentifier</Button> 
          </div>
       </div>
     </div>

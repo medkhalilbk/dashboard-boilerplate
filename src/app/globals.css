@@ -74,3 +74,19 @@
       @apply bg-background text-foreground;
     }
   }
+
+  .big-btn{
+     width: 70vw;
+      height: 25vh;
+      font-size: 2rem;
+      border-radius: 1rem; 
+      margin: auto;
+      text-align: center;
+      color: var(--primary-foreground);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+  }
+  .bg-login{
+    background-color: #ecfdf5
+  }

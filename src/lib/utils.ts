@@ -1,11 +1,9 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import {Blowfish} from 'egoroof-blowfish'
-
-
+import {Blowfish} from 'egoroof-blowfish' 
 import sha256 from 'crypto-js/sha256';
 import hmacSHA512 from 'crypto-js/hmac-sha512';
-import Base64 from 'crypto-js/enc-base64';
+import Base64 from 'crypto-js/enc-base64'; 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -21,7 +19,7 @@ export function hashPassword(password: string) {
   return hmacdigest;
 }
 
-
+ 
 export function verifyPassword(hashedPassword: string, password:string):boolean {
     console.log(hashPassword(password))
     return hashedPassword === hashPassword(password);
@@ -51,4 +49,29 @@ export function getLongAndLatFromUrl(url: string) {
 }
 export function getUrlFromLongAndLat({latitude , longitude} : {latitude:number,longitude:number}): string {
   return `https://www.google.com/maps?q=${latitude},${longitude}`;
+}
+
+export function generatePassword() {
+  const upperCaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowerCaseChars = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const specialChars = '!@#$%^&*()_+[]{}|;:,.<>?';
+
+  let password = '';
+  
+  // Ensure at least one uppercase letter, one number, and one special character
+  password += upperCaseChars[Math.floor(Math.random() * upperCaseChars.length)];
+  password += numbers[Math.floor(Math.random() * numbers.length)];
+  password += specialChars[Math.floor(Math.random() * specialChars.length)];
+  
+  // Fill the remaining length with random characters from all categories
+  const allChars = upperCaseChars + lowerCaseChars + numbers + specialChars;
+  for (let i = password.length; i < 12; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+  }
+  
+  // Shuffle the password to randomize the order
+  password = password.split('').sort(() => 0.5 - Math.random()).join('');
+
+  return password;
 }

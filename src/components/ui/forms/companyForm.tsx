@@ -15,9 +15,10 @@ import { addCompany } from '@/lib/features/companySlice';
 
 type CompanyFormProps = {
   submitAction: any
+  setStep:any
 };
 
-const CompanyForm = ({ submitAction }: CompanyFormProps) => {
+const CompanyForm = ({ submitAction,setStep }: CompanyFormProps) => {
   const [distance, setDistance] = useState(0)
   const [openingTime, setOpeningTime] = useState({ hours: 0, minutes: 0 })
   const [closingTime, setClosingTime] = useState({ hours: 0, minutes: 0 })
@@ -77,7 +78,8 @@ useEffect(()=> {
   const onSubmit: SubmitHandler<ICompany> = (data) => {
     createCompanyRequest(data).then((res) => {
       dispatch(addCompany({...data,id:res.data.id})) 
-      submitAction(res.data.id)
+      submitAction(res.data)
+      setStep(2)
     }).catch((error) => {
       console.log(error)
     })

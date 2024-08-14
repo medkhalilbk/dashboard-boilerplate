@@ -60,6 +60,20 @@ export async function updateCompanyService(id: string, company: any) {
   }
 }
 
+export async function getUserByCompanyIdService(companyId: string) {
+  console.log(companyId)
+  try {
+    const user = await prisma.users.findFirst({
+      where: {
+        companyId: companyId,
+      },
+    }); 
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 export async function deleteCompanyService(id:string) {
   try {

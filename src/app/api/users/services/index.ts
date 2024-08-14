@@ -26,6 +26,7 @@ export async function addUserService(user: IUser) {
         email: user.email,
         password: hashedPassword,
         role: user.role,
+        companyId: user.companyId,
         isEmailVerified: user.isEmailVerified,
         deliveryAddress: user.deliveryAddress,
         imgUrl: user.imgUrl,
@@ -40,6 +41,23 @@ export async function addUserService(user: IUser) {
 
 export async function updateUserService(id: string, data: Partial<IUser>) {
   try {
+    console.log(data)
+    if(data.password){
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+    if(data.email){
+      const userMail = await prisma.users.findFirst({
+        where:{
+          email: data.email,
+          id:{
+            not: id
+          }
+        } 
+      })
+      if(userMail){
+        throw new Error('Email existe déja')
+      }
+    }
     const user = await prisma.users.update({
       where: { id, isDeleted: false },
       data: {

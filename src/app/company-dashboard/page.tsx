@@ -5,8 +5,7 @@ type DashboardProps = {
   };
 const RandomPage: React.FC<DashboardProps> = ({ children }) => {
     return (
-        <div className="flex ">
-        <SiderBarCompany/> 
+        <div className="flex "> 
         <div className="flex-1 overflow-hidden p-4 ml-64">
           {children}
         </div>

@@ -1,13 +1,21 @@
 "use client"
 import Link from 'next/link';
 import React from 'react';
-import Image from 'next/image';
-import  { useRouter } from 'next/router';import { usePathname } from 'next/navigation'
+import Image from 'next/image'; 
+import { usePathname,useRouter } from 'next/navigation' 
+import {TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { Button } from './button';
+import { cookies } from 'next/headers';
+import { deleteCookies } from '@/app/actions';
 
-type Props = {email?:string};
-
-function SideBar({email}: Props) {
-  const pathname = usePathname() 
+function SideBar( ) {
+  const pathname = usePathname()   
+  let [email,setEmail] = React.useState<string | null>(null)
+  React.useEffect(() => {
+    if(typeof window !== 'undefined') {
+      setEmail(localStorage.getItem('email'))}
+  }) 
+  let router = useRouter()
   return (
     <aside id="sidebar" className="fixed left-0 top-0 z-40 h-screen w-64  " aria-label="Sidebar">
       <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-700 dark:bg-stone-950">
@@ -97,12 +105,33 @@ function SideBar({email}: Props) {
         </ul>
         <div className="mt-auto flex">
           <div className="flex w-full justify-between">
-            <span className="text-sm font-medium text-black dark:text-white">{email || "default login"}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-roledescription="more menu" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-black dark:text-white">
+            <span className="text-sm font-medium text-black dark:text-white">{email || "Utilisateur"}</span>
+          
+            <TooltipProvider>
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-roledescription="more menu" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-black dark:text-white">
               <circle cx="12" cy="12" r="1" />
               <circle cx="19" cy="12" r="1" />
               <circle cx="5" cy="12" r="1" />
             </svg>
+        </TooltipTrigger>
+        <TooltipContent>
+           <Button variant={"outline"} onClick={() => {
+            if(typeof window !== 'undefined') {
+              deleteCookies().then(() => {
+                localStorage.removeItem('email')
+                localStorage.removeItem('role')
+                localStorage.removeItem('id')
+              }).catch((err:Error) => {
+                console.log(err)
+              })
+              return router.push('/login')
+            }
+           }}>Deconnexion</Button>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
           </div>
         </div>
       </div>
