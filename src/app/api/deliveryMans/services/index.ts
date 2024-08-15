@@ -47,7 +47,7 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
     return {
       deliveryMen: deliveryMen.map((dm:any) => ({
         ...dm,
-        userInfo: users.find((user) => user.deliveryManId === dm.id),
+        userInfo: users.find((user:any) => user.deliveryManId === dm.id),
       })),
       totalItems: await prisma.deliveryMans.count()
     };
