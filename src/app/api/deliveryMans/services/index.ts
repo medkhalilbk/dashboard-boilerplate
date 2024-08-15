@@ -45,7 +45,7 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
     console.log("object")
     console.log(deliveryMen)
     return {
-      deliveryMen: deliveryMen.map((dm) => ({
+      deliveryMen: deliveryMen.map((dm:any) => ({
         ...dm,
         userInfo: users.find((user) => user.deliveryManId === dm.id),
       })),
