@@ -81,7 +81,7 @@ export function DeliveryChart() {
           Tendances en hausse de 5.2% ce mois-ci <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Affichage du nombre total de livraisons pour l'année 2024
+          Affichage du nombre total de livraisons pour l&apos;année 2024
         </div>
       </CardFooter>
     </Card>

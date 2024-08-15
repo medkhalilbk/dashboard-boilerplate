@@ -311,7 +311,7 @@ const Page: React.FC<Props> = () => {
                Mettre à jour le contrat
             </Button>
             <Button className='bg-yellow-500' type="submit">
-                Modifier l'image
+                Modifier l&apos;image
             </Button>
                 </div>
                 {step === 1 && <DeliveryManForm data={data.deliveryManData} />}

@@ -56,7 +56,7 @@ const Page = () => {
     }}> {/* <PrinterIcon/>  */} </Button>
         </div>
    {company &&   <div className="p-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Détail de l'entreprise</h1>
+        <h1 className="text-2xl font-bold mb-4">Détail de l&apos;entreprise</h1>
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">Nom : {company?.name}</h2>
             <p className="text-gray-700"><span className="font-medium">Description :</span> {company?.description}</p>

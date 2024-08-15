@@ -52,7 +52,7 @@ const chartData = [
       <CardHeader>
         <CardTitle>Nombre de restaurants et livereurs</CardTitle>
         <CardDescription>
-          Affichage des données pour toute l'année
+          Affichage des données pour toute l&apos;année
         </CardDescription>
       </CardHeader>
       <CardContent>

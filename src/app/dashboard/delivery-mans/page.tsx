@@ -50,8 +50,8 @@ const DeliveryMansPage: React.FC = () => {
   <span className="font-medium">{serverError}</span> 
 </div>}
           {deliveryMansState.length == 0 && !serverError && <Spinner size="large" />}
-          {deliveryMansState.map((d:IDeliveryMan) => { 
-            return <DeliverymanCard deliveryman={d} /> 
+          {deliveryMansState.map((d:IDeliveryMan,k) => { 
+            return <DeliverymanCard key={k} deliveryman={d} /> 
           })}
     </DashboardLayout>
     );

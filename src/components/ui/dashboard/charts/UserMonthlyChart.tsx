@@ -41,7 +41,7 @@ export function UserMonthlyChart() {
       <CardHeader>
         <CardTitle> Utilisateurs</CardTitle>
         <CardDescription>
-          Affichage du nombre total d'utilisateurs pour les 6 derniers mois
+          Affichage du nombre total d&apos;utilisateurs pour les 6 derniers mois
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -123,7 +123,7 @@ useEffect(()=> {
           }}
         />
     
-        <label className='my-2 '>Heure d'ouverture : </label>
+        <label className='my-2 '>Heure d&apos;ouverture : </label>
         <div className="flex row gap-x-3">
           <div className="flex flex-col"> 
             <label className='text-sm'> Heures</label>
@@ -188,7 +188,7 @@ useEffect(()=> {
       </div>
 
       <div>
-        <label className='my-2 '>Type d'entreprise :</label>
+        <label className='my-2 '>Type d&apos;entreprise :</label>
         <div className="relative">
           <Controller
             name="type"

@@ -31,8 +31,8 @@ const Page: React.FC = () => {
         </div>
         <div className="div">
                {loading && <Spinner size="large" />}
-               {!loading && clients.map((client:any) => {
-                   return <div className="w-100 my-2">
+               {!loading && clients.map((client:any,k:number) => {
+                   return <div key={k} className="w-100 my-2">
                     <ClientCard user={client}/>
                    </div>
                })}

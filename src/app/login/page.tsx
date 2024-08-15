@@ -79,7 +79,7 @@ const Home = () => {
                 }
                 
               }) 
-          }}>S'authentifier</Button> 
+          }}>S&apos;authentifier</Button> 
          </div>
       </div>
     </div>

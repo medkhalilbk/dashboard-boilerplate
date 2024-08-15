@@ -39,8 +39,8 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
   }}> <h1 className="text-lg font-bold gap-4">{menu.name}</h1> <CollapseIcon/></div></CollapsibleTrigger>
   <CollapsibleContent>
   <div className="flex flex-col mt-2 w-full">
-                {menu.products && menu.products.map((product) => {
-                    return <ProductCard product={product} />
+                {menu.products && menu.products.map((product,k) => {
+                    return <ProductCard key={k} product={product} />
                 })}
                 </div>
   </CollapsibleContent>

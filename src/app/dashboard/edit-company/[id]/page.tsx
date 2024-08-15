@@ -160,7 +160,7 @@ const Page: React.FC = () => {
     <label className='my-2 '>Description:</label>
     <Textarea {...register('description', { required: true })} /> 
     {errors.description && <span>Description is required</span>}
-            <label className='my-2 '>Mots clé (utiliser "," séparateur) :</label>
+            <label className='my-2 '>Mots clé (utiliser &quot;,&quot; séparateur) :</label>
        <Input {...register("keywords")} /> 
     <label className='my-2 '>Telephone :</label>
     <Input {...register('phoneNumber', { required: true })} /> 
@@ -175,7 +175,7 @@ const Page: React.FC = () => {
         setDistance(value[0])
       }}
     />
-    <label className='my-2 '>Heure d'ouverture : </label>
+    <label className='my-2 '>Heure d&apos;ouverture : </label>
     <div className="flex row gap-x-3">
       <div className="flex flex-col"> 
         <label className='text-sm'>Heures</label>
@@ -259,7 +259,7 @@ const Page: React.FC = () => {
                     </GoogleMap>
 </MapProvider>
 <div>
-    <label className='my-2 '>Type d'entreprise :</label>
+    <label className='my-2 '>Type d&apos;entreprise :</label>
     <div className="relative">
       <Controller
         name="type"

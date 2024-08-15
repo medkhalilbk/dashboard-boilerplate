@@ -60,7 +60,7 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
         <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
-                    Idendifiant de l'entreprise:
+                    Idendifiant de l&apos;entreprise:
                 </label>
                 <input
                     type="text"

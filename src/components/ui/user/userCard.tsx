@@ -81,7 +81,7 @@ export function ClientCard({ className,user, ...props }: ClientCardProps) {
               Bloquer le compte
             </p>
             <p className="text-sm text-muted-foreground">
-              Cette option peut bloquer l'utilisateur de se connecter à l'application
+              Cette option peut bloquer l&apos;utilisateur de se connecter à l&apos;application
             </p>
           </div>
           <Switch value={isDeleted}  onClick={() => {
@@ -145,7 +145,7 @@ export function ClientCard({ className,user, ...props }: ClientCardProps) {
 
           })
         }} className="w-fit">
-          <EyeIcon className="mr-2 h-4 w-4" />Voir plus d'informations
+          <EyeIcon className="mr-2 h-4 w-4" />Voir plus d&apos;informations
         </Button>
       </CardFooter>
     </Card>
