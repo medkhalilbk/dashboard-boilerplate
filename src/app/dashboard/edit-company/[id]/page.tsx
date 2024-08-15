@@ -19,8 +19,8 @@ import { MapProvider } from '@/components/MapProvider';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Spinner } from '@/components/ui/spinner';
 import UpdateImages from '@/components/ui/companies/UpdateImages';
-const Page: React.FC = () => {
-    const { id } = useParams() as { id: string };
+export default function EditDeliveryManPage ()   {
+    const { id } = useParams(); // need to fix this for build
     const [days,setDays] = useState<string[]>([])
     const [company, setCompany] = useState<ICompany>();
     const [account,setAccount] = useState<any>()
@@ -386,6 +386,4 @@ const Page: React.FC = () => {
       
         </DashboardLayout>
     );
-};
-
-export default Page;
+}; 

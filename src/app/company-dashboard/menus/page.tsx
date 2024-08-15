@@ -6,10 +6,8 @@ import { RootState } from '@/lib/store';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-type DashboardProps = {
-    children: React.ReactNode;
-  }; 
-const MenuPage: React.FC<DashboardProps> = ({ children }) => { 
+
+const MenuPage: React.FC = () => { 
   const dispatch =useDispatch()
   let menus = useSelector((state: RootState) => state.menus.data)
   React.useEffect(() => {

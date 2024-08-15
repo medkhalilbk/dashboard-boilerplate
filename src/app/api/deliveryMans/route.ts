@@ -34,12 +34,12 @@ export async function GET(request: Request) {
                     page,
                     limit,
                     totalPages: Math.ceil(totalItems / limit),
-                    totalItems: totalItems,
+                    totalItems: totalItems, 
 
                 },
-            }
-        }, { status: 200 });
+            },
+        }, {status:200} );
     } catch (error: any) {
-        return Response.json({ message: error.message }), { status: 500 };
+        return Response.json({ message:error.message}, { status: 500 });
     }
 }
