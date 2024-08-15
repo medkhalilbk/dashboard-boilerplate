@@ -13,7 +13,7 @@ const DeliveryManPage: React.FC = () => {
     const {id} = useParams<{id:string}>();
     const [deliveryMan, setDeliveryMan] = React.useState<any>(null);
     React.useEffect(() => {
-        axios.get(`http://localhost:3000/api/deliveryMans/${id}`).then((res) => {
+        axios.get(`/api/deliveryMans/${id}`).then((res) => {
         setDeliveryMan(res.data.data)
         console.log(res.data.data)
         })
