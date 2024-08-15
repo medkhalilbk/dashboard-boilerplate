@@ -22,10 +22,10 @@ const MenuPage: React.FC = () => {
   } ,[])
     return (
       <div className="grid-rows justify-center mt-8">  
-      {menus.length == 0 && <Spinner size={"large"} />}
-      <div className="grid grid-cols-1 gap-4"> {/* Adjust grid-cols to the number of columns you want */}
-        {menus.map((menu) => (
-          <MenuCard key={menu.id} menu={menu} /> // Add a unique key if possible
+      {menus?.length == 0 && <Spinner size={"large"} />}
+      <div className="grid grid-cols-1 gap-4"> 
+        {menus?.map((menu) => (
+          <MenuCard key={menu.id} menu={menu} />  
         ))}
       </div>
     </div>

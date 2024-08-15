@@ -8,6 +8,7 @@ import {
 import ProductCard from "../product/productCard";
 import { Button } from "../button";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { updateMenu } from "@/lib/features/MenuSlice";
 import React from "react";
 import {
   AlertDialog,
@@ -20,14 +21,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
   
 const MenuCard = ({menu} : {menu:IMenu}) => {
     const [isCollapse, setIsCollapse] = React.useState(true)
+    const dispatch = useDispatch()
+    const router = useRouter()
     const CollapseIcon = () => {
         return isCollapse ? <ChevronDown/> : <ChevronUp/>
-    }
-
-
+    } 
     return (
         <div className="flex flex-row justify-center mt-8 w-full">
             <div className="flex flex-row w-full">
@@ -57,13 +62,21 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
                   </AlertDialogTrigger>
                   <AlertDialogContent >
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Modifier le menu : {menu.name}</AlertDialogTitle>
+                      <AlertDialogTitle >Modifier le menu : {menu.name}</AlertDialogTitle>
                     </AlertDialogHeader>
                     <AlertDialogDescription dir="row" >
                       <div className="flex flex-col mx-auto gap-2 w-3/2">
-  <Button className="bg-green-500">Modifier les informations du menu</Button> 
+  <Button className="bg-green-500" onClick={() => {
+                        router.push('/company-dashboard/menus/'+menu.id)
+                      }}>Modifier les informations du menu</Button> 
   <Button className="bg-blue-500">Modifier les produits</Button> 
-  <Button className="bg-orange-500">Desactiver temporairement</Button> </div>
+  <Button className="bg-orange-500" onClick={()=>{
+    axios.patch(`/api/menus/${menu.id}`,{isActive:!menu.isActive}).then((res) => {
+      console.log(res) 
+    dispatch(updateMenu({...menu,isActive:!menu.isActive}))
+   
+    })
+  }} >{menu.isActive? "Désactiver" : "Activer"} temporairement</Button> </div>
 </AlertDialogDescription>
 <AlertDialogFooter>
           <AlertDialogCancel style={{margin:0,padding:0}}> <Button variant={"destructive"}>Fermer</Button> </AlertDialogCancel> 

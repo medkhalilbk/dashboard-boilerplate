@@ -53,7 +53,10 @@ const Home = () => {
               if(typeof window !== 'undefined') {
                 localStorage.setItem("email", res.data.data.user.email)
                 localStorage.setItem("role", res.data.data.user.role)
+                if(!res.data.data.user.companyId) { 
                 localStorage.setItem("id" , res.data.data.user.id)
+                }
+                localStorage.setItem("id", res.data.data.user.companyId)
               }
               if(res.data.data.user.role == "superAdmin") {
                 return router.push('/dashboard')

@@ -1,4 +1,4 @@
-import { deleteMenuByIdService, getAllMenusOfCompanyService, updateMenuService } from "../service";
+import { deleteMenuByIdService, getAllMenusOfCompanyService, updateMenuService } from "../../comapnies/menus/service";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {

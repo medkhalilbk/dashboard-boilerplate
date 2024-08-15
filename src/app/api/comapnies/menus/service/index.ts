@@ -10,7 +10,7 @@ export async function getAllMenusOfCompanyService(companyId: string, page: numbe
         const totalItems = await prisma.menus.count({
             where: {
                 companyId: companyId,
-                isActive: true
+                 
             }
         });
         if (totalItems == 0) {
@@ -19,7 +19,7 @@ export async function getAllMenusOfCompanyService(companyId: string, page: numbe
         const menus = await prisma.menus.findMany({
             where: {
                 companyId: companyId,
-                isActive: true
+                
             },
 
             skip: offset,
