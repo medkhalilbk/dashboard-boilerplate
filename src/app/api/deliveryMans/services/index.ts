@@ -1,4 +1,4 @@
-import { IDeliveryMan } from "@/types/deliveryMan";
+import { IDeliveryMan } from './../../../../types/DeliveryMan'; 
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

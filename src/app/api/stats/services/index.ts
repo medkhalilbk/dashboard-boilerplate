@@ -7,7 +7,7 @@ export async function getDeliveriesPerRestaurantPerMonth() {
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
   // Find all carts with status "livred" created after the first day of the current month
-  const carts = await prisma.cart.findMany({
+  const carts = await prisma.carts.findMany({
     where: {
       status: 'step5',
       createdAt: {
@@ -41,7 +41,7 @@ export async function getIncomePerRestaurantPerMonth() {
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
   // Find all carts with status "livred" created after the first day of the current month
-  const carts = await prisma.cart.findMany({
+  const carts = await prisma.carts.findMany({
     where: {
       status: 'step5',
       createdAt: {

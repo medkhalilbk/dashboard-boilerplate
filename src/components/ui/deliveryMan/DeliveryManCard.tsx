@@ -4,7 +4,7 @@ import AvatarComp from '../avatar';
 import { EditIcon, EyeIcon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../button';
-import { IDeliveryMan } from '@/types/deliveryMan';
+import { IDeliveryMan } from '@/types/DeliveryMan';
 import { MobileIcon } from '@radix-ui/react-icons';
 import Swal from 'sweetalert2';
 import axios from 'axios';

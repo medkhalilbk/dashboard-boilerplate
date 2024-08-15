@@ -4,7 +4,7 @@ import DeliverymanCard from '@/components/ui/deliveryMan/DeliveryManCard';
 import DeliveryManForm from '@/components/ui/forms/deliveryForm';
 import { Spinner } from '@/components/ui/spinner';
 import { setDeliveryMen } from '@/lib/features/deliveryManSlice';
-import { IDeliveryMan } from '@/types/deliveryMan';
+import { IDeliveryMan } from '@/types/DeliveryMan';
 import axios, { Axios } from 'axios';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';

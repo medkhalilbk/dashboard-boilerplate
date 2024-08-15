@@ -1,4 +1,4 @@
-import { DELETE } from './../stacks/route';
+
 import { createCompanyService, getAllCompaniesService } from "./services";
 
 export async function GET(request: Request) {

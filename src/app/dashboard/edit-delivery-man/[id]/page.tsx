@@ -10,11 +10,8 @@ import { Button } from "@/components/ui/button";
 import Swal from 'sweetalert2';
 import { generatePassword } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
-interface Props {
-    id: string;
-} 
-const Page: React.FC<Props> = () => {
-    const { id } = useParams<{ id: string }>();
+export default function EditPage ()  {
+    const { id } = useParams();
     const [data, setData] = React.useState<any>(null);
     const [step, setStep] = React.useState<number>(1);
     React.useEffect(() => {
@@ -322,5 +319,4 @@ const Page: React.FC<Props> = () => {
 </DashboardLayout>
     );
 };
-
-export default Page;
+ 
