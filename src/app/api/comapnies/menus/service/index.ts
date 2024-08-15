@@ -38,7 +38,6 @@ export async function getAllMenusOfCompanyService(companyId: string, page: numbe
                 id: menu.id,
                 name: menu.name,
                 isActive: menu.isActive,
-                productsId: menu.products,
                 products: products
             }
             imenus.push(menuObject)

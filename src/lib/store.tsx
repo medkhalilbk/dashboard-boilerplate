@@ -5,6 +5,7 @@ import clientsSlice from './features/clientsSlice';
 import { Reducer } from 'redux'; // Import Reducer from redux
 import companySlice from './features/companySlice';
 import deliveryManSlice from './features/deliveryManSlice';
+import MenuSlice from './features/MenuSlice';
 export const store = () => {
   return configureStore({
     reducer: {
@@ -12,7 +13,8 @@ export const store = () => {
       stacks: stackSlice,  
       company:companySlice,
       deliveryMan:deliveryManSlice , 
-      clients: clientsSlice
+      clients: clientsSlice,
+      menus:MenuSlice
     },
   });
 };

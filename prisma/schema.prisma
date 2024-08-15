@@ -112,10 +112,11 @@ model Orders {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   productId  String   @db.ObjectId
   quantity   Int
-  Restaurant String   @db.ObjectId
+  restaurantId String   @db.ObjectId
   price      Float
   createdAt  DateTime @default(now())
 }
+
 
 model Carts {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId

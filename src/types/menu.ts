@@ -5,8 +5,7 @@ import { IProduct } from "./product";
 export interface IMenu {
   id: string;
   name: string;
-  products?: IProduct[];
-  productsId: string[];
+  products?: IProduct[]; 
   company?: ICompany;
   companyId: string;
   isActive: boolean

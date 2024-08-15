@@ -8,7 +8,7 @@ export async function addOrderService(order: IOrder) {
             where: { id: order.productId }
         });
         const restaurant = await prisma.companies.findUnique({
-            where: { id: order.restaurant }
+            where: { id: order.restaurantId }
         });
 
         if (!product || !restaurant) {
@@ -19,7 +19,7 @@ export async function addOrderService(order: IOrder) {
             data: {
                 productId: order.productId,
                 quantity: order.quantity,
-                Restaurant: order.restaurant,
+                restaurantId:order.restaurantId,
                 price: order.price,
                 createdAt: new Date()
             }
@@ -50,7 +50,7 @@ export async function getAllOrdersService(limit: number, page: number) {
         const ordersWithDetails = await Promise.all(
             orders.map(async (order) => {
                 const Restaurant = await prisma.companies.findUnique({
-                    where: { id: order.Restaurant },
+                    where: { id: order.restaurantId },
                 });
 
                 const productId = await prisma.products.findUnique({

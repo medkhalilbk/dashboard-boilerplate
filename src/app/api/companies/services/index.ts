@@ -1,4 +1,5 @@
 import {PrismaClient } from "@prisma/client";
+import { getOrderByIdService } from "../../oders/services";
 
 const prisma = new PrismaClient();
 
@@ -81,5 +82,41 @@ export async function deleteCompanyService(id:string) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+
+export async function getOrdersByCompanyIdService({ companyId }: { companyId: string }) {
+  try {
+    // Fetch all carts associated with the company
+    let carts : any = await prisma.carts.findMany(); 
+    let ordersArray: { id: string, data: any }[] = [];
+
+    // Iterate through each cart
+    for (const cart of carts) {
+      if (!cart.orders.length) continue;
+
+      // Collect all promises for the current cart's orders
+      const orderPromises = cart.orders.map(async (order: any) => {
+        const res = await getOrderByIdService(order);
+        if (res) {
+          ordersArray.push({ id: order, data: res });
+        }
+      });
+
+      // Wait for all promises to resolve before proceeding
+      await Promise.all(orderPromises);
+    }
+   /*  carts.forEach((el:any) => {
+      if(el.orders.length){
+        el.orders.forEach((id:any,i:number) => {
+          el.orders[i] = ordersArray.filter(order => order.id == id)
+        })
+      } 
+    }) */
+
+    return carts
+  } catch (error) {
+    console.log(error);
   }
 }

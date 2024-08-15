@@ -2,8 +2,9 @@ interface IOrder {
     id: string;
     productId: string;
     quantity: number;
-    restaurant: string;
+    restaurantId: string;
     price: number;
     createdAt: Date;
+
   }
   
