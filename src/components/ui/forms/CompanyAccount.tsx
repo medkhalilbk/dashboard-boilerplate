@@ -4,6 +4,12 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { generatePassword } from '@/lib/utils';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+import { getAllUsersService } from '@/app/api/users/services';
+import { Iuser } from '@/lib/features/userSlice';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from '../command';
+import { CommandItem } from 'cmdk';
 
 interface CompanyAccountProps {
     // Define the props for your component here
@@ -12,6 +18,8 @@ interface CompanyAccountProps {
 
 const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => { 
     const [choice,setChoice] = React.useState<string>("")
+    const [users,setUsers] = React.useState([])
+    const usersFromRedux = useSelector((state:RootState) => state.clients.data)
     const [generatedPassword, setGeneratedPassword] = React.useState(false);
     const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm({
         defaultValues: {
@@ -20,6 +28,13 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
              password:"",
         }
     });
+    React.useEffect(() => {
+        
+           axios.get("/api/unsigned-users").then((res) => {
+             setUsers(res.data.data.users)  
+           }) 
+    } , [])
+
     const onSubmit = (data: any) => {
         event?.preventDefault();
         console.log("Form data :", getValues());
@@ -129,6 +144,46 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
                 {choice == 'select' && (
                     <div>
                         <h1>Selectionner un utilisateur existant</h1>
+                        <Command className="rounded-lg border shadow-md">
+      <CommandInput placeholder="Selectionner un compte" />
+      <CommandList>
+        <CommandEmpty>Aucun résultat.</CommandEmpty>
+        <CommandGroup heading="Utilisateurs existans">
+           
+         {users.length > 0 && users.map((u:any) => {
+                return <CommandItem className='px-2 text-sm my-2'><Button  onClick={() => {
+                    Swal.fire({
+                        title:"Confirmation",
+                        text:"Vous voulez vraiment assigner l'entreprise à " + u.email,
+                        icon:"info",
+                        confirmButtonText:"Oui",
+                        confirmButtonColor:"#4caf50",
+                        cancelButtonColor:"#d33",
+                        cancelButtonText:"Non",
+                        showCancelButton:true,
+                    }).then((res) => {
+                        if(res.isConfirmed){
+                        return    axios.patch('/api/users/'+u.id , {
+                                email: u.email,
+                                companyId: company.id}).then((res) => {
+                                    Swal.fire({
+                                        title:"Succès",
+                                        text:"L'utilisateur a été assigné avec succès",
+                                        icon:"success"}).then((res) => {
+                                           window.location.replace('/dashboard/companies')  
+                                            
+                                        })
+            
+                                })
+                        }
+                        
+                    })
+                }} className='w-full' variant={"outline"}>{u.email}</Button></CommandItem>
+         })}
+          
+        </CommandGroup>
+      </CommandList>
+    </Command>
                     </div>)}
         </div>
     );

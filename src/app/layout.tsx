@@ -14,7 +14,7 @@ export default function RootLayout({ children } : any) {
   return (
    <SessionProvider> 
       <html lang="en" suppressHydrationWarning> 
-      
+      <title>Dashboard Tiktak</title>
          
       <head >
       <link

@@ -74,8 +74,10 @@ export async function updateUserService(id: string, data: Partial<IUser>) {
   }
 }
 
-export async function getAllUsersService(page: number, limit: number) {
+export async function getAllUsersService(page?: number, limit?: number) {
   try {
+   
+  if(limit && page){
     const offset = (page - 1) * limit;
 
     const users = await prisma.users.findMany({
@@ -95,6 +97,12 @@ export async function getAllUsersService(page: number, limit: number) {
         totalItems,
       },
     };
+  }else{
+    const users = await prisma.users.findMany()
+    return {
+        users
+    }
+  }
   } catch (error) {
     console.log(error)
     throw error

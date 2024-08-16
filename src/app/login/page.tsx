@@ -30,7 +30,7 @@ const Home = () => {
           <div className="mx-auto max-w-md">
           <Image src={"/logo.png"} height={100} width={200} alt='logo' />
           <h2 className='py-2'>Email : </h2>
-          <Input onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          <Input onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
   setUserNAme(e.target.value); 
 }} />
 
@@ -39,7 +39,7 @@ const Home = () => {
           </div>
     
 
-          <PasswordInput onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          <PasswordInput onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
   setPassword(e.target.value);
           }} />
     

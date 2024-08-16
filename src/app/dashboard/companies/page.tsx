@@ -1,11 +1,12 @@
 "use client"
 import DashboardLayout from '@/components/dashboardUILayout'
 import CompanyCard from '@/components/ui/companies/CompanyCard'
+import SearchBar from '@/components/ui/searchBar'
 import { Spinner } from '@/components/ui/spinner'
 import { addCompany } from '@/lib/features/companySlice'
 import { ICompany } from '@/types/company'
 import axios from 'axios'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -50,6 +51,11 @@ function CompaniesPage() {
             <PlusIcon className="h-4 w-4 mr-1" />
             Ajouter 
           </button>
+        </div>
+        <div className="flex flex-row">
+          <SearchBar onChange={() => {
+            
+          }} className='w-full' />
         </div>
       {!companies.length && <Spinner size="large" />}
       {companies.length > 0 && companies.map((company: ICompany) => (
