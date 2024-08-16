@@ -78,20 +78,22 @@ export function ClientCard({ className,user, ...props }: ClientCardProps) {
            <div className=" flex items-center space-x-4 rounded-md border p-4">
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium leading-none">
-              Bloquer le compte
+              {user.isDeleted ? "Débloquer" : "Bloquer"} le compte
             </p>
             <p className="text-sm text-muted-foreground">
-              Cette option peut bloquer l&apos;utilisateur de se connecter à l&apos;application
+              Cette option peut bloquer/débloquer l&apos;utilisateur de se connecter à l&apos;application
             </p>
           </div>
-          <Switch value={isDeleted}  onClick={() => {
-            axios.patch(`/api/users/${user.id}`, {isDeleted:!user.isDeleted}).then((res) => {
+          <Switch checked={!isDeleted}  onClick={() => {
+            axios.patch(`/api/users/${user.id}`, {isDeleted:!isDeleted}).then((res) => {
               Swal.fire({
                 title:"Succès",
                 text:"L'utilisateur a été mis à jours avec succès",
                 icon:"success",
                 confirmButtonText:"Fermer",
                 confirmButtonColor:"black"
+              }).then(() => {
+                 setIsDeleted(!isDeleted)
               })
             }).catch((err) => {
               console.log(err)

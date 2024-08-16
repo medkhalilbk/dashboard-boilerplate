@@ -97,7 +97,7 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
             </div>
             <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email:
+                    Mot de passe:
                 </label>
                 <input
                     type="password"
@@ -120,13 +120,11 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
                             title: "Nouveau mot de passe",
                             text: `Le nouveau mot de passe est : ${newPassword}`,
                             icon: 'info',
-                            confirmButtonText: 'Ok'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                setValue("password", newPassword);
-                                setGeneratedPassword(true);
-                            }
-                        });
+                            confirmButtonText: 'Ok' ,
+                        }) 
+
+                        setValue("password", newPassword);
+                        setGeneratedPassword(true);
                     }}
                 >
                     Générer un nouveau mot de passe

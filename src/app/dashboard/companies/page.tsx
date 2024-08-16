@@ -8,12 +8,14 @@ import { ICompany } from '@/types/company'
 import axios from 'axios'
 import { PlusIcon, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
- 
+
 function CompaniesPage() {
   const companies = useSelector((state: any) => state.company.data) as ICompany[]
+  const [filteredCompanies, setFilteredCompanies] = useState<ICompany[]>([])
   const dispatch = useDispatch()
+  const [search,setSearch] = useState('')
 
   React.useEffect(() => {
     async function fetchCompanies() {
@@ -37,6 +39,11 @@ function CompaniesPage() {
     }
   }, [companies.length, dispatch])
 
+
+ React.useEffect(() => {
+  setFilteredCompanies(companies.filter((company:ICompany) => {return company.name.toLowerCase().includes(search.toLowerCase())}))
+  }, [search])
+React.useEffect(() => {},[filteredCompanies])
   const router = useRouter()
 
   return (
@@ -53,12 +60,24 @@ function CompaniesPage() {
           </button>
         </div>
         <div className="flex flex-row">
-          <SearchBar onChange={() => {
-            
+          <SearchBar onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+            setSearch(e.currentTarget.value)
           }} className='w-full' />
         </div>
       {!companies.length && <Spinner size="large" />}
-      {companies.length > 0 && companies.map((company: ICompany) => (
+      {(companies.length > 0 && filteredCompanies.length == 0 && search == "")  && companies.map((company: ICompany) => (
+          <div className="my-2" key={company.id}> 
+            <CompanyCard 
+            id={company.id}
+              phoneNumber={company.phoneNumber || ""} 
+              name={company.name} 
+              description={company.description} 
+              speciality={company.specialty || ""} 
+              mainImage={company.mainImage} 
+            />
+          </div>
+        ))}
+        {filteredCompanies.length !== 0 && filteredCompanies.map((company: ICompany) => (
           <div className="my-2" key={company.id}> 
             <CompanyCard 
             id={company.id}

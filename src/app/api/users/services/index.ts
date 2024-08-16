@@ -59,7 +59,7 @@ export async function updateUserService(id: string, data: Partial<IUser>) {
       }
     }
     const user = await prisma.users.update({
-      where: { id, isDeleted: false },
+      where: { id },
       data: {
         ...data,
         updatedAt: new Date(),

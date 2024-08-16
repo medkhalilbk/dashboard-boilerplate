@@ -20,7 +20,7 @@ export default function EditPage ()  {
         setData(res.data.data); 
      }) 
     } , [])
-    const DeliveryManForm:React.FC<{data:any}> = ({data}) => {
+    const DeliveryManForm:React.FC<{data:any,isActive:boolean}> = ({data,isActive}) => {
         const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm({
             defaultValues: {
                 fullName: "",
@@ -42,7 +42,7 @@ export default function EditPage ()  {
                 setValue("vehiculeSerialNumber",data.vehiculeSerialNumber); }
         }, [data])
         const onSubmit = async () => {
-            event?.preventDefault()
+            event?.preventDefault() 
            let form = getValues()
             try { 
                 let response  = await axios.patch("/api/deliveryMans/"+data.id, form)
@@ -119,6 +119,15 @@ export default function EditPage ()  {
                 className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm"
             />
            </div>
+           <div className="mb-4 flex flex-row">
+                        <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">
+                            Actif :
+                        </label>
+                        <input type='checkbox' className='ml-2'
+                            defaultChecked={isActive}
+                            {...register('isActive')}
+                        />
+                    </div>
         <div className="mb-4 flex flex-col justify-center gap-2 mx-auto">
         <Button className='bg-green-500' type="submit">
                 Mettre à jour
@@ -127,7 +136,7 @@ export default function EditPage ()  {
     </form>
        </div>)
     }
-    const DeliveryManTikTakForm: React.FC<{ data: any, isActive: boolean, userId:string }> = ({ data, isActive, userId }) => {
+    const DeliveryManTikTakForm: React.FC<{ data: any ,userId:string }> = ({ data, userId }) => {
         const [generatedPassword, setGeneratedPassword] = useState(false);
         const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm({
             defaultValues: {
@@ -143,7 +152,7 @@ export default function EditPage ()  {
                 setValue('tikTakAccount.email', data.email);
                 setValue('tikTakAccount.password', data.password);
             }
-        }, [data, isActive, setValue]);
+        }, [data, setValue]);
     
         const onSubmit = (data: any) => {
             event?.preventDefault();
@@ -186,15 +195,7 @@ export default function EditPage ()  {
                             Génerer un nouveau mot de passe
                         </Button>
                     </div>
-{/*                     <div className="mb-4 flex flex-row">
-                        <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">
-                            Actif :
-                        </label>
-                        <Checkbox className='ml-2'
-                            defaultChecked={isActive}
-                            {...register("tikTakAccount.isActive")}
-                        />
-                    </div> */}
+            
                     <Button onClick={() => {
                         axios.patch("/api/users/"+userId , getValues().tikTakAccount).then((res) => {
                             Swal.fire({
@@ -311,8 +312,8 @@ export default function EditPage ()  {
                 Modifier l&apos;image
             </Button>
                 </div>
-                {step === 1 && <DeliveryManForm data={data.deliveryManData} />}
-                {step === 2 && <DeliveryManTikTakForm userId={data.userData.id} isActive={data.deliveryManData.isActive} data={data.userData} />}
+                {step === 1 && <DeliveryManForm data={data.deliveryManData} isActive={data.deliveryManData.isActive} />}
+                {step === 2 && <DeliveryManTikTakForm userId={data.userData.id}  data={data.userData} />}
                 {step === 3 && <DeliveryManContractForm data={data.deliveryManData}/>}
               </div>}
         </div>

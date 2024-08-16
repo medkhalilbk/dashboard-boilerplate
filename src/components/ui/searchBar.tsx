@@ -12,7 +12,7 @@ interface SearchInputProps {
 
 // Reusable SearchInput component
 export default function SearchInput({
-  placeholder = "Chercher ...",
+  placeholder = "Rechercher ...",
   value,
   onChange,
   className = "",
