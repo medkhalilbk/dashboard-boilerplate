@@ -45,7 +45,6 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
         isDeleted
     } = userInfo || {};
 
-    const description = `Email: ${email} | Statut Social: ${socialStatus} | Orders Completed: ${ordersCompleted}`;
     const dispatch = useDispatch()
     return (  
         <Card className='my-4'>
@@ -102,8 +101,7 @@ const DeliverymanCard: React.FC<DeliverymanCardProps> = ({ deliveryman }) => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent> 
-                <CardDescription>{description}</CardDescription>
+            <CardContent>  
             </CardContent>
             <CardFooter>
                 <CardDescription>

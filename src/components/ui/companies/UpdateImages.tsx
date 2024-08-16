@@ -38,7 +38,7 @@ const UpdateImages: React.FC<{ imgs: string[] | undefined, setCompany: Dispatch<
   const replaceImage = (index: number) => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*';
+    input.accept = '.jpg , .png , .jpeg';
     input.onchange = (e: any) => {
       const file = e.target.files[0];
       const reader = new FileReader();

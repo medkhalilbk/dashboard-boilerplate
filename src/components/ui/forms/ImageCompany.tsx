@@ -149,7 +149,7 @@ const MainImageUploader: React.FC<{ uploadAction: (url: Object) => void, setStep
 		  </div>
 		)}
 
-		<Button onClick={handleUpload} disabled={uploading}>
+		<Button onClick={handleUpload} disabled={uploading || (!selectedImage || !otherImages)}>
 		  {uploading ? "En cours..." : "Telecharger les images"}
 		</Button> 
   

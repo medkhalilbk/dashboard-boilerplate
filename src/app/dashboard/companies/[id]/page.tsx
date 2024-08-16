@@ -61,18 +61,19 @@ const Page = () => {
             <h2 className="text-xl font-semibold">Nom : {company?.name}</h2>
             <p className="text-gray-700"><span className="font-medium">Description :</span> {company?.description}</p>
             <p className="text-gray-700"><span className="font-medium">Image Principale  :</span> </p>
-            <Image src={company?.mainImage || ""} alt={company?.name || " image principale "} width={200} height={200} />
+            <Image src={company?.mainImage || ""} alt={company?.name || " image principale "} className='mx-auto rounded-xl' width={500} height={500} />
             <p className="text-gray-700"><span className="font-medium">Spécialité :</span> {company?.specialty}</p>
             <p className="text-gray-700"><span className="font-medium">Numéro de téléphone :</span> {company?.phoneNumber}</p>
             <p className="text-gray-700"><span className="font-medium">Distance de disponibilité :</span> {company?.availabilityDistance}</p>
             <p className="text-gray-700"><span className="font-medium">Heures de travail :</span> {company?.workHours?.start} - {company?.workHours?.end}</p>
             <p className="text-gray-700"><span className="font-medium">Autre Images :</span> </p>
-            <Slider {...settings} className='my-2'>
+            {company?.otherImages.length > 1 && <Slider {...settings} className='my-2'>
                 {company?.otherImages?.map((img, index) => (
                     <div key={index} className='flex justify-center'>
                         <Image style={{margin:"auto"}} src={img} alt={`image ${index}`} width={500} height={200} />
                     </div>))}
-    </Slider>
+    </Slider>}
+    {company?.otherImages.length == 1 &&  <Image src={company?.otherImages[0] || ""} alt={company?.name || " image principale "} className='rounded-sm mx-auto' width={200} height={200} />}
     <p className="text-gray-700"><span className="font-medium">Mots-clés :</span> {(company?.keywords as string[]).join(" ")}</p>
 
                     

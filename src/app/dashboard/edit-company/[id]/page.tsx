@@ -118,7 +118,7 @@ export default function EditDeliveryManPage ()   {
         title:"Remplacer l'image",
         input:"file",
         inputAttributes:{
-          accept:"image/*"
+          accept:".png , .jpeg, .jpg"
         },
         showCancelButton:true,
         cancelButtonText:"Annuler",
@@ -374,6 +374,8 @@ export default function EditDeliveryManPage ()   {
                 title: 'Entreprise modifiée avec succès',
                 showConfirmButton: false,
                 timer: 1500
+              }).then(() => {
+                window.location.replace('/dashboard/companies')
               })
             })
             .catch((error) => {

@@ -220,6 +220,7 @@ useEffect(()=> {
       control={control}
       render={({ field }) => (
         <Select
+        required
           value={field.value || ""}
           onValueChange={(value) => field.onChange(value)}
         >

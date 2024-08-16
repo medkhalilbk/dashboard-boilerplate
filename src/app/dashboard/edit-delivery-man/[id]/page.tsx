@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'next/navigation';
 import DashboardLayout from '@/components/dashboardUILayout';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import Swal from 'sweetalert2';
 import { generatePassword } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 export default function EditPage ()  {
     const { id } = useParams();
     const [data, setData] = React.useState<any>(null);
@@ -283,6 +284,64 @@ export default function EditPage ()  {
         );
     };
       
+    const DeliveryManImageForm: React.FC<{data:any}> = ({ data }) => {
+        const [updatedImage, setUpdatedImage] = useState<File | null>(null);
+      
+        const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+          const file = e.target.files?.[0];
+          if (file) setUpdatedImage(file);
+        };
+      
+        const handleSubmit = () => {
+          if (!updatedImage) return;
+      
+          const form = new FormData();
+          form.append('file', updatedImage);
+      
+          axios.post('/api/upload', form)
+            .then((res) => {
+              const imageUrl = res.data.URL;
+              return axios.patch(`/api/users/${data.id}`, { imgUrl: imageUrl });
+            })
+            .then(() => {
+              Swal.fire({
+                title: 'Image mise à jour',
+                icon: 'success',
+              });
+            })
+            .catch((err) => {
+              Swal.fire({
+                title: 'Erreur',
+                icon: 'error',
+                text: err.message,
+              });
+            });
+        };
+      
+        return (
+          <div className="max-w-md mx-auto p-4 bg-white shadow-md rounded-lg">
+            <img
+              src={updatedImage ? URL.createObjectURL(updatedImage) : data.imgUrl}
+              height={200}
+              width={200}
+              className="mx-auto rounded-full"
+              alt="Delivery man"
+            />
+            <Input
+              className="my-4"
+              onChange={handleImageChange}
+              type="file"
+              accept=".jpg,.png,.jpeg"
+            />
+            <button
+              onClick={handleSubmit}
+              className="bg-green-500 mx-auto px-4 py-2 rounded text-white"
+            >
+              Mettre à jour
+            </button>
+          </div>
+        );
+      };
     
     return (
 <DashboardLayout>
@@ -308,13 +367,16 @@ export default function EditPage ()  {
             }} disabled={step == 3}>
                Mettre à jour le contrat
             </Button>
-            <Button className='bg-yellow-500' type="submit">
+            <Button onClick={() => {
+                setStep(4)
+            }} className='bg-yellow-500' type="submit">
                 Modifier l&apos;image
             </Button>
                 </div>
                 {step === 1 && <DeliveryManForm data={data.deliveryManData} isActive={data.deliveryManData.isActive} />}
                 {step === 2 && <DeliveryManTikTakForm userId={data.userData.id}  data={data.userData} />}
                 {step === 3 && <DeliveryManContractForm data={data.deliveryManData}/>}
+                {step == 4 && <DeliveryManImageForm data={data.userData} />}
               </div>}
         </div>
 </DashboardLayout>
