@@ -1,18 +1,19 @@
-import { deleteMenuByIdService, getAllMenusOfCompanyService, updateMenuService } from "../../comapnies/menus/service";
+import { deleteMenuByIdService, getAllMenusOfCompanyService, getMenuByIdService, updateMenuService } from "../../comapnies/menus/service";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const companyId = params.id;
+    const menuId = params.id;
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
-    const menus = await getAllMenusOfCompanyService(companyId, page, limit);
+    const menus = await getMenuByIdService(menuId);
     if (!menus) {
       return Response.json({
-        data: "No menu found under this company id ",
+        data: "No menu found under this id",
         status: 404,
       });
     }
+    console.log(menus)
     return Response.json({
       data: menus,
       status: 200,

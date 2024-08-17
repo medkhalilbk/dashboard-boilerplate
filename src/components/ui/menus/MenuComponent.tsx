@@ -34,8 +34,8 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
         return isCollapse ? <ChevronDown/> : <ChevronUp/>
     } 
     return (
-        <div className="flex flex-row justify-center mt-8 w-full">
-            <div className="flex flex-row w-full">
+        <div className="mx-auto flex flex-row justify-center mt-8 w-full">
+            <div className="flex flex-row w-full justify-center mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-4 m-4 w-4/6 mx-auto">
                 <div className="flex justify-between">
                 <Collapsible className="w-full mx-5">

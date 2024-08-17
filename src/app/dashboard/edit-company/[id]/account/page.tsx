@@ -20,8 +20,7 @@ const Page: React.FC<PageProps> = (props) => {
     let [loading, setLoading] = React.useState<boolean>(true);
     let router = useRouter()
     React.useEffect(() => {
-        axios.get('/api/users/' + id).then((res) => {
-           return console.log(res.data)
+        axios.get('/api/users/' + id).then((res) => { 
             setUser(res.data.data);
             setEmail(res.data.data.email); // Assuming the API returns an email field
             setLoading(false);

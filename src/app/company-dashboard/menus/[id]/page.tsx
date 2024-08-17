@@ -1,5 +1,6 @@
 "use client"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { setMenus } from "@/lib/features/MenuSlice"
 import { RootState } from "@/lib/store"
 import { IMenu } from "@/types/menu"
@@ -8,28 +9,37 @@ import { useParams, useSearchParams } from "next/navigation"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux" 
-export default function EditMenuPage() {
-     const dispatch = useDispatch()
+export default function EditMenuPage() { 
      const {id} = useParams()
-     let selectedMenu = useSelector((state:RootState) => state.menus.data).filter((menu:IMenu) => menu.id == id)
+     let menuFromRedux = useSelector((state: RootState) => 
+        state.menus.data.find((menu: IMenu) => menu.id === id)
+      );     let [menu, setMenu] = React.useState<any>(menuFromRedux)
      React.useEffect(()=> {
-          if(selectedMenu.length == 0 ){
-            if(typeof window !== 'undefined'){
-                let id = localStorage.getItem('id')
-                axios.get(`/api/companies/${id}/menu`).then((res) => { 
-                dispatch(setMenus(res.data.data.menus))
-                setValue("name" , res.data.data)
+          if(!menu) {
+            if(typeof window !== 'undefined'){ 
+                axios.get(`/api/menus/${id}`).then((res) => {  
+                setMenu(res.data.data) 
+                setValue("name",res.data.data.name)
+                setValue("isActive",res.data.data.isActive)
                 }).catch((err) => {
                 console.log(err)
                 })
             }
           }
      } , [])
+ 
      const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm<IMenu>({
-        defaultValues:{
-            name:selectedMenu[0]?.name,
-            isActive:selectedMenu[0]?.isActive
+        defaultValues: {
+            name: menu?.name,
+            isActive: menu?.isActive
         }
     })
-    return <> <form className="space-y-6 w-2/3 mx-auto mt-5"><Input {...register("name")}/></form> </>
+    return <> <form className="flex flex-col gap-5 justify-center mt-5">
+        <label className="mx-auto w-1/2">Nom menu :</label>
+        <Input className="mx-auto w-1/2" {...register("name")}/>
+        <div className="mx-auto w-1/2 gap-4"> 
+        </div>
+        </form>
+        <h1 className="text-2xl font-bold">Produits</h1>
+         </>
 }

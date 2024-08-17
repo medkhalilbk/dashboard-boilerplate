@@ -9,7 +9,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
                 data: "No menu found  ",
                 status: 404,
             });
-        }
+        } 
         return Response.json({
             data: menu,
             status: 200,

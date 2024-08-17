@@ -65,7 +65,7 @@ const Home = () => {
                if(res.data.data.user.role == "companyAdmin"){
                 return  router.push("/company-dashboard")
                }
-               if(res.data.data.user.role  == "user"){
+               if(res.data.data.user.role  == "user" || res.data.data.user.role == "DeliveryMan") {
                 throw new Error("Vous ne pouvez pas se connecter autant qu'utilisateur.")
                }
               toast.success('Connexion réussie')

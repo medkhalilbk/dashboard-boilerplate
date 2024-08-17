@@ -81,10 +81,17 @@ export async function getMenuByIdService(id: string) {
     try {
         const result = await prisma.menus.findUnique({
             where: { id: id }
-        })
+        }) as any
         if (!result) {
             return null
         }
+        let productsObjects = await prisma.products.findMany({
+            where: {
+                id: { in: result.products },
+                inStock: true
+            }
+        }) 
+        result.products = productsObjects 
         return result;
     } catch (error) {
         console.error("Error fetching menus:", error);

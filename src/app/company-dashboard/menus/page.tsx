@@ -21,9 +21,9 @@ const MenuPage: React.FC = () => {
     }
   } ,[])
     return (
-      <div className="grid-rows justify-center mt-8">  
+      <div className="mx-auto grid-rows justify-center mt-8">  
       {menus?.length == 0 && <Spinner size={"large"} />}
-      <div className="grid grid-cols-1 gap-4"> 
+      <div className="max-w-5xl mx-auto px-4 py-6"> 
         {menus?.map((menu) => (
           <MenuCard key={menu.id} menu={menu} />  
         ))}

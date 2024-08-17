@@ -5,5 +5,10 @@ export default function DashboardLayout({
   }: {
     children: React.ReactNode
   }) {
-    return <section><SiderBarCompany/> {children}</section>
+    return <div className="flex">
+    <SiderBarCompany />
+    <div className="flex-1 overflow-hidden p-4 ml-64">
+      {children}
+    </div>
+  </div>
   }

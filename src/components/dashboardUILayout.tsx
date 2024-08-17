@@ -7,7 +7,7 @@ type DashboardProps = {
 
 const DashboardLayout: React.FC<DashboardProps> = ({ children }) => {
   return (
-    <div className="flex ">
+    <div className="flex">
       <SideBar />
       <div className="flex-1 overflow-hidden p-4 ml-64">
         {children}
