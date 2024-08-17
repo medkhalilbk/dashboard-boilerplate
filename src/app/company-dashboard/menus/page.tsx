@@ -13,7 +13,8 @@ const MenuPage: React.FC = () => {
   React.useEffect(() => {
     if(typeof window !== 'undefined'){
       let id = localStorage.getItem('id')
-      axios.get(`/api/companies/${id}/menus`).then((res) => { 
+      axios.get(`/api/companies/${id}/menus`).then((res) => {
+        console.log(res.data) 
        dispatch(setMenus(res.data.data.menus))
       }).catch((err) => {
         console.log(err)

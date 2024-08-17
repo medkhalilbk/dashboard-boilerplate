@@ -10,8 +10,15 @@ export async function addProductToMenu(product: IProduct) {
         if (!menu) {
             return null
         }
+        let company = await prisma.companies.findUnique({
+            where: { id: product.companyId }
+        })
+        if (!company) {
+            return null
+        }
         const productAdded = await prisma.products.create({
             data: {
+                companyId: product.companyId,
                 description: product.description,
                 inStock: product.inStock,
                 mainImageUrl: product.mainImageUrl,

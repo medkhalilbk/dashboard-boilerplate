@@ -1,5 +1,7 @@
 "use client"
 import { Input } from "@/components/ui/input"
+import FoodCard from "@/components/ui/product/MenuProductCard"
+import ProductCard from "@/components/ui/product/productCard"
 import { Switch } from "@/components/ui/switch"
 import { setMenus } from "@/lib/features/MenuSlice"
 import { RootState } from "@/lib/store"
@@ -40,6 +42,9 @@ export default function EditMenuPage() {
         <div className="mx-auto w-1/2 gap-4"> 
         </div>
         </form>
-        <h1 className="text-2xl font-bold">Produits</h1>
+        {menu?.products && <h1 className="text-2xl font-bold text-center my-2">Liste des produits ({menu?.products.length})</h1>}
+        {menu?.products && menu.products.map((product: any) => {
+            return  <> <FoodCard product={product} /> </>
+        })}
          </>
 }

@@ -5,6 +5,7 @@ export interface IProduct {
   id: string;
   name: string;
   price: number;
+  companyId:string,
   description: string;
   mainImageUrl: string;
   otherImagesUrl: string[];

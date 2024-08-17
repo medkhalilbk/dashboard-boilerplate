@@ -6,6 +6,7 @@ import { Reducer } from 'redux'; // Import Reducer from redux
 import companySlice from './features/companySlice';
 import deliveryManSlice from './features/deliveryManSlice';
 import MenuSlice from './features/MenuSlice';
+import productSlice from './features/productsSlice';
 export const store = () => {
   return configureStore({
     reducer: {
@@ -14,7 +15,8 @@ export const store = () => {
       company:companySlice,
       deliveryMan:deliveryManSlice , 
       clients: clientsSlice,
-      menus:MenuSlice
+      menus:MenuSlice,
+      products:productSlice
     },
   });
 };
@@ -24,3 +26,5 @@ export type AppStore = ReturnType<typeof store>;
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<AppStore['getState']>;
 export type AppDispatch = AppStore['dispatch'];
+
+ 

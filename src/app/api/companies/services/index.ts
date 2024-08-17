@@ -49,6 +49,19 @@ export async function getCompanyByIdService(id: string) {
   }
 }
 
+export async function getProductsByCompanyIdService(companyId: string) {
+  try {
+    const products = await prisma.products.findMany({
+      where: { companyId },
+    });
+    return products;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+
 export async function updateCompanyService(id: string, company: any) {
   try {
     const companyUpdated = await prisma.companies.update({
