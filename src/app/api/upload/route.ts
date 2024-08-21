@@ -25,6 +25,10 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const files = formData.getAll("file") as File[];
+        if (files.length === 0) {
+            return NextResponse.json({ message: "No file uploaded" }, { status: 400 }); }
+
+        
         if(files.length > 1) {
             return NextResponse.json({ message: "Only one file is allowed" }, { status: 400 });
         }

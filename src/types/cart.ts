@@ -8,6 +8,7 @@ export interface ICart {
     clientId: string;
     deliveryManAccountId: string;
     status: CartStatus;
+    companiesIds: string[],
     createdAt: Date;
 }
 enum CartStatus {

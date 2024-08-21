@@ -93,17 +93,18 @@ export async function getPorductByIdService(id: string) {
 
 }
 
-export async function updatePorductByIdService(productId: string, product: Partial<IProduct>) {
+export async function updatePorductByIdService(productId: string, productPayload: any) {
     try {
         const product = await prisma.products.findUnique({
             where: { id: productId }
-        })
+        }) 
         if (!product) {
             return null
-        }
+        } 
+        delete productPayload.id
         const updatedProduct = await prisma.products.update({
             where: { id: productId },
-            data: product
+            data: productPayload
         })
         return updatedProduct
     } catch (error) {
@@ -113,3 +114,51 @@ export async function updatePorductByIdService(productId: string, product: Parti
 
 }
 
+
+
+export async function deleteProductByIdService(productId: string) {
+    try {
+        const product = await prisma.products.findUnique({
+            where: { id: productId }
+        })
+        if (!product) {
+            return null
+        }
+        const deletedProduct = await prisma.products.delete({
+            where: { id: productId }
+        })
+        // remove from menus  
+        const menus = await prisma.menus.findMany({
+            where: {   // Replace `menuId` with the actual menu ID
+                products: {
+                    has: productId
+                }
+            }
+        })
+        
+        if(menus.length > 0){
+            let updatedMenusPromises : Promise<{
+                id: string;
+                name: string;
+                products: string[];
+                companyId: string;
+                isActive: boolean;
+            }>[] = []
+            menus.map((m) => {
+                updatedMenusPromises.push(prisma.menus.update({
+                    where: { id: m.id },
+                    data: {
+                        products: {
+                            set: m.products.filter((p) => p !== productId)
+                        }
+                    }
+                }))
+            })
+            await Promise.all(updatedMenusPromises)  
+            return deletedProduct
+        }
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}

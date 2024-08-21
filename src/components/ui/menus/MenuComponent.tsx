@@ -37,13 +37,14 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
         <div className="mx-auto flex flex-row justify-center mt-8 w-full">
             <div className="flex flex-row w-full justify-center mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-4 m-4 w-4/6 mx-auto">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-3">
                 <Collapsible className="w-full mx-5">
   <CollapsibleTrigger> <div className="flex flex-row" onClick={() => {
     setIsCollapse(!isCollapse)
   }}> <h1 className="text-lg font-bold gap-4">{menu.name}</h1> <CollapseIcon/></div></CollapsibleTrigger>
   <CollapsibleContent>
   <div className="flex flex-col mt-2 w-full">
+                {menu?.products?.length == 0 && <h1 className="text-center">Aucun produit dans ce menu</h1>}
                 {menu.products && menu.products.map((product,k) => {
                     return <ProductCard key={k} product={product} />
                 })}
@@ -52,7 +53,7 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
 
 </Collapsible>
                
-               <div className="flex flex-col gap-2">
+               <div className="flex flex-col gap-2 justify-center my-4">
                <Badge variant={"outline"} className="mx-auto">
                 <h1 className={menu.isActive ? "text-sm font-bold text-green-600 text-center" : "text-sm font-bold text-red-600 text-center"}>{menu.isActive ? "Active" : "Inactive"}</h1>
                 </Badge>
@@ -60,16 +61,15 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
                   <AlertDialogTrigger>
                   <Button>Modifier le menu</Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent >
+                  <AlertDialogContent className="w-1/3" >
                     <AlertDialogHeader>
-                      <AlertDialogTitle >Modifier le menu : {menu.name}</AlertDialogTitle>
+                      <AlertDialogTitle className="text-center" >Modifier le menu : {menu.name}</AlertDialogTitle>
                     </AlertDialogHeader>
                     <AlertDialogDescription dir="row" >
                       <div className="flex flex-col mx-auto gap-2 w-3/2">
   <Button className="bg-green-500" onClick={() => {
                         router.push('/company-dashboard/menus/'+menu.id)
-                      }}>Modifier les informations du menu</Button> 
-  <Button className="bg-blue-500">Modifier les produits</Button> 
+                      }}>Modifier les informations du menu</Button>  
   <Button className="bg-orange-500" onClick={()=>{
     axios.patch(`/api/menus/${menu.id}`,{isActive:!menu.isActive}).then((res) => {
       console.log(res) 
@@ -78,7 +78,7 @@ const MenuCard = ({menu} : {menu:IMenu}) => {
     })
   }} >{menu.isActive? "Désactiver" : "Activer"} temporairement</Button> </div>
 </AlertDialogDescription>
-<AlertDialogFooter>
+<AlertDialogFooter className="mx-auto">
           <AlertDialogCancel style={{margin:0,padding:0}}> <Button variant={"destructive"}>Fermer</Button> </AlertDialogCancel> 
         </AlertDialogFooter>
                  </AlertDialogContent>

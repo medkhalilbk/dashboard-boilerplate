@@ -1,3 +1,4 @@
+import Error from "next/error";
 import { addCartService, getAllCartsService } from "./services";
 
 export async function POST(request: Request) {
@@ -12,9 +13,8 @@ export async function POST(request: Request) {
             data: cartAdded,
             status: 200,
         });
-    } catch (error: any) {
-        console.error(error);
-        return Response.json({ error: "Error creating cart" }, { status: 500 });
+    } catch (error : any) { 
+        return Response.json({ error: error.message }, { status: 500 });
     }
 }
 

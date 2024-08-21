@@ -8,7 +8,7 @@ export interface IProduct {
   companyId:string,
   description: string;
   mainImageUrl: string;
-  otherImagesUrl: string[];
+  otherImagesUrl?: string[];
   supplements?: Supplement[];
   supplementsId: string[];
   menuId: string;

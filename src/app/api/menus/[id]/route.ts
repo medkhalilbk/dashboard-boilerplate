@@ -29,7 +29,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   try {
     const menuId = params.id;
     const payload = await request.json();
-
+    delete payload.id
     const menu = await updateMenuService(menuId, payload)
     if (!menu) {
       return Response.json({

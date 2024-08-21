@@ -10,11 +10,25 @@ export async function addCartService(cart: ICart) {
         if (!client) {
             throw new Error("the client id is wrong")
         }
-        const deliveryManAccount = await prisma.users.findUnique({
+        if(!cart.companiesIds || (cart.companiesIds.length == 0)){
+            throw new Error("the companiesIds is empty")
+        }
+        const deliveryManAccount = await prisma.deliveryMans.findUnique({
             where: { id: cart.deliveryManAccountId }
-        });
+        }); 
         if (!deliveryManAccount) {
             throw new Error("the delivery man id is wrong")
+        }
+        const searchCompanies = await prisma.companies.findMany({
+            where:{
+                id : {
+                    in:cart.companiesIds
+                }
+            }
+        })
+        console.log(searchCompanies)
+        if(searchCompanies.length == 0){
+            throw new Error("company/companies does not exist")
         }
         const cartAdded = await prisma.carts.create({
             data: {
@@ -24,6 +38,7 @@ export async function addCartService(cart: ICart) {
                 clientId: cart.clientId,
                 deliveryManAccountId: cart.deliveryManAccountId,
                 status: cart.status,
+                companiesIds: cart.companiesIds
             }
         });
 

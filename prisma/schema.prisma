@@ -63,7 +63,7 @@ model Products {
   otherImagesUrl String[]
   supplements    String[] @db.ObjectId
   inStock        Boolean
-  companyId      String @id
+  companyId      String
 }
 
 model Supplements {
@@ -115,7 +115,6 @@ model Orders {
   quantity   Int
   restaurantId String   @db.ObjectId
   price      Float
-  createdAt  DateTime @default(now())
 }
 
 
@@ -127,6 +126,7 @@ model Carts {
   clientId             String     @db.ObjectId
   deliveryManAccountId String     @db.ObjectId //this should be the user id not deliveryManId
   status               CartStatus
+  companiesIds         String[]   @db.ObjectId
   createdAt            DateTime   @default(now())
 }
 

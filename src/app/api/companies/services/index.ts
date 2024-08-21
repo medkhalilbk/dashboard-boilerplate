@@ -102,34 +102,98 @@ export async function deleteCompanyService(id:string) {
 export async function getOrdersByCompanyIdService({ companyId }: { companyId: string }) {
   try {
     // Fetch all carts associated with the company
-    let carts : any = await prisma.carts.findMany(); 
-    let ordersArray: { id: string, data: any }[] = [];
-
-    // Iterate through each cart
-    for (const cart of carts) {
-      if (!cart.orders.length) continue;
-
-      // Collect all promises for the current cart's orders
-      const orderPromises = cart.orders.map(async (order: any) => {
-        const res = await getOrderByIdService(order);
-        if (res) {
-          ordersArray.push({ id: order, data: res });
+    let carts: any = await prisma.carts.findMany({
+      where: { 
+        companiesIds :{
+          has:companyId
         }
-      });
+      }
+    }); 
+    const allOrderIds = carts.flatMap((cart: any) => cart.orders);
 
-      // Wait for all promises to resolve before proceeding
-      await Promise.all(orderPromises);
-    }
-   /*  carts.forEach((el:any) => {
-      if(el.orders.length){
-        el.orders.forEach((id:any,i:number) => {
-          el.orders[i] = ordersArray.filter(order => order.id == id)
-        })
-      } 
-    }) */
+    // Fetch all orders by their IDs
+    const allOrders = await prisma.orders.findMany({
+      where: {
+        
+        id: {
+          in: allOrderIds
+        }
+      }
+    });
 
-    return carts
+    // Filter orders by the provided restaurantId (companyId)
+     
+
+    // Extract all product IDs from the orders
+    const productIds = allOrders.map(order => order.productId);
+
+    // Fetch products by their IDs
+    const allProducts = await prisma.products.findMany({
+      where: {
+        id: {
+          in: productIds
+        }
+      }
+    });
+
+    // Create a map of product ID to product details for quick lookup
+    const productsMap = new Map(allProducts.map(product => [product.id, product]));
+
+    // Attach products to their corresponding orders
+    const ordersWithProducts = allOrders.map(order => ({
+      ...order,
+      product: productsMap.get(order.productId) // Attach product details to the order
+    }));
+
+    // Extract all delivery man IDs from the carts
+    const deliveryManIds = carts.map((cart: any) => cart.deliveryManAccountId);
+
+    // Fetch delivery men by their IDs
+    const allDeliveryMans = await prisma.deliveryMans.findMany({
+      where: {
+        id: {
+          in: deliveryManIds
+        }
+      }
+    });
+
+    // Create a map of delivery man ID to delivery man details for quick lookup
+    const deliveryMansMap = new Map(allDeliveryMans.map(dm => [dm.id, dm]));
+
+    // Extract all client IDs from the carts
+    const clientIds = carts.map((cart: any) => cart.clientId);
+
+    // Fetch clients by their IDs
+    const allClients = await prisma.users.findMany({
+      where: {
+        id: {
+          in: clientIds
+        }
+      }
+    });
+
+    // Create a map of client ID to client details for quick lookup
+    const clientsMap = new Map(allClients.map(client => [client.id, client]));
+
+    // Attach products, delivery men, and clients to their corresponding carts
+    const formattedCarts = carts.map((cart: any) => {
+      const cartOrders = ordersWithProducts.filter(order => cart.orders.includes(order.id));
+      return {
+        ...cart,
+        orders: cartOrders.map((order: any) => ({
+          id: order.id,
+          quantity: order.quantity,
+          price: order.price,
+          product: order.product
+        })),
+        deliveryMan: deliveryMansMap.get(cart.deliveryManAccountId), // Attach delivery man details to the cart
+        customer: clientsMap.get(cart.clientId) // Attach client details to the cart
+      };
+    });
+
+    return formattedCarts;
   } catch (error) {
-    console.log(error);
+    console.error("Error retrieving carts and orders:", error);
+    throw new Error("Could not retrieve carts and orders");
   }
 }

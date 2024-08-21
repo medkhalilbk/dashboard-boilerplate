@@ -21,13 +21,15 @@ interface CompanyState {
             state.data.push(action.payload)
         },
         updateMenu:(state,action:PayloadAction<IMenu>) => {
-            const index = state.data.findIndex(menu => menu.id ===action.payload.id)
+            console.log("state.menu")
+            const index = state.data.findIndex(menu => menu.id === action.payload.id)
             if(index !== -1){
                 state.data[index] = action.payload
             }
         }, 
         deleteMenu:(state,action:PayloadAction<IMenu>) => {
             state.data = state.data.filter(company => company.id !== action.payload.id)
+           
         },
         setMenus:(state,action:PayloadAction<IMenu[]>) => {
             state.data = action.payload
