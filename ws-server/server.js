@@ -5,6 +5,10 @@ const wss = new WebSocket.Server({ port: 8080 });
 // Object to store clients with their IDs
 const clients = {};
 
+// rooms by companyId and userId
+
+const rooms = {};
+
 // Event listener for new connections
 wss.on('connection', (ws) => {
     console.log('New client connected');
@@ -20,7 +24,19 @@ wss.on('connection', (ws) => {
             ws.userId = userId;  // Store userId in the WebSocket object
             console.log(`Client logged in with ID: ${userId}`);
             ws.send(`Login successful for user ID: ${userId}`);
-        } else {
+        } 
+        if(data.type === 'join') {
+            const companyId = data.companyId;
+            const order = data.order; 
+            if(!rooms[companyId]) {
+                rooms[companyId] = [];
+            }
+            rooms[companyId].push(ws);
+            ws.room = companyId;
+            ws.send(`Joined room ${companyId}`);
+        }
+        
+        else {
             // Handle other message types (e.g., sending messages to specific users)
             const targetUserId = data.targetUserId;
             const targetMessage = data.message;
