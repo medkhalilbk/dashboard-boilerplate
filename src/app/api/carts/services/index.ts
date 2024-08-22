@@ -13,6 +13,13 @@ export async function addCartService(cart: ICart) {
         if(!cart.companiesIds || (cart.companiesIds.length == 0)){
             throw new Error("the companiesIds is empty")
         }
+        
+        
+        
+        
+        
+        
+        
         const deliveryManAccount = await prisma.deliveryMans.findUnique({
             where: { id: cart.deliveryManAccountId }
         }); 
@@ -129,4 +136,44 @@ export async function deleteCartByIdService(cartId: string) {
         console.error("Error deleting cart:", error);
         throw error;
     }
+}
+
+
+export async function getNearestDeliveryMans(companyId:string){
+
+try {
+    
+    let company = await prisma.companies.findUnique({
+        where:{
+            id:companyId
+        }
+    })
+    if(!company){
+        throw new Error("company does not exist")
+    }  
+    let deliveryMans = await prisma.deliveryMans.findMany({
+        where:{
+            region:company.region , 
+            isActive:true,
+            isDeleted:false, 
+        }
+    })  
+    let unaivalableDeliveryMans = await prisma.carts.findMany({
+        where:{
+            deliveryManAccountId:{
+                in:deliveryMans.map((d:any) => d.id)
+            },
+            status:{
+                notIn: ["step4","step5"]
+            }
+        }
+    })
+    let availableDeliveryMans = deliveryMans.filter((d:any) =>  {
+        return !unaivalableDeliveryMans.find((u:any) => u.deliveryManAccountId == d.id)
+    })
+    return availableDeliveryMans
+} catch (error) {
+    
+}
+
 }

@@ -4,6 +4,7 @@ export async function POST(request: Request) {
     try {
         const payload = await request.json();
         const orderAdded = await addOrderService(payload);
+        console.log(payload)
         if (!orderAdded) {
             return Response.json({ error: "Error creating order, product or restaurant not found" }, { status: 404 });
         }

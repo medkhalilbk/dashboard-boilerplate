@@ -24,6 +24,7 @@ model Companies {
   specialty            String
   Menu                 String[]  @db.ObjectId
   keywords             String[]
+  region               String?
 }
 
 type Location {
@@ -70,6 +71,8 @@ model Supplements {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   name  String
   price Float
+  img   String
+  companyId String
 }
 
 model Users {
@@ -106,6 +109,8 @@ model DeliveryMans {
   isActive             Boolean
   contractFile         String?
   isDeleted            Boolean @default(false)
+  region               String?
+  lastLocation         Location?
 }
 
 

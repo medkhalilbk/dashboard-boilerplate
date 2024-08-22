@@ -3,6 +3,7 @@ import { addProductToMenu, getAllProductsService } from "./services";
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
+        console.log(payload)
         const productAdded = await addProductToMenu(payload);
         if (!productAdded) {
             return Response.json({ error: "Error creating product id menu not found" }, { status: 404 });

@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import Slider from 'react-slick';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Swal from 'sweetalert2';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from '@/components/ui/select';
+import { SelectValue } from '@radix-ui/react-select';
 export default function AddProduct() {
     const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
@@ -39,6 +41,9 @@ export default function AddProduct() {
     const [previewImage,setPreviewImage] = useState<string | null>(null);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
     const [file, setFile] = useState<File | null>(null);
+    const [menus, setMenus] = useState([])
+    const [id, setId] = useState<string | null>(null)
+    const [menuId, setMenuId] = useState<string | null>(null)
     const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm<any>({
         defaultValues: {
             name: "",
@@ -51,11 +56,44 @@ export default function AddProduct() {
       event?.preventDefault()
       let data = getValues()  
       let formData = new FormData();
- 
-  
+      if(file){
+        formData.append("file", file)
+      }else{
+        return Swal.fire("Erreur", "Veuillez ajouter une image principale", "error")
+      }
+
+      // upload main image
+      let mainImage = await axios.post("/api/upload", formData)
+      console.log(mainImage)
+      data.mainImageUrl = mainImage.data.URL
+      data.otherImages = uploadedImages
+      data.companyId = id
+      data.menuId = menuId
+      data.price = parseFloat(data.price)
+      
+      
+        axios.post("/api/products", data).then((res) => {
+          Swal.fire("Succès", "Produit ajouté avec succès", "success")
+        }).catch((err:any) => {
+          console.log(err)
+          Swal.fire("Erreur", "Une erreur s'est produite", "error")
+        })
+    
+     
+      
     }
  
- 
+    React.useEffect(() => {
+      if(typeof window !== "undefined"){
+        let id = localStorage.getItem("id")
+        setId(id)
+        axios.get("/api/companies/" + id + "/menus").then((res) => {
+          if(res.data.data.menus.length > 0){
+            setMenus(res.data.data.menus)
+          }
+        })
+      }
+    }, [])
     
     return (
       <div>
@@ -86,14 +124,35 @@ export default function AddProduct() {
           {previewImage && <div className='flex flex-col gap-3'> 
           <Image src={previewImage} height={300} width={300} alt='image' className='mx-auto rounded-full my-5'/></div>}
           </div>
-          <form className="flex flex-col gap-2 justify-center mt-5">
+          <form className="flex flex-col gap-2 justify-center mt-5" onSubmit={onSubmit}>
               <label className="mx-auto w-1/2">Nom :</label>
               <Input required minLength={3} {...register("name")} className="mx-auto w-1/2" />
               <label className="mx-auto w-1/2" >Prix :</label>
-              <Input required className='mx-auto w-1/2' {...register("price")} type='number' /> 
+              <Input step={0.1} required className='mx-auto w-1/2' {...register("price")} type='number' /> 
               <label className="mx-auto w-1/2">Description :</label>
               <Textarea className='mx-auto w-1/2' {...register("description")}/> 
-              <div className="mx-auto w-1/2 gap-4"></div>
+              <div className="mx-auto w-1/2 gap-4">
+                <label className="mx-auto">En stock :</label>
+                <input required className="mx-auto ml-4" type="checkbox" {...register("inStock")} />
+              </div>
+              <div className='mx-auto w-1/2 gap-4 my-3'>
+            {menus.length > 0 && 
+              <Select onValueChange={(value:string) => {
+                setMenuId(value)
+              }} >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choisir un menu" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Menus</SelectLabel>
+                  {menus.map((m:any) => {
+                    return <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                  })}  
+                </SelectGroup>
+              </SelectContent>
+            </Select>}
+              </div>
               <div className="mx-auto w-1/2">
                   <Button type={"button"} onClick={() => {
                     Swal.fire({
@@ -104,6 +163,8 @@ export default function AddProduct() {
                       } ,
                       showCancelButton:true,
                       confirmButtonText:"Ajouter",
+                      confirmButtonColor:"#22C55E", 
+                      cancelButtonColor:"#d33",
                       cancelButtonText:"Annuler"
                     }).then((res:any) => {
                       if(res.isConfirmed){
@@ -122,7 +183,7 @@ export default function AddProduct() {
               </div>
              
               {previewImages.length > 0 && (
-  <Slider slidesToShow={1} infinite className="w-1/2 mx-auto   my-5">
+  <Slider adaptiveHeight slidesToShow={1} infinite className="w-1/2 mx-auto   my-5">
     {previewImages.map((img, index) => (
    <div key={index} className="mx-auto">
    <div  className="mx-auto relative w-full max-w-md bg-white">
@@ -134,73 +195,15 @@ export default function AddProduct() {
          <DropdownMenuContent>
            <DropdownMenuLabel>Modifier l'image</DropdownMenuLabel>
            <DropdownMenuSeparator />
-         {/*   <DropdownMenuItem onClick={() => {
-             Swal.fire({
-               title: "Sélectionner une image",
-               input: "file",
-               inputAttributes: {
-                 accept: ".png,.jpg,.jpeg"
-               },
-             }).then((res) => {
-               if (res.isConfirmed && res.value) {
-                 let form = new FormData();
-                 form.append("file", res.value);
-                 var previewImage = URL.createObjectURL(res.value);
- 
-                 axios.post("/api/upload", form).then((res) => {
-                   let newImg = res.data.URL;
-                   let indexOfImg = previewImages.indexOf(p);
- 
-                   let newImagesPreview = [...previewImages];
-                   newImagesPreview[indexOfImg] = previewImage;
- 
-                   if (product) {
-                     let newImages = [...product.otherImagesUrl];
-                     newImages[indexOfImg] = newImg;
- 
-                     setProduct({ ...product, otherImagesUrl: newImages });
-                   }
-                   setPreviewImages(newImagesPreview);
-                 });
-               }
-             });
-           }}>
-             Remplacer
-           </DropdownMenuItem> */}
-           <DropdownMenuItem onClick={() => {
-             Swal.fire({
-               title: "Sélectionner une image",
-               input: "file",
-               inputAttributes: {
-                 accept: ".png,.jpg,.jpeg"
-               },
-               denyButtonText: "Annuler",
-               confirmButtonText: "Ajouter",
-               showCancelButton: true
-             }).then((res) => {
-               if (res.isConfirmed && res.value) {
-                 let file = res.value;
-                 let form = new FormData();
-                 form.append("file", file);
-                 axios.post("/api/upload", form).then((res) => {
-                   let newImg = res.data.URL;
-                   let previewImage = URL.createObjectURL(file);
-                  // setProduct({ ...product, otherImagesUrl: [...product.otherImagesUrl, newImg] });
-                   setPreviewImages([...previewImages, previewImage]);
-                 });
-               }
-             });
-           }}>
-             Ajouter une image
-           </DropdownMenuItem>
+    
            <DropdownMenuItem onClick={() => {
              Swal.fire({
                title: 'Êtes-vous sûr?',
                text: "Voulez-vous vraiment supprimer cette image?",
                icon: 'warning',
                showCancelButton: true,
-               confirmButtonColor: '#3085d6',
-               cancelButtonColor: '#d33',
+               confirmButtonColor: '#d33',
+               cancelButtonColor: 'black',
                confirmButtonText: 'Oui, supprimez-le!',
                cancelButtonText: "Annuler"
              }).then((result) => {

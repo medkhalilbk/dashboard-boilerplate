@@ -49,8 +49,12 @@ export async function authService({email,password} : {email:string,password:stri
         throw new Error("Invalid password");
     } 
     delete (user as { password?: string }).password;
-    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' });
-     
+    if(user.role === "companyAdmin"){
+        let token = jwt.sign({ id: user.id, companyId:user.companyId }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' });
+        return {user, token};
+    }
+    
+    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' }); 
     return {user, token};
    } catch (error) {
     console.log(error)
