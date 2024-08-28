@@ -20,7 +20,6 @@ import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Spinner } from '@/components/ui/spinner';
 import UpdateImages from '@/components/ui/companies/UpdateImages';
 export default function EditDeliveryManPage ()   {
-    const { id } = useParams(); // need to fix this for build
     const [days,setDays] = useState<string[]>([])
     const [company, setCompany] = useState<ICompany>();
     const [account,setAccount] = useState<any>()
@@ -34,17 +33,21 @@ export default function EditDeliveryManPage ()   {
     const [location, setLocation] = useState<any>({longitude:0,latitude:0})
     const [errorUrl, seterrorUrl] = useState(false)
     const [dataIsSet,setDataIsSet] = useState(false)
+    const [markers, setMarkers] = useState<any[]>([]);
+
     const router = useRouter()
-    const onMapClick = (e:any) => {
-      setLocation({latitude:e.latLng.lat(),longitude:e.latLng.lng()})
-      setValue("location",getUrlFromLongAndLat({latitude:e.latLng.lat(),longitude:e.latLng.lng()}))
-}
     function extractHoursAndMinutes(timeString:string) {
         const [hours, minutes] = timeString.split(':');
         return { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10) };
     }
+    const onMapClick = (e:any) => {
+          setLocation({latitude:e.latLng.lat(),longitude:e.latLng.lng()})
+          setValue("location",getUrlFromLongAndLat({latitude:e.latLng.lat(),longitude:e.latLng.lng()}))
+    }
     useEffect(() => {
-        axios
+        if(typeof window !== "undefined"){
+            let id = localStorage.getItem("id")
+            axios
             .get(`/api/companies/${id}`)
             .then((response) => {
                 setCompany(response.data.data);
@@ -55,7 +58,15 @@ export default function EditDeliveryManPage ()   {
             .catch((error) => {
                 console.log(error);
             });
-    }, [id]);
+            axios.get("/api/companies/"+id+"/user").then((res:any) =>{
+                setAccount(res.data.data)
+              }).catch((err) => {
+                setAccount(null)
+              })
+        }
+        
+    
+    }, []);
 
 
 
@@ -81,14 +92,7 @@ export default function EditDeliveryManPage ()   {
          
         
     },[company]) 
-
-    React.useEffect(() => {
-      axios.get("/api/companies/"+id+"/user").then((res:any) =>{
-        setAccount(res.data.data)
-      }).catch((err) => {
-        setAccount(null)
-      })
-    } , [])
+ 
   
     const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm<ICompany | any>({
         defaultValues: {
@@ -243,7 +247,7 @@ export default function EditDeliveryManPage ()   {
     {errorUrl && <p className='text-red-600 my-2'>Erreur de lien </p>}</>}
 <MapProvider>
 <GoogleMap
-onClick={onMapClick}
+      onClick={onMapClick}
                         options={{
                             zoomControl: true,
                             tilt: 0,
@@ -261,6 +265,7 @@ onClick={onMapClick}
                         }}
                     >
                         <Marker position={{ lat:location.latitude,lng:location.longitude}} />
+                        
                     </GoogleMap>
 </MapProvider>
 <div>
@@ -342,30 +347,17 @@ onClick={onMapClick}
 })}> Suivant </Button> 
 </div> 
         </div>
-      }
-
-  
-
+      } 
     return (
-        <DashboardLayout> 
-          <div className="row my-5">
-          <Button variant={"destructive"} onClick={() => { 
-        window.history.back();
-    }}><ArrowLeftCircle/>
-      </Button> 
-          </div> 
-          <div className="row my-5">
-          <Button disabled={!account} className='bg-green-600'  onClick={() => { 
-            router.push(`/dashboard/edit-company/${account.id}/account`)
-    }}> Modifier les informations de compte
-      </Button> 
-          </div> 
+        <div className='my-5'> 
         {!company && <Spinner size={"large"} />}
         {!dataIsSet && company && <DataForm/>}
         {dataIsSet && <>
           <UpdateImages imgs={updatedCompany?.otherImages} setCompany={setUpdatedCompany}/>
           <div className="flex justify-center  my-8 mx-auto">
           <Button className='bg-green-500 mx-auto ' onClick={() => {
+            if(typeof window !== "undefined"){
+            let id = localStorage.getItem("id")
           if(updatedCompany){
             delete updatedCompany.id  
             if(typeof(updatedCompany.keywords) === "string"){
@@ -387,10 +379,10 @@ onClick={onMapClick}
               console.log(error);
             });
           }
+            }
         }} size={"lg"}>Modifier</Button>
           </div>
           </> }   
-      
-        </DashboardLayout>
+          </div>
     );
 }; 

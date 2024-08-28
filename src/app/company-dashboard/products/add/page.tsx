@@ -17,7 +17,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import Swal from 'sweetalert2';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from '@/components/ui/select';
 import { SelectValue } from '@radix-ui/react-select';
+import { useRouter } from 'next/navigation';
 export default function AddProduct() {
+
+    const router = useRouter()
     const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
@@ -73,7 +76,11 @@ export default function AddProduct() {
       
       
         axios.post("/api/products", data).then((res) => {
-          Swal.fire("Succès", "Produit ajouté avec succès", "success")
+          Swal.fire("Succès", "Produit ajouté avec succès", "success").then((res) => {
+            if(res.isConfirmed){
+              router.push("/company-dashboard/products")
+            }
+          })
         }).catch((err:any) => {
           console.log(err)
           Swal.fire("Erreur", "Une erreur s'est produite", "error")
@@ -88,7 +95,7 @@ export default function AddProduct() {
         let id = localStorage.getItem("id")
         setId(id)
         axios.get("/api/companies/" + id + "/menus").then((res) => {
-          if(res.data.data.menus.length > 0){
+          if(res.data.data.menus?.length > 0){
             setMenus(res.data.data.menus)
           }
         })

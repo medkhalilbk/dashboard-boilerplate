@@ -12,6 +12,7 @@ export interface ICart {
     createdAt: Date;
 }
 enum CartStatus {
+    step0 = "step0", // client created the cart
     step1 = "step1", // accepta el request of delivering
     step2 = "step2", // mechi ll company chyhez
     step3 = "step3", // hazha mel company

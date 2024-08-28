@@ -5,6 +5,6 @@ interface IOrder {
     restaurantId: string;
     price: number;
     createdAt: Date;
-
+    supplementsIds?: string[];
   }
   

@@ -60,14 +60,14 @@ export async function getAllMenusOfCompanyService(companyId: string, page: numbe
 }
 
 
-export async function addMenuToCompanyService(menu: IMenu) {
+export async function addMenuToCompanyService(menu: any) {
     try {
         const result = await prisma.menus.create({
             data: {
                 companyId: menu.companyId,
                 name: menu.name,
                 isActive: menu.isActive,
-                products: []
+                products: menu.products || []
             }
         })
         return result;

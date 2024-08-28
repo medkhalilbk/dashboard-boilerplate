@@ -1,5 +1,5 @@
 import { IMenu } from "@/types/menu";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice,current } from "@reduxjs/toolkit";
 
 interface CompanyState {
     data: IMenu[];
@@ -27,8 +27,10 @@ interface CompanyState {
                 state.data[index] = action.payload
             }
         }, 
-        deleteMenu:(state,action:PayloadAction<IMenu>) => {
-            state.data = state.data.filter(company => company.id !== action.payload.id)
+        deleteMenu:(state,action:PayloadAction<any>) => {
+            console.log("payload", action.payload) 
+            state.data = state.data.filter(menu => menu.id !== action.payload.id) 
+
            
         },
         setMenus:(state,action:PayloadAction<IMenu[]>) => {

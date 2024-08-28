@@ -23,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showButtons = true }
 
         }} className="flex flex-row mx-auto justify-between align-center w-full mx-4 my-4 block  p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <Image style={{cursor:"pointer"}} onClick={() => { 
-            }} className='rounded-full' src={product.mainImageUrl} alt={product.name} width={100} height={100} />
+            }} className='rounded-full' src={product?.mainImageUrl} alt={product.name} width={100} height={100} />
             <div className='w-1/3' >
             <h1 className="text-xl my-2 font-bold">{product.name}</h1>
             <p className="text-gray-500">{product.description}</p>
@@ -56,7 +56,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showButtons = true }
                             'Supprimé!',
                             'Le produit a été supprimé.',
                             'success'
-                          )
+                          ).then((res) => {
+                            if(res.isConfirmed){
+                                router.push(`/company-dashboard/products`)
+                            }
+                          })
                             })
                            
                         }

@@ -1,6 +1,6 @@
 import {PrismaClient } from "@prisma/client";
 import { getOrderByIdService } from "../../oders/services";
-
+import * as NodeGeocoder from 'node-geocoder';
 const prisma = new PrismaClient();
 
 export async function getAllCompaniesService() {
@@ -15,6 +15,14 @@ export async function getAllCompaniesService() {
 
 export async function createCompanyService(company: any) {
   try {
+    let {latitude,longitude} = company.location
+    let apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}`
+    let response = await fetch(apiUrl)
+    let data = await response.json()
+    let address = data.results[0].formatted_address as string
+    let region = address.split(",")[1].trim()
+
+
     const newCompany = await prisma.companies.create({
       data: {
         name: company.name,
@@ -29,6 +37,7 @@ export async function createCompanyService(company: any) {
         specialty: company.specialty,
         keywords: company.keywords,
         days: company.days,
+        region:region
       },
     });
 

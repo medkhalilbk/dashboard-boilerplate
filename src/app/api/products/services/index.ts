@@ -3,19 +3,21 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 export async function addProductToMenu(product: IProduct) {
-    try {
-        let menu = await prisma.menus.findUnique({
-            where: { id: product.menuId }
-        })
-        if (!menu) {
-            return null
+    try { 
+        let menu : any | null  = null ; 
+        if(product?.menuId){
+             menu = await prisma.menus.findUnique({
+                where: { id: product.menuId }
+            }) 
         }
+        
+        console.log(typeof menu)
         let company = await prisma.companies.findUnique({
             where: { id: product.companyId }
-        })
+        }) 
         if (!company) {
             return null
-        }
+        }  
         const productAdded = await prisma.products.create({
             data: {
                 companyId: product.companyId,
@@ -28,21 +30,23 @@ export async function addProductToMenu(product: IProduct) {
                 supplements: []
             }
         })
-
-        menu = await prisma.menus.update({
-            where: { id: menu.id },
-            data: {
-                products: {
-                    push: productAdded.id
+        if (menu !== null) {
+            menu = await prisma.menus.update({
+                where: { id: menu.id },
+                data: {
+                    products: {
+                        push: productAdded.id
+                    }
                 }
-            }
-        })
+            }) 
+        }
+     
 
         return productAdded
 
 
     } catch (error) {
-
+        console.log(error)
     }
 }
 export async function getAllProductsService(limit: number, page: number) {

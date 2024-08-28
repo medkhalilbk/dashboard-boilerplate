@@ -33,11 +33,11 @@ export async function signUpService({ email, password }: { email: string; passwo
     });
     return user;  
 }
-export async function authService({email,password} : {email:string,password:string}) {
-   try {
+export async function authService({email,password} : {email:string,password:string}) { 
+   try { 
     const user = await prisma.users.findFirst({
         where: {  
-            email: email ,
+            email,
             isEmailVerified:true,
         }
     }) 
@@ -45,6 +45,7 @@ export async function authService({email,password} : {email:string,password:stri
     if (!user) {
         throw new Error("User not found");
     }
+    console.log(user)
     if (!bcrypt.compareSync(password,user.password)) {
         throw new Error("Invalid password");
     } 

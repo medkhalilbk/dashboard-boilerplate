@@ -122,7 +122,9 @@ export default function EditMenuPage() {
                 {selectedProduct && <ProductCard showButtons={false} product={selectedProduct} />}
               </AlertDialogHeader>
               <AlertDialogFooter className="mx-auto">
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogCancel onClick={() => {
+                  setSelectedProduct(null)
+                }}>Annuler</AlertDialogCancel>
                 <AlertDialogAction onClick={() => {
                   let newMenu = {...menu,products:[...menu.products,selectedProduct]} 
                   axios.patch(`/api/menus/${menu.id}`,{products:newMenu.products.map((product:any) => product.id) }).then((res) => {

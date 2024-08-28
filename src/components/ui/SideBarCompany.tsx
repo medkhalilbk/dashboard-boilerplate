@@ -144,12 +144,35 @@ function SiderBarCompany() {
 
           </li>
           <li>
-            <Link href={"/dashboard/users"} className="flex items-center rounded-lg px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="12" cy="6" r="4" fill="black"/>
-<path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" fill="#1C274C"/>
+          <Link 
+      href="/company-dashboard/supplements" 
+      className={pathname === "/company-dashboard/supplements" 
+        ? "flex items-center rounded-lg px-3 bg-green-200 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700" 
+        : "flex items-center rounded-lg px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"}
+    >
+       <svg
+  width="24"
+  height="24"
+  viewBox="0 0 1024 1024"
+  className="icon"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill="#000000"
+    d="M608 224v-64a32 32 0 00-64 0v336h26.88A64 64 0 00608 484.096V224zm101.12 160A64 64 0 00672 395.904V384h64V224a32 32 0 10-64 0v160h37.12zm74.88 0a92.928 92.928 0 0191.328 110.08l-60.672 323.584A96 96 0 01720.32 896H303.68a96 96 0 01-94.336-78.336L148.672 494.08A92.928 92.928 0 01240 384h-16V224a96 96 0 01188.608-25.28A95.744 95.744 0 01480 197.44V160a96 96 0 01188.608-25.28A96 96 0 01800 224v160h-16zM670.784 512a128 128 0 01-99.904 48H453.12a128 128 0 01-99.84-48H352v-1.536a128.128 128.128 0 01-9.984-14.976L314.88 448H240a28.928 28.928 0 00-28.48 34.304L241.088 640h541.824l29.568-157.696A28.928 28.928 0 00784 448h-74.88l-27.136 47.488A132.405 132.405 0 01672 510.464V512h-1.216zM480 288a32 32 0 00-64 0v196.096A64 64 0 00453.12 496H480V288zm-128 96V224a32 32 0 00-64 0v160h64-37.12A64 64 0 01352 395.904zm-98.88 320l19.072 101.888A32 32 0 00303.68 832h416.64a32 32 0 0031.488-26.112L770.88 704H253.12z"
+  />
 </svg>
-  <span className="ml-3 flex-1 whitespace-nowrap">Utilisateurs</span>
+
+      <span className="ml-3 flex-1 whitespace-nowrap">Supplements</span>
+    </Link>
+
+          </li>
+          <li>
+            <Link href={"/company-dashboard/edit-profile"}       className={pathname === "/company-dashboard/edit-profile" 
+        ? "flex items-center rounded-lg px-3 bg-green-200 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700" 
+        : "flex items-center rounded-lg px-3 py-2 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"}>
+            <svg width="24" height="24" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M600.704 64a32 32 0 0 1 30.464 22.208l35.2 109.376c14.784 7.232 28.928 15.36 42.432 24.512l112.384-24.192a32 32 0 0 1 34.432 15.36L944.32 364.8a32 32 0 0 1-4.032 37.504l-77.12 85.12a357.12 357.12 0 0 1 0 49.024l77.12 85.248a32 32 0 0 1 4.032 37.504l-88.704 153.6a32 32 0 0 1-34.432 15.296L708.8 803.904c-13.44 9.088-27.648 17.28-42.368 24.512l-35.264 109.376A32 32 0 0 1 600.704 960H423.296a32 32 0 0 1-30.464-22.208L357.696 828.48a351.616 351.616 0 0 1-42.56-24.64l-112.32 24.256a32 32 0 0 1-34.432-15.36L79.68 659.2a32 32 0 0 1 4.032-37.504l77.12-85.248a357.12 357.12 0 0 1 0-48.896l-77.12-85.248A32 32 0 0 1 79.68 364.8l88.704-153.6a32 32 0 0 1 34.432-15.296l112.32 24.256c13.568-9.152 27.776-17.408 42.56-24.64l35.2-109.312A32 32 0 0 1 423.232 64H600.64zm-23.424 64H446.72l-36.352 113.088-24.512 11.968a294.113 294.113 0 0 0-34.816 20.096l-22.656 15.36-116.224-25.088-65.28 113.152 79.68 88.192-1.92 27.136a293.12 293.12 0 0 0 0 40.192l1.92 27.136-79.808 88.192 65.344 113.152 116.224-25.024 22.656 15.296a294.113 294.113 0 0 0 34.816 20.096l24.512 11.968L446.72 896h130.688l36.48-113.152 24.448-11.904a288.282 288.282 0 0 0 34.752-20.096l22.592-15.296 116.288 25.024 65.28-113.152-79.744-88.192 1.92-27.136a293.12 293.12 0 0 0 0-40.256l-1.92-27.136 79.808-88.128-65.344-113.152-116.288 24.96-22.592-15.232a287.616 287.616 0 0 0-34.752-20.096l-24.448-11.904L577.344 128zM512 320a192 192 0 1 1 0 384 192 192 0 0 1 0-384zm0 64a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"/></svg>
+  <span className="ml-3 flex-1 whitespace-nowrap">Modifier</span>
             </Link>
           </li>
         </ul>

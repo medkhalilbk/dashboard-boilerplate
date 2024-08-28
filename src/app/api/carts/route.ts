@@ -1,23 +1,23 @@
 import Error from "next/error";
-import { addCartService, getAllCartsService, getNearestDeliveryMans } from "./services";
+import { addCartService, getAllCartsService, getNearestDeliveryMans, groupCompaniesByDistance, notifyCompanyViaWeb } from "./services";
+import { addOrderService } from "../oders/services";
 
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
-        let deliveryMans = await getNearestDeliveryMans(payload.companyId);
-        if (!deliveryMans) {
-            return Response.json({ error: "Error fetching delivery mans" }, { status: 404 });
-        }
+        const {clientId} = payload;
+        const userLocation = payload.location
+        const ordersPromises = payload.orders.map((order: any) => addOrderService(order));
+        const orders = await Promise.all(ordersPromises)   ; 
         
-        const cartAdded = await addCartService(payload);
-        if (!cartAdded) {
-            return Response.json({ error: "Error creating cart, client or delivery man account not found" }, { status: 404 });
-        }
-        return Response.json({
-            message: "Cart created successfully",
-            data: cartAdded,
-            status: 200,
-        });
+        console.log("🚀 ~ POST ~ orders:", orders)
+
+        
+
+        const companiesData = await groupCompaniesByDistance(payload.companiesIds as string[]);  
+        let deliveryMans = await getNearestDeliveryMans(companiesData,orders,clientId,userLocation); 
+         let emitForCompany =  await notifyCompanyViaWeb({carts:deliveryMans?.carts});
+        return Response.json({ deliveryMans }, {status:200});
     } catch (error : any) { 
         return Response.json({ error: error.message }, { status: 500 });
     }

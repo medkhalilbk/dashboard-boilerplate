@@ -89,6 +89,7 @@ model Users {
   deliveryAddress Location?
   imgUrl          String?
   isDeleted       Boolean   @default(false)
+  emailCode            String?
 }
 
 enum Roles {
@@ -111,6 +112,7 @@ model DeliveryMans {
   isDeleted            Boolean @default(false)
   region               String?
   lastLocation         Location?
+  cartsInProgress      Int     @default(0)
 }
 
 
@@ -120,6 +122,8 @@ model Orders {
   quantity   Int
   restaurantId String   @db.ObjectId
   price      Float
+  createdAt            DateTime?   @default(now()) 
+  supplementsIds       String[]   @db.ObjectId @default([])
 }
 
 
@@ -129,13 +133,14 @@ model Carts {
   location             Location
   totalPrice           Float
   clientId             String     @db.ObjectId
-  deliveryManAccountId String     @db.ObjectId //this should be the user id not deliveryManId
+  deliveryManAccountId String?     @db.ObjectId //this should be the user id not deliveryManId
   status               CartStatus
   companiesIds         String[]   @db.ObjectId
   createdAt            DateTime   @default(now())
 }
 
 enum CartStatus {
+  step0 // waiting 
   step1 //accepta el request of delivering
   step2 //mechi ll company chyhez 
   step3 //hazha mel company
