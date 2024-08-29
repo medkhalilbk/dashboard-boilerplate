@@ -123,6 +123,7 @@ model Orders {
   restaurantId String   @db.ObjectId
   price      Float
   createdAt            DateTime?   @default(now()) 
+  status     OrderStatus? 
   supplementsIds       String[]   @db.ObjectId @default([])
 }
 
@@ -142,8 +143,14 @@ model Carts {
 enum CartStatus {
   step0 // waiting 
   step1 //accepta el request of delivering
-  step2 //mechi ll company chyhez 
+  step2 // order hdhar
   step3 //hazha mel company
   step4 //fi thneya
   step5 //wselt
+}
+
+enum OrderStatus {
+  inProgress // mazel ma thazech
+  Ready // yestana f livreur 
+  Collected // collected
 }

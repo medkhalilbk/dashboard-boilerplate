@@ -222,7 +222,7 @@ interface IGetDeliveryMans {
 
 function waitForDeliveryMenList(socket: any): Promise<IGetDeliveryMans> {
   return new Promise((resolve, reject) => {
-    // Listener for 'delivery-men-list' event
+    
     socket.on("delivery-men-list", (data: IGetDeliveryMans) => {
       resolve(data);
     });
@@ -241,7 +241,9 @@ interface deliveryMansPerCompanies {
 }
 
 export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[], clientId: string, userLocation: { latitude: number, longitude: number }) {
-  const socket = io("http://192.168.1.4:8080");
+  const socket = io("http://192.168.1.4:8080" , {
+    transports: ["polling"], 
+  });
   try {
     if (!companiesData) throw new Error("companiesData is empty");
     if (!orders) throw new Error("orders is empty");
@@ -253,8 +255,7 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
     });
 
     socket.emit("get-delivery-men");
-    let dataFromSocket = await waitForDeliveryMenList(socket);
-    socket.disconnect();
+    let dataFromSocket = await waitForDeliveryMenList(socket); 
     let deliveryMansPerCompanies: deliveryMansPerCompanies[] = [];
     filtredCompanies.forEach((company: any) => {
       if (dataFromSocket.deliveryMen.length == 0) return;
@@ -266,7 +267,7 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
         deliveryMansPerCompanies.push({
           deliverymanIds: [dataFromSocket.deliveryMen[0].id],
           groupOfCompanies: [company.id, ...grouppedCompanies[company.id].near],
-          dataOfGroupedCompanies: [company],
+          dataOfGroupedCompanies: [company, ...grouppedCompanies[company.id].near.map((id: string) => companies.find((c: any) => c.id === id))],
         });
       } else {
         let sortedDeliveryMansArray = deliveryManWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 5);
@@ -290,20 +291,21 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
     let objectOfCartsPromises = deliveryMansPerCompaniesAddedOrders.flatMap((obj: any) => {
       let { dataOfGroupedCompanies } = obj;
       return dataOfGroupedCompanies.flatMap((c: any) => {
-        let { orders } = c;
+        let { orders } = c; 
         return addCartService({
           orders: orders.map((o: any) => o.id),
           location: userLocation,
           totalPrice: orders.reduce((acc: number, o: any) => acc + o.price, 0),
           clientId: clientId,
           status: "step0",
-          companiesIds: [c.id],
+          companiesIds: obj.groupOfCompanies,
         });
       });
     });
 
-    let objectOfCarts = await Promise.all(objectOfCartsPromises);
-    deliveryMansPerCompaniesAddedOrders.push({carts:objectOfCarts}) 
+    let objectOfCarts = await Promise.all(objectOfCartsPromises);  
+    socket.emit("companies-notifications", {room:objectOfCarts});
+    socket.disconnect()
     return {data : deliveryMansPerCompaniesAddedOrders , carts:objectOfCarts};
 
   } catch (error) {
@@ -312,11 +314,4 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
 }
 
 
-export   function notifyCompanyViaWeb({carts} : {carts?:any[]}) {
-  const socket = io(process.env.SOCKET_URL as string);
-   console.log(carts)
-   socket.emit("companies-notifications", {room:carts});
-   if (!carts) throw new Error("carts is empty");
-
   
- }

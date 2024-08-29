@@ -21,6 +21,7 @@ export async function addOrderService(order: IOrder) {
                 quantity: order.quantity,
                 restaurantId:order.restaurantId,
                 price: order.price,
+                status:"inProgress" ,
                 createdAt: new Date()
             }
         });

@@ -116,6 +116,9 @@ export async function getOrdersByCompanyIdService({ companyId }: { companyId: st
         companiesIds :{
           has:companyId
         }
+      } , 
+      orderBy:{
+        createdAt:"desc"
       }
     }); 
     const allOrderIds = carts.flatMap((cart: any) => cart.orders);
@@ -130,6 +133,7 @@ export async function getOrdersByCompanyIdService({ companyId }: { companyId: st
       }
     });
 
+    
     // Filter orders by the provided restaurantId (companyId)
      
 
@@ -155,24 +159,23 @@ export async function getOrdersByCompanyIdService({ companyId }: { companyId: st
     }));
 
     // Extract all delivery man IDs from the carts
-    const deliveryManIds = carts.map((cart: any) => cart.deliveryManAccountId);
-
-    // Fetch delivery men by their IDs
-    const allDeliveryMans = await prisma.deliveryMans.findMany({
+    const deliveryManIds = carts.map((cart: any) => cart?.deliveryManAccountId);
+ 
+    let deliveryManIdsFiltered = deliveryManIds.filter((id:any)=> id !== null )
+     
+    let deliveryMansMap = new Map()
+    if(deliveryManIdsFiltered.length !== 0 ){
+        const allDeliveryMans = await prisma.deliveryMans.findMany({
       where: {
         id: {
-          in: deliveryManIds
+          in: deliveryManIdsFiltered
         }
       }
     });
-
-    // Create a map of delivery man ID to delivery man details for quick lookup
-    const deliveryMansMap = new Map(allDeliveryMans.map(dm => [dm.id, dm]));
-
-    // Extract all client IDs from the carts
+    deliveryMansMap = new Map(allDeliveryMans.map(dm => [dm.id, dm]));
+    }
+    
     const clientIds = carts.map((cart: any) => cart.clientId);
-
-    // Fetch clients by their IDs
     const allClients = await prisma.users.findMany({
       where: {
         id: {
@@ -193,16 +196,55 @@ export async function getOrdersByCompanyIdService({ companyId }: { companyId: st
           id: order.id,
           quantity: order.quantity,
           price: order.price,
-          product: order.product
+          product: order.product,
+          status: order.status
         })),
-        deliveryMan: deliveryMansMap.get(cart.deliveryManAccountId), // Attach delivery man details to the cart
+        deliveryMan: deliveryMansMap.get(cart.deliveryManAccountId) || "On attente de réponse", // Attach delivery man details to the cart
         customer: clientsMap.get(cart.clientId) // Attach client details to the cart
       };
-    });
+    }); 
+    const filteredCartsByCompanyId = formattedCarts
+    .filter((cart:any) => 
+      cart.orders.some((order:any) => order.product.companyId === companyId)
+    );
+    return filteredCartsByCompanyId;
+   // remove unsued carts 
+  
 
-    return formattedCarts;
   } catch (error) {
     console.error("Error retrieving carts and orders:", error);
     throw new Error("Could not retrieve carts and orders");
+  }
+}
+
+
+export async function updateOrdersByCartId(cartId: string, companyId:string) {
+  try {
+     let cart = await prisma.carts.findUnique({
+      where: {
+        id: cartId,
+      },
+     })
+     let restaurantDetails = await prisma.companies.findUnique({
+        where:{
+          id:companyId
+        }
+     })
+
+     if(!cart) throw new Error("Cart not found")
+      let orders = await prisma.orders.updateMany({
+        where: {
+          id: {
+            in: cart.orders,
+          }, 
+          restaurantId:companyId
+        } , 
+      data :{
+        status:"Ready"
+      }})
+      return {orders,restaurantDetails}
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

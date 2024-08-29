@@ -90,3 +90,9 @@
   .bg-login{
     background-color: #ecfdf5
   }
+  .table-order-cell h1{ 
+    text-align: center;
+    font-size: 1rem!important;
+    font-weight: 600!important;
+    padding: 5px;
+  }

@@ -7,9 +7,62 @@ import {TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from './toolt
 import { Button } from './button';
 import { cookies } from 'next/headers';
 import { deleteCookies } from '@/app/actions';
+import socket from "@/socket";
+import { useEffect, useState, useRef } from "react";// State to track if audio play is allowed
+import Swal from 'sweetalert2';
 
+// Function to handle user interaction to enable audio play
 
 function SiderBarCompany() {
+  const [isConnected, setIsConnected] = useState(false);
+  const [audioAllowed, setAudioAllowed] = useState(false); 
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const enableAudio = () => {
+    setAudioAllowed(true); // Set state to allow audio
+    if (audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error("Audio play failed:", error);
+      });
+    }
+  };
+  
+  useEffect(() => {
+ 
+  
+    if (socket) {
+      const id = localStorage.getItem("id");
+  
+      socket.on("connect", () => {
+        setIsConnected(true);
+      });
+  
+      socket.on("disconnect", () => {
+        setIsConnected(false);
+      });
+  
+      socket.on("companies-update", (data: any) => {  
+        if (data.companyIds.includes(id as string)) { 
+          console.log("new order")
+          Swal.fire({
+            title: "Nouvelle commande",
+            text: "Vous avez une nouvelle commande",
+            icon: "info",
+            confirmButtonText: "Voir",
+            showCancelButton: true,
+            cancelButtonText: "Fermer",
+            confirmButtonColor:"#039639"
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.replace('/company-dashboard/orders') }
+          })
+         
+        }
+      });
+    }
+  }, []);
+ 
   const pathname = usePathname() 
   let [email,setEmail] = React.useState<string | null>(null)
   React.useEffect(() => {
@@ -20,6 +73,7 @@ function SiderBarCompany() {
   return (
     <aside id="sidebar" className="fixed left-0 top-0 z-40 h-screen w-64  " aria-label="Sidebar">
       <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-700 dark:bg-stone-950">
+      <audio className="hidden" ref={audioRef} src="/sounds/alert.mp3" />
         <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
           <Link href={"/company-dashboard"}>
           <Image src={"/logo.png"} height={100} width={200} alt='logo' /> </Link>
@@ -189,7 +243,9 @@ function SiderBarCompany() {
               <circle cx="5" cy="12" r="1" />
             </svg>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent style={{
+          flexDirection:"column"
+        }}>
            <Button variant={"outline"} onClick={() => {
             if(typeof window !== 'undefined') {
               deleteCookies().then(() => {
@@ -202,6 +258,9 @@ function SiderBarCompany() {
               return router.push('/login')
             }
            }}>Deconnexion</Button>
+           <Button onClick={() => {
+            setAudioAllowed(!audioAllowed)
+           }}>{audioAllowed? "Désactiver le son" : "Activer le son"}</Button>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

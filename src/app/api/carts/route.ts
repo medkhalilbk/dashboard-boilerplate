@@ -4,6 +4,7 @@ import { addOrderService } from "../oders/services";
 
 export async function POST(request: Request) {
     try {
+        
         const payload = await request.json();
         const {clientId} = payload;
         const userLocation = payload.location
@@ -15,8 +16,9 @@ export async function POST(request: Request) {
         
 
         const companiesData = await groupCompaniesByDistance(payload.companiesIds as string[]);  
+        
         let deliveryMans = await getNearestDeliveryMans(companiesData,orders,clientId,userLocation); 
-         let emitForCompany =  await notifyCompanyViaWeb({carts:deliveryMans?.carts});
+         
         return Response.json({ deliveryMans }, {status:200});
     } catch (error : any) { 
         return Response.json({ error: error.message }, { status: 500 });
