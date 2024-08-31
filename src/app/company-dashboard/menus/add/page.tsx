@@ -17,6 +17,7 @@ export default function AddMenu(){
     let [products, setProducts] = React.useState(productsFromRedux)
     let [selectedProduct, setSelectedProduct] = React.useState<any>()
     let [menu, setMenu] = React.useState<any>()
+    let user = useSelector((state: RootState) => state.user)
     let [id, setId] = React.useState("")
     let dispatch = useDispatch()
     const router = useRouter()
@@ -88,6 +89,7 @@ export default function AddMenu(){
               <AlertDialogFooter className="mx-auto">
                 <AlertDialogCancel>Annuler</AlertDialogCancel>
                 <AlertDialogAction onClick={() => {
+                  console.log(user)
                     if(getValues("name") === "" && getValues("name").length < 4){
                         Swal.fire({
                             title:"Le nom de menu doit contenir au moins 4 caractères",

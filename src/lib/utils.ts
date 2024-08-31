@@ -32,11 +32,15 @@ function stringToColor(string: string) {
 }
 
 export function stringAvatar(name: string) {
+  const nameParts = name.split(' ');
+  
   return {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    children: nameParts.length >= 2 
+      ? `${nameParts[0][0]}${nameParts[1][0]}` 
+      : `${nameParts[0][0]}`,  // Fallback to the first letter of the first word if there's only one word
   };
 }
 export function hashPassword(password: string) {

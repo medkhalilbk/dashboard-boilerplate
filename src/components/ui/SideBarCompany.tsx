@@ -10,31 +10,42 @@ import { deleteCookies } from '@/app/actions';
 import socket from "@/socket";
 import { useEffect, useState, useRef } from "react";// State to track if audio play is allowed
 import Swal from 'sweetalert2';
-
+import axios from 'axios';
+import { addOrder, setOrders } from '@/lib/features/orderSlice';
+import { useDispatch } from 'react-redux'; 
+import { toast } from 'sonner';
 // Function to handle user interaction to enable audio play
 
-function SiderBarCompany() {
+function SiderBarCompany() { 
+  
+  let router = useRouter() 
   const [isConnected, setIsConnected] = useState(false);
   const [audioAllowed, setAudioAllowed] = useState(false); 
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const dispatch = useDispatch();
+ 
+  function updateOrders(id:any){
+    axios.get("/api/companies/"+id+"/orders").then((res) => {
+      dispatch(setOrders(res.data?.data))
+      console.log("update from redux")
+    }).catch((err:any) => {
+      console.log(err)
+    })
+  }
 
-  const enableAudio = () => {
-    setAudioAllowed(true); // Set state to allow audio
-    if (audioRef.current) {
-      audioRef.current.play().catch(error => {
-        console.error("Audio play failed:", error);
-      });
-    }
-  };
+
   
   useEffect(() => {
- 
+    let id : any ; 
+    if(typeof window !== 'undefined') { 
+      id = localStorage.getItem("id");
+    }
   
     if (socket) {
-      const id = localStorage.getItem("id");
   
       socket.on("connect", () => {
+        console.log("connected")
         setIsConnected(true);
       });
   
@@ -42,22 +53,35 @@ function SiderBarCompany() {
         setIsConnected(false);
       });
   
-      socket.on("companies-update", (data: any) => {  
-        if (data.companyIds.includes(id as string)) { 
-          console.log("new order")
-          Swal.fire({
-            title: "Nouvelle commande",
-            text: "Vous avez une nouvelle commande",
-            icon: "info",
-            confirmButtonText: "Voir",
-            showCancelButton: true,
-            cancelButtonText: "Fermer",
-            confirmButtonColor:"#039639"
-          }).then((result) => {
-            if(result.isConfirmed) {
-              window.location.replace('/company-dashboard/orders') }
+      socket.on("companies-update", (data: any) => {   
+        console.log("🚀 ~ socket.on ~ data:", data)
+        if(data?.type == "order-accept"){
+          console.log("update order from socket")
+          updateOrders(id)
+          toast.success("Commande acceptée" , {
+            position:"top-right",
+            
           })
+        }
+        if (data.companyIds.includes(id as string)) { 
          
+
+          if(data?.type == "new-order") {
+           return Swal.fire({
+              title: "Nouvelle commande",
+              text: "Vous avez une nouvelle commande",
+              icon: "info",
+              confirmButtonText: "Voir",
+              showCancelButton: true,
+              cancelButtonText: "Fermer",
+              confirmButtonColor:"#039639"
+            }).then((result:any) => {
+              if(result.isConfirmed) {
+                router.push("/company-dashboard/orders")
+              }
+            }).catch(() => {})
+            
+            } 
         }
       });
     }
@@ -69,7 +93,6 @@ function SiderBarCompany() {
     if(typeof window !== 'undefined') {
       setEmail(localStorage.getItem('email'))}
   }) 
-  let router = useRouter() 
   return (
     <aside id="sidebar" className="fixed left-0 top-0 z-40 h-screen w-64  " aria-label="Sidebar">
       <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-700 dark:bg-stone-950">

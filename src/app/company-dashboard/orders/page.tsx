@@ -1,27 +1,25 @@
-"use client"
-import { useEffect, useRef } from 'react';
-import lottie from 'lottie-web';
-import { useSelector } from 'react-redux';
+"use client" 
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import React from 'react';
-import axios from 'axios';
-import { CompactTable } from '@table-library/react-table-library/compact';
-import DataTablesOrders from '@/components/ui/orders/DataTables';
-import { IOrderDetails } from '@/components/ui/orders/cartResultTypes';
-
+import axios from 'axios'; 
+import DataTablesOrders from '@/components/ui/orders/DataTables'; 
+import { setOrders } from '@/lib/features/orderSlice'; 
 export default function OrdersPage() { 
 
-let [orders,setOrders] = React.useState<IOrderDetails[] | []>([])
-  
+ let orders = useSelector((state: RootState) => state.orders.data);
+ let dispatch = useDispatch()
 React.useEffect(() => {
   if(typeof window !== 'undefined'){
     let id = localStorage.getItem('id')
     axios.get(`/api/companies/${id}/orders`).then((res)=>{
-      setOrders(res.data?.data)
+      dispatch(setOrders(res.data?.data))
     })
   }
 } , [])  
+React.useEffect(() => {
 
+} , [orders])
 return (
    <>
    <div className='my-3 mx-2'>

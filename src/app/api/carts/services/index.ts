@@ -240,7 +240,7 @@ interface deliveryMansPerCompanies {
   dataOfGroupedCompanies: any[];
 }
 
-export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[], clientId: string, userLocation: { latitude: number, longitude: number }) {
+export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[], clientId: string, userLocation: { latitude: number, longitude: number }) : Promise<any> {
   const socket = io("http://192.168.1.4:8080" , {
     transports: ["polling"], 
   });
@@ -256,6 +256,10 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
 
     socket.emit("get-delivery-men");
     let dataFromSocket = await waitForDeliveryMenList(socket); 
+
+    if(dataFromSocket.deliveryMen.length == 0) {
+       throw new Error("Aucun livreurs présents.")
+    }
     let deliveryMansPerCompanies: deliveryMansPerCompanies[] = [];
     filtredCompanies.forEach((company: any) => {
       if (dataFromSocket.deliveryMen.length == 0) return;
@@ -309,7 +313,7 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
     return {data : deliveryMansPerCompaniesAddedOrders , carts:objectOfCarts};
 
   } catch (error) {
-    console.log(error);
+    throw error
   }
 }
 

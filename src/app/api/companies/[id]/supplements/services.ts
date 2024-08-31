@@ -72,6 +72,7 @@ export async function getStatsByCompanyIdService(companyId: string) {
                     id:{
                         in: ordersIds,
                     },
+                    restaurantId: companyId
                     
                 }
             })
