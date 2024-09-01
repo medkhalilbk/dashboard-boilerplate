@@ -11,10 +11,9 @@ import socket from "@/socket";
 import { useEffect, useState, useRef } from "react";// State to track if audio play is allowed
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { addOrder, setOrders } from '@/lib/features/orderSlice';
+import { setOrders } from '@/lib/features/orderSlice';
 import { useDispatch } from 'react-redux'; 
 import { toast } from 'sonner';
-// Function to handle user interaction to enable audio play
 
 function SiderBarCompany() { 
   
@@ -27,15 +26,12 @@ function SiderBarCompany() {
  
   function updateOrders(id:any){
     axios.get("/api/companies/"+id+"/orders").then((res) => {
-      dispatch(setOrders(res.data?.data))
+      dispatch(setOrders([...res.data?.data]))
       console.log("update from redux")
     }).catch((err:any) => {
       console.log(err)
     })
   }
-
-
-  
   useEffect(() => {
     let id : any ; 
     if(typeof window !== 'undefined') { 
@@ -51,9 +47,8 @@ function SiderBarCompany() {
   
       socket.on("disconnect", () => {
         setIsConnected(false);
-      });
-  
-      socket.on("companies-update", (data: any) => {   
+      }); 
+      socket.on("companies-update", function (data: any)  {   
         console.log("🚀 ~ socket.on ~ data:", data)
         if(data?.type == "order-accept"){
           console.log("update order from socket")
@@ -64,26 +59,25 @@ function SiderBarCompany() {
           })
         }
         if (data.companyIds.includes(id as string)) { 
-         
-
           if(data?.type == "new-order") {
+            updateOrders(id)
            return Swal.fire({
               title: "Nouvelle commande",
               text: "Vous avez une nouvelle commande",
-              icon: "info",
-              confirmButtonText: "Voir",
-              showCancelButton: true,
+              icon: "info", 
               cancelButtonText: "Fermer",
               confirmButtonColor:"#039639"
-            }).then((result:any) => {
-              if(result.isConfirmed) {
-                router.push("/company-dashboard/orders")
-              }
+            }).then((result:any) => { 
             }).catch(() => {})
             
             } 
         }
       });
+      return () => {
+        socket?.off("connect")
+        socket?.off("disconnect")
+        socket?.off("companies-update")
+      } 
     }
   }, []);
  

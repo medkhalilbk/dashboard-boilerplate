@@ -3,6 +3,7 @@ import { ICompany } from "@/types/company";
 import { CartStatus, PrismaClient } from "@prisma/client";
 import { io } from "socket.io-client";
 import * as geolib from "geolib";
+import { getAddresFromLocation } from "@/lib/utils";
 const prisma = new PrismaClient();
 
 export async function addCartService(cart: ICart) {
@@ -241,13 +242,15 @@ interface deliveryMansPerCompanies {
 }
 
 export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[], clientId: string, userLocation: { latitude: number, longitude: number }) : Promise<any> {
-  const socket = io("http://192.168.1.4:8080" , {
+  const socket = io(process.env.SOCKET_URL as string , {
     transports: ["polling"], 
   });
+  
   try {
+
     if (!companiesData) throw new Error("companiesData is empty");
     if (!orders) throw new Error("orders is empty");
-
+    let address = await getAddresFromLocation(userLocation)
     let companies = companiesData.companiesData as ICompany[];
     let { grouppedCompanies } = companiesData;
     let filtredCompanies = Object.keys(grouppedCompanies).map((id: string) => {
@@ -291,24 +294,40 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
       });
       return d;
     });
-
+    let socketObject:any =[]
+    console.log(deliveryMansPerCompaniesAddedOrders)
     let objectOfCartsPromises = deliveryMansPerCompaniesAddedOrders.flatMap((obj: any) => {
+
       let { dataOfGroupedCompanies } = obj;
-      return dataOfGroupedCompanies.flatMap((c: any) => {
+      const objectTOcreate: ICart={
+        orders: [],
+        location: userLocation,
+        totalPrice:0,
+        clientId: clientId,
+        status: "step0",
+        companiesIds: obj.groupOfCompanies,
+      }
+      
+        dataOfGroupedCompanies.flatMap((c: any) => {
+        console.log(dataOfGroupedCompanies)
         let { orders } = c; 
-        return addCartService({
-          orders: orders.map((o: any) => o.id),
-          location: userLocation,
-          totalPrice: orders.reduce((acc: number, o: any) => acc + o.price, 0),
-          clientId: clientId,
-          status: "step0",
-          companiesIds: obj.groupOfCompanies,
-        });
+        objectTOcreate.orders.push(...orders.map((o: any) => o.id))
+        objectTOcreate.totalPrice=orders.reduce((acc: number, o: any) => acc + o.price, 0);
       });
+      let restaurantNames = dataOfGroupedCompanies.map((c: any) => c.name).join(", ");
+      socketObject.push({...objectTOcreate,deliveryManIds:obj.deliverymanIds,restaurantNames:restaurantNames}) 
+      return addCartService(objectTOcreate);
     });
 
     let objectOfCarts = await Promise.all(objectOfCartsPromises);  
-    socket.emit("companies-notifications", {room:objectOfCarts});
+    let i=-1;
+    const objectOfCartsSoeckt = objectOfCarts.map((c: any) => { 
+      i++; 
+      return({...c,...socketObject[i]})
+
+    })
+    
+    socket.emit("companies-notifications", {room:objectOfCartsSoeckt, address:address });
     socket.disconnect()
     return {data : deliveryMansPerCompaniesAddedOrders , carts:objectOfCarts};
 

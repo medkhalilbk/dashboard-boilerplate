@@ -30,7 +30,17 @@ function stringToColor(string: string) {
 
   return color;
 }
-
+export async function getAddresFromLocation(obj:any) {
+  try {
+    let {latitude,longitude} = obj
+    let apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}`
+    let response = await fetch(apiUrl)
+    let data = await response.json()
+    return data.results[0].formatted_address as string
+  } catch (error) {
+    throw error
+  }
+}
 export function stringAvatar(name: string) {
   const nameParts = name.split(' ');
   

@@ -5,10 +5,7 @@ import { addOrderService } from "../oders/services";
 export async function POST(request: Request) {
     try {
         
-        const payload = await request.json();
-
-        console.log("🚀 ~ POST ~ payload:", payload)
-
+        const payload = await request.json(); 
         const {clientId} = payload;
         const userLocation = payload.location
         const ordersPromises = payload.orders.map((order: any) => addOrderService(order));

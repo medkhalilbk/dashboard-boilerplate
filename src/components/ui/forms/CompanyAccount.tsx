@@ -163,7 +163,8 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
                         if(res.isConfirmed){
                         return    axios.patch('/api/users/'+u.id , {
                                 email: u.email,
-                                companyId: company.id}).then((res) => {
+                                companyId: company.id,
+                            role:"companyAdmin"}).then((res) => {
                                     Swal.fire({
                                         title:"Succès",
                                         text:"L'utilisateur a été assigné avec succès",

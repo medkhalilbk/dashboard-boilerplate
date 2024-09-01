@@ -4,7 +4,7 @@ export async function POST(request: Request) {
  try {
   const body = await request.json() ;   
   const login = await authService(body) 
-  cookies().set("token", login.token, {secure:true,httpOnly: true, sameSite: "strict", maxAge:60 * 360})
+  cookies().set("token", login.token, {httpOnly: true, sameSite: "strict", maxAge:60 * 360}) // removed this for dev mode 
   cookies().set("role", login.user.role, {httpOnly: true, sameSite: "strict",  maxAge:60 * 360})
   cookies().set("id", login.user.id, {httpOnly: true, sameSite: "strict",  maxAge:60 * 360})
   console.log(login.token)

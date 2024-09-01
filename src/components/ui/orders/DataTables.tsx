@@ -20,25 +20,28 @@ import { Badge } from "../badge";
 import { stringAvatar } from "@/lib/utils";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useAppSelector } from "@/lib/hooks/store";
+import { RootState } from "@/lib/store";
 
-export default function DataTablesOrders({
-  orders,
-}: {
-  orders: IOrderDetails[] | [];
-}) {
-  const [ordersState, setOrdersState] = React.useState<any>([]);
-  const [companyId, setCompanyId] = React.useState<string | null>(null);
-  React.useEffect(() => {
-    setOrdersState(orders.map((order) => createDataOrder(order)));
-  }, [orders]);
+export default function DataTablesOrders( ) {
+  const orders = useAppSelector((state : RootState) => state.orders.data)
+  let ordersState = orders.map((order:any) => createDataOrder(order))
+  const [companyId, setCompanyId] = React.useState<string | null>(null); 
+   
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      const companyId = localStorage.getItem("id");
-      if (companyId) {
-        setCompanyId(companyId);
-      }
+      let id = localStorage.getItem("id");
+      setCompanyId(id);
     }
   }, []);
+  React.useEffect(() => {
+      console.log("from component" , orders)
+  } , [orders])
+
+ 
+
+
+
   function stepStatusText(status: string) {
     switch (status) {
       case "step0":
@@ -82,6 +85,9 @@ export default function DataTablesOrders({
     };
   }
   function Row(props: { row: ReturnType<typeof createDataOrder> }) {
+    React.useEffect(() => {
+
+    }, [props.row]);
     const { row } = props;
     const [open, setOpen] = React.useState(false); 
     const [isConfirmed, setIsConfirmed] = React.useState(row.details.orders.map((order: any) => order.status === "Ready" || order.status === "Ready" ).includes(false) ? false : true);
@@ -89,7 +95,8 @@ export default function DataTablesOrders({
    async function markAsCompletedRequest(cart: any) {
      try {
       let {id} = cart
-      let res = await axios.post(`/api/companies/${companyId}/mark-as-completed` , {cartId:id})
+      let deliveryManId = cart.details.deliveryMan.id
+      let res = await axios.post(`/api/companies/${companyId}/mark-as-completed` , {cartId:id,deliveryManId:deliveryManId})
       return res
      } catch (error) {
       throw error
