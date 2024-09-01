@@ -35,4 +35,5 @@ jobs:
             ls 
             docker build -t dashboard-dev .
             docker run -d -p 3000:3000 dashboard-dev
+            docker ps
             sudo systemctl restart nginx
