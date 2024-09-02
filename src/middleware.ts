@@ -38,6 +38,9 @@ function loginMiddlware(request: NextRequest) {
    }
 }
 
+
+
+
 export function middleware(request: NextRequest) {
 if(request.nextUrl.pathname.startsWith('/dashboard')) {
   return superAdminMiddleware(request) 
@@ -48,6 +51,7 @@ if(request.nextUrl.pathname.startsWith('/dashboard')) {
 if(request.nextUrl.pathname.startsWith('/company-dashboard')) {
   return companyAdminMiddlware(request)
 }
+ 
 }
 export const config = {
   matcher: ['/dashboard/:path*' , '/login' , '/company-dashboard/:path*'] ,
