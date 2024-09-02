@@ -1,15 +1,15 @@
 FROM node:18-alpine
-
+ 
 WORKDIR /app
-
+ 
 COPY package*.json ./
-
-RUN npm ci
+ 
+RUN npm install
 
 RUN npm i -g prisma
 
 COPY . .
-
+ 
 EXPOSE 3000
 
-CMD ["npm", "start:prod"]
+CMD ["npm", "start:dev"]
