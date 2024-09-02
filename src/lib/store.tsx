@@ -8,6 +8,7 @@ import deliveryManSlice from './features/deliveryManSlice';
 import MenuSlice from './features/MenuSlice';
 import productSlice from './features/productsSlice'; 
 import orderSlice from './features/orderSlice';
+import supplementslice from './features/supplementSlice'
 export const store = () => {
   return configureStore({
     reducer: {
@@ -18,7 +19,8 @@ export const store = () => {
       clients: clientsSlice,
       menus:MenuSlice,
       products:productSlice,
-      orders:orderSlice
+      orders:orderSlice,
+      supplements:supplementslice
     },
   });
 };
