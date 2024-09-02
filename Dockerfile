@@ -10,7 +10,7 @@ RUN npm i -g prisma
 
 COPY . .
 
-RUN npm start
+RUN npm run build
 
 EXPOSE 3000
 
