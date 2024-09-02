@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-export default function addSupplementPage(){
+export default function AddSupplementPage(){
     const { handleSubmit, control,setValue, register, formState: { errors } , getValues } = useForm({
         defaultValues: {
             name: "",
@@ -70,7 +70,7 @@ export default function addSupplementPage(){
           <div className='flex flex-row justify-center my-2'>
                       <Button className="mx-auto" onClick={() => {
                         setShowDropZone(!showDropZone)
-                      }}>Choisir l'image</Button>
+                      }}>Choisir l&apos;image</Button>
                   </div>
         <form className="w-2/3 mx-auto flex flex-col gap-3" onSubmit={onSubmit}>
             <div >

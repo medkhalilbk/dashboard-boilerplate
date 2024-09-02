@@ -11,7 +11,7 @@ export interface ICart {
     companiesIds: string[],
     createdAt: Date;
 }
-enum CartStatus {
+export enum CartStatus {
     step0 = "step0", // client created the cart
     step1 = "step1", // accepta el request of delivering
     step2 = "step2", // mechi ll company chyhez

@@ -178,21 +178,21 @@ const EditProductPage = () => {
                 setPreviewImages([...previewImages, previewImage]) })
             }
           }) 
-        }}> Ajouter d'autres images </Button> </div>}
+        }}> Ajouter d&apos;autres images </Button> </div>}
 
         {previewImages.length !== 0 && <>
             <Slider {...settings} slidesToShow={1} className="w-1/2 mx-auto h-max-[300px]  my-5">
       {previewImages.map((p, index) => (
-        <div className="mx-auto">
+        <div key={index} className="mx-auto">
             
-        <div key={index} className="mx-auto relative w-full max-w-md bg-white">
+        <div  className="mx-auto relative w-full max-w-md bg-white">
           <div className="absolute top-2 right-2 z-10">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button className="font-bold" variant={"outline"}>...</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuLabel>Modifier l'image</DropdownMenuLabel>
+                <DropdownMenuLabel>Modifier l&apos;image</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
                     Swal.fire({

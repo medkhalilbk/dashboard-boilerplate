@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function productsPage () {
+export default function ProductsPage () {
     const dispatch = useDispatch()
     const products = useSelector((state:RootState) => state.products)
     const [search, setSearch] = React.useState("")

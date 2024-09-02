@@ -110,7 +110,7 @@ export default function AddProduct() {
                   <div className='flex flex-row justify-center my-2'>
                       <Button className="mx-auto" onClick={() => {
                         setShowDropZone(!showDropZone)
-                      }}>Choisir l'image</Button>
+                      }}>Choisir l&apos;image</Button>
                   </div>
               </div>
              {showDropZone &&  <div className="mx-auto w-1/2">
@@ -186,9 +186,8 @@ export default function AddProduct() {
                         })
                       }  
                     })
-                  }} > Ajouter d'autres images </Button>
-              </div>
-             
+                  }} > Ajouter d&apos;autres images </Button>
+              </div> 
               {previewImages.length > 0 && (
   <Slider adaptiveHeight slidesToShow={1} infinite className="w-1/2 mx-auto   my-5">
     {previewImages.map((img, index) => (
@@ -200,7 +199,7 @@ export default function AddProduct() {
            <Button className="font-bold" variant={"outline"}>...</Button>
          </DropdownMenuTrigger>
          <DropdownMenuContent>
-           <DropdownMenuLabel>Modifier l'image</DropdownMenuLabel>
+           <DropdownMenuLabel>Modifier l&apos;image</DropdownMenuLabel>
            <DropdownMenuSeparator />
     
            <DropdownMenuItem onClick={() => {

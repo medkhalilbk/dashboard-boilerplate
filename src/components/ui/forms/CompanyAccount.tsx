@@ -148,8 +148,8 @@ const CompanyAccount: React.FC<CompanyAccountProps> = ({company}) => {
         <CommandEmpty>Aucun résultat.</CommandEmpty>
         <CommandGroup heading="Utilisateurs existans">
            
-         {users.length > 0 && users.map((u:any) => {
-                return <CommandItem className='px-2 text-sm my-2'><Button  onClick={() => {
+         {users.length > 0 && users.map((u:any,i:number) => {
+                return <CommandItem key={i} className='px-2 text-sm my-2'><Button  onClick={() => {
                     Swal.fire({
                         title:"Confirmation",
                         text:"Vous voulez vraiment assigner l'entreprise à " + u.email,

@@ -65,7 +65,7 @@ const DeliveryMansPage: React.FC = () => {
           {search == "" && deliveryMansState.map((d:IDeliveryMan,k) => { 
             return <DeliverymanCard key={k} deliveryman={d} /> 
           })}
-          {filtredResult.length > 0 && search.length > 0 && filtredResult.map((d:IDeliveryMan,k) => {
+          {filtredResult.length > 0 && search.length > 0 && filtredResult.map((d:IDeliveryMan,k:number) => {
             return <DeliverymanCard key={k} deliveryman={d} />
           } )}
     </DashboardLayout>

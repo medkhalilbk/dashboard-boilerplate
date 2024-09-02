@@ -1,9 +1,11 @@
 import { ICart } from "@/types/cart";
 import { ICompany } from "@/types/company";
-import { CartStatus, PrismaClient } from "@prisma/client";
+import {  PrismaClient } from "@prisma/client";
+import { CartStatus } from "@/types/cart";
 import { io } from "socket.io-client";
 import * as geolib from "geolib";
 import { getAddresFromLocation } from "@/lib/utils";
+
 const prisma = new PrismaClient();
 
 export async function addCartService(cart: ICart) {
@@ -299,12 +301,12 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
     let objectOfCartsPromises = deliveryMansPerCompaniesAddedOrders.flatMap((obj: any) => {
 
       let { dataOfGroupedCompanies } = obj;
-      const objectTOcreate: ICart={
+      const objectTOcreate: any={
         orders: [],
         location: userLocation,
         totalPrice:0,
         clientId: clientId,
-        status: "step0",
+        status: CartStatus.step0,
         companiesIds: obj.groupOfCompanies,
       }
       

@@ -9,7 +9,10 @@ RUN npm install
 RUN npm i -g prisma
 
 COPY . .
- 
+
+RUN npm start
+
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
+ 
