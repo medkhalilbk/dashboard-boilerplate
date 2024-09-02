@@ -1,4 +1,5 @@
 import { IUser } from "@/types/User";
+import { ICart } from "@/types/cart";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
@@ -184,5 +185,54 @@ export async function deleteUserService(id: string) {
     return user;
   } catch (error) {
     throw error
+  }
+}
+
+export async function getCardsByUserId(id: string) {
+  try {
+    const carts = await prisma.carts.findMany({
+      where: {
+        clientId: id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (carts.length === 0) {
+      return null;
+    }
+
+    const cartsWithOrders = await Promise.all(
+      carts.map(async (cart: any) => {
+        const orders = await prisma.orders.findMany({
+          where: {
+            id: {
+              in: cart.orders,
+            },
+          },
+        });
+        return { ...cart, orders };
+      })
+    ); 
+    const cartWithOrderAndProduct = await Promise.all(
+      cartsWithOrders.map(async (cart: any) => {
+        const ordersWithProduct = await Promise.all(
+          cart.orders.map(async (order: any) => {
+            const product = await prisma.products.findUnique({
+              where: {
+                id: order.productId,
+              },
+            });
+            return { ...order, product };
+          })
+        );
+        return { ...cart, orders: ordersWithProduct };
+      }
+      )
+    )
+    return cartWithOrderAndProduct;
+  } catch (error) {
+    throw error;
   }
 }
