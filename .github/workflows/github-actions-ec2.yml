@@ -34,7 +34,7 @@ jobs:
             cd ~/dashboard
             ls 
             bash stopContainer.sh 3000
-            docker build -t dashboard-dev .
-            docker run -d -p 3000:3000 dashboard-dev
+            docker build -t dashboard-dev:latest .
+            docker run -d -p 3000:3000 dashboard-dev:latest
             docker ps
             sudo systemctl restart nginx
