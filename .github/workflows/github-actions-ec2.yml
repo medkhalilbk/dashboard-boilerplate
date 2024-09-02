@@ -33,7 +33,7 @@ jobs:
           script: | 
             cd ~/dashboard
             ls 
-            stopContainer.sh 3000
+            sh stopContainer.sh 3000
             docker build -t dashboard-dev .
             docker run -d -p 3000:3000 dashboard-dev
             docker ps
