@@ -9,10 +9,8 @@ RUN npm install
 RUN npm i -g prisma
 
 COPY . .
+ 
+EXPOSE 3000  
 
-RUN npm run build
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["npm" "run" "build" ; "npm", "start"]
  
