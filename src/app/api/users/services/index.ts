@@ -27,6 +27,8 @@ export async function addUserService(user: IUser) {
         email: user.email,
         password: hashedPassword,
         role: user.role,
+        phoneNumber: user.phoneNumber,
+        pushToken:user.pushToken,
         companyId: user.companyId,
         isEmailVerified: user.isEmailVerified,
         deliveryAddress: user.deliveryAddress,
@@ -212,6 +214,14 @@ export async function getCardsByUserId(id: string) {
             },
           },
         });
+        const names  = await prisma.companies.findMany({
+          where:{
+            id:{
+              in:cart.companiesIds
+            }
+          }
+        })
+        cart.companies = names
         return { ...cart, orders };
       })
     ); 
@@ -226,13 +236,15 @@ export async function getCardsByUserId(id: string) {
             });
             return { ...order, product };
           })
-        );
+        ) 
+  
         return { ...cart, orders: ordersWithProduct };
       }
       )
     )
     return cartWithOrderAndProduct;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 }

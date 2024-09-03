@@ -128,8 +128,5 @@ export async function getCartsByDeliveryMan(id: string) {
     return null
   }
   const carts = await prisma.carts.findMany({ where: { deliveryManAccountId: id } })
-  if (carts.length !== 0) {
-    throw new Error("there is no delivered product for this delivery man ")
-  }
   return carts
 }

@@ -12,6 +12,8 @@ export interface IUser {
     companyId?: string;
     deliveryManId?: string;
     deliveryAddress?: Location;
+    phoneNumber?:string;
+    pushToken?:string;
     imgUrl?: string;
     isDeleted: boolean;
 }

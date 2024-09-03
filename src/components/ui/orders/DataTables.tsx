@@ -51,7 +51,7 @@ export default function DataTablesOrders( ) {
       case "step2":
         return "Commande prête";
       case "step3":
-        return "Commande livrée";
+        return "Commande collecté";
       case "step4":
         return "Commande en route";
       case "step5":

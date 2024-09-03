@@ -33,7 +33,7 @@ export async function signUpService({ email, password }: { email: string; passwo
     });
     return user;  
 }
-export async function authService({email,password} : {email:string,password:string}) { 
+export async function authService({email,password,pushToken} : {email:string,password:string,pushToken?:string}) { 
    try { 
     const user = await prisma.users.findFirst({
         where: {  
@@ -41,7 +41,7 @@ export async function authService({email,password} : {email:string,password:stri
             isEmailVerified:true,
         }
     }) 
-
+    
     if (!user) {
         throw new Error("User not found");
     }
@@ -54,7 +54,16 @@ export async function authService({email,password} : {email:string,password:stri
         let token = jwt.sign({ id: user.id, companyId:user.companyId }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' });
         return {user, token};
     }
-    
+    if(pushToken){
+       let userUpdate = await prisma.users.update({
+              where: { id: user.id },
+              data: { pushToken: pushToken }
+        })
+
+        console.log("🚀 ~ authService ~ userUpdate:", userUpdate)
+
+        
+    }
     const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' }); 
     return {user, token};
    } catch (error) {
