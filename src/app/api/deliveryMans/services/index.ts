@@ -1,5 +1,6 @@
-import { IDeliveryMan } from './../../../../types/DeliveryMan'; 
-import { PrismaClient } from "@prisma/client";
+import { ICartPopulated } from '@/types/cartsPopulated';
+import { IDeliveryMan } from './../../../../types/DeliveryMan';
+import { CartStatus, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -45,9 +46,9 @@ export async function getAllDeliveryMenService(page: number, limit: number) {
     console.log("object")
     console.log(deliveryMen)
     return {
-      deliveryMen: deliveryMen.map((dm:any) => ({
+      deliveryMen: deliveryMen.map((dm: any) => ({
         ...dm,
-        userInfo: users.find((user:any) => user.deliveryManId === dm.id),
+        userInfo: users.find((user: any) => user.deliveryManId === dm.id),
       })),
       totalItems: await prisma.deliveryMans.count()
     };
@@ -124,9 +125,71 @@ export async function getCartsByDeliveryMan(id: string) {
   const deliveryManExists = await prisma.deliveryMans.findUnique({
     where: { id: id }
   })
+  console.log(deliveryManExists)
   if (!deliveryManExists) {
+
     return null
   }
-  const carts = await prisma.carts.findMany({ where: { deliveryManAccountId: id } })
+  const carts: any = await prisma.carts.findMany({ where: { deliveryManAccountId: id, status: "step1" } })
+  const result: any = []
+  console.log(carts)
+
+  if (carts.length == 0) {
+    throw new Error("there is no delivered product for this delivery man ")
+  }
+
+  for (const cart of carts) {
+    const fullOrders: any = await prisma.orders.findMany({
+      where: { id: { in: cart.orders as string[] } } // Fetch full order details by IDs
+    });
+    for (const order of fullOrders) {
+      order.restaurant = await prisma.companies.findUnique({
+        where: { id: order.restaurantId }
+      });
+    }
+    cart.clientId = await prisma.users.findUnique({
+      where: { id: cart.clientId }
+    })
+    cart.orders = [...fullOrders];
+  }
+
   return carts
+
+}
+
+
+
+export async function getCartsHistoryByDeliveryMan(id: string) {
+  const deliveryManExists = await prisma.deliveryMans.findUnique({
+    where: { id: id }
+  })
+  console.log(deliveryManExists)
+  if (!deliveryManExists) {
+
+    return null
+  }
+  const carts: any = await prisma.carts.findMany({ where: { deliveryManAccountId: id, status: "step5" } })
+  const result: any = []
+  // console.log(carts)
+  if (carts.length == 0) {
+    throw new Error("there is no delivered product for this delivery man ")
+  }
+
+  for (const cart of carts) {
+    const fullOrders: any = await prisma.orders.findMany({
+      where: { id: { in: cart.orders as string[] } } // Fetch full order details by IDs
+    });
+    for (const order of fullOrders) {
+      order.restaurant = await prisma.companies.findUnique({
+        where: { id: order.restaurantId }
+      });
+    }
+    cart.clientId = await prisma.users.findUnique({
+      where: { id: cart.clientId }
+    })
+    cart.orders = [...fullOrders];
+  }
+
+  return carts
+
 }
