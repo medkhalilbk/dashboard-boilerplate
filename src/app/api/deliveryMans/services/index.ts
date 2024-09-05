@@ -152,20 +152,19 @@ export async function getCartsByDeliveryMan(id: string) {
               id:order.productId
             }
           })
+          order.restaurant = await prisma.companies.findFirst({
+            where:{
+              id:order.restaurantId
+            }
+          })
         })
         let client = await prisma.users.findFirst({
           where:{
             id:cart.clientId
           }
         })
-        let companies = await prisma.companies.findMany({
-          where:{
-            id:{
-              in:cart.companiesIds
-            }
-          }
-        })
-        return { ...cart, orders: fullOrders,client:client,companies:companies }; // Returning the populated cart
+       
+        return { ...cart, orders: fullOrders,client:client }; // Returning the populated cart
       })
     );
 
