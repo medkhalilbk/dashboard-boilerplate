@@ -70,7 +70,14 @@ function SiderBarCompany() {
             }).then((result:any) => { 
             }).catch(() => {})
             
-            } 
+            }else if(data?.type =="cart-done"){
+              updateOrders(id)
+              return Swal.fire({
+                title:"Une commande a été livrée par success", 
+                text:"bien ",
+                icon:"success"
+              })
+            }
         }
       });
       return () => {
