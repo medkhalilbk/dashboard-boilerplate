@@ -7,12 +7,21 @@ function sendNotificationToUser( userId: string,title : string , message: string
       title: title,
       body: message,
     },
-    token : userId
+    token : userId ,  
   };
+ 
 
-  console.log("🚀 ~ sendNotificationToUser ~ payload:", payload)
 
-
-  return firebase.messaging().send(payload);
+  return firebase.messaging().send({
+    data: {
+      title: title,
+      body: message, 
+    },
+    token: userId,
+  },
+  { 
+    contentAvailable: true, 
+    priority: 'high',
+  });
 }
 export { sendNotificationToUser };
