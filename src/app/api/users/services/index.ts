@@ -248,3 +248,31 @@ export async function getCardsByUserId(id: string) {
     throw error;
   }
 }
+
+export async function changePassword(id: string, password: string,oldPassword:string) {
+  try {
+    let newHashedPassword = await bcrypt.hash(password, 10);
+    let user = await prisma.users.findUnique({
+      where:{
+        id:id
+      }
+    })
+    if(!user){
+      throw new Error('Utilisateur non trouvé')
+    }
+    if(!bcrypt.compareSync(oldPassword,user.password)){
+      throw new Error('Mot de passe incorrect')
+    }
+    const updatedUser = await prisma.users.update({
+      where: { id },
+      data: {
+        password: newHashedPassword,
+        updatedAt: new Date(),
+      },
+    });
+    return updatedUser  
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}

@@ -64,7 +64,7 @@ export async function authService({email,password,pushToken} : {email:string,pas
 
         
     }
-    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' }); 
+    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC"); 
     return {user, token};
    } catch (error) {
     console.log(error)
