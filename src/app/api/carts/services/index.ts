@@ -223,6 +223,68 @@ interface IGetDeliveryMans {
 
 
 
+export default async function getAllCartsDetailsService() {
+  try {
+    const carts = await prisma.carts.findMany();
+    
+    const detailedCarts = await Promise.all(carts.map(async (cart) => {
+      try {
+        const orders = await prisma.orders.findMany({
+          where: {
+            id: {
+              in: cart.orders
+            }
+          }
+        });
+        
+        const detailedOrders = await Promise.all(orders.map(async (order: any) => {
+          const product = await prisma.products.findFirst({
+            where: {
+              id: order.productId
+            }
+          });
+          return { ...order, product };
+        }));
+        
+        let deliveryman = null;
+        if (cart.deliveryManAccountId) {
+          deliveryman = await prisma.deliveryMans.findFirst({
+            where: {
+              id: cart.deliveryManAccountId as string
+            }
+          });
+        }
+        
+        const companies = await prisma.companies.findMany({
+          where: {
+            id: {
+              in: cart.companiesIds
+            }
+          }
+        });
+        
+        const companiesName = companies.map((company: any) => company.name).join(", ");
+        let client = await prisma.users.findFirst({
+          where:{
+            id:cart.clientId
+          }
+        })
+        return { ...cart, orders: detailedOrders, deliveryman, companiesName, client:client };
+
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }));
+    
+    return detailedCarts;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
 function waitForDeliveryMenList(socket: any): Promise<IGetDeliveryMans> {
   return new Promise((resolve, reject) => {
     

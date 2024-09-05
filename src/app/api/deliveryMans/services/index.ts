@@ -133,7 +133,7 @@ export async function getCartsByDeliveryMan(id: string) {
     }
 
     const carts = await prisma.carts.findMany({
-      where: { deliveryManAccountId: id, status: "step1" },
+      where: { deliveryManAccountId: id },
     });
     console.log("Carts:", carts);
 
