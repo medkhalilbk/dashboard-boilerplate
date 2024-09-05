@@ -122,41 +122,59 @@ export async function deleteDeliveryManService(deliveryManId: string) {
 
 
 export async function getCartsByDeliveryMan(id: string) {
-  const deliveryManExists = await prisma.deliveryMans.findUnique({
-    where: { id: id }
-  })
-  console.log(deliveryManExists)
-  if (!deliveryManExists) {
-
-    return null
-  }
-  const carts: any = await prisma.carts.findMany({ where: { deliveryManAccountId: id, status: "step1" } })
-  const result: any = []
-  console.log(carts)
-
-  if (carts.length == 0) {
-    throw new Error("there is no delivered product for this delivery man ")
-  }
-
-  for (const cart of carts) {
-    const fullOrders: any = await prisma.orders.findMany({
-      where: { id: { in: cart.orders as string[] } } // Fetch full order details by IDs
+  try {
+    const deliveryManExists = await prisma.deliveryMans.findUnique({
+      where: { id: id },
     });
-    for (const order of fullOrders) {
-      order.restaurant = await prisma.companies.findUnique({
-        where: { id: order.restaurantId }
-      });
+    console.log("Delivery Man Exists:", deliveryManExists);
+    
+    if (!deliveryManExists) {
+      return null;
     }
-    cart.clientId = await prisma.users.findUnique({
-      where: { id: cart.clientId }
-    })
-    cart.orders = [...fullOrders];
+
+    const carts = await prisma.carts.findMany({
+      where: { deliveryManAccountId: id, status: "step1" },
+    });
+    console.log("Carts:", carts);
+
+    if (carts.length === 0) {
+      throw new Error("There is no delivered product for this delivery man");
+    }
+
+    const result = await Promise.all(
+      carts.map(async (cart: any) => {
+        const fullOrders = await prisma.orders.findMany({
+          where: { id: { in: cart.orders as string[] } },
+        });
+        fullOrders.map(async(order:any) => {
+          order.product = await prisma.products.findFirst({
+            where:{
+              id:order.productId
+            }
+          })
+        })
+        let client = await prisma.users.findFirst({
+          where:{
+            id:cart.clientId
+          }
+        })
+        let companies = await prisma.companies.findMany({
+          where:{
+            id:{
+              in:cart.companiesIds
+            }
+          }
+        })
+        return { ...cart, orders: fullOrders,client:client,companies:companies }; // Returning the populated cart
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error in getCartsByDeliveryMan:", error);
+    throw error;
   }
-
-  return carts
-
 }
-
 
 
 export async function getCartsHistoryByDeliveryMan(id: string) {

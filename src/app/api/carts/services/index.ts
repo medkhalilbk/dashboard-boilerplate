@@ -243,7 +243,7 @@ interface deliveryMansPerCompanies {
   dataOfGroupedCompanies: any[];
 }
 
-export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[], clientId: string, userLocation: { latitude: number, longitude: number }) : Promise<any> {
+export async function getNearestDeliveryMans(companiesData: any, orders: any, clientId: string, userLocation: { latitude: number, longitude: number }) : Promise<any> {
   const socket = io(process.env.SOCKET_URL as string , {
     transports: ["polling"], 
   });
@@ -339,4 +339,22 @@ export async function getNearestDeliveryMans(companiesData: any, orders: IOrder[
 }
 
 
-  
+export async function updateCartToStep5(id: string) {
+  const isCartExist = prisma.carts.findFirst({
+    where: {
+      id: id
+    }
+  })
+  if (!isCartExist) {
+    throw new Error("Cart not found")
+  }
+  const cart = await prisma.carts.update({
+    where: {
+      id: id
+    },
+    data: {
+      status: CartStatus.step5,
+    }
+  })
+  return cart
+}
