@@ -127,7 +127,7 @@ export async function getCartsByDeliveryMan(id: string) {
       where: { id: id },
     });
     console.log("Delivery Man Exists:", deliveryManExists);
-    
+
     if (!deliveryManExists) {
       return null;
     }
@@ -143,28 +143,32 @@ export async function getCartsByDeliveryMan(id: string) {
 
     const result = await Promise.all(
       carts.map(async (cart: any) => {
-        const fullOrders = await prisma.orders.findMany({
-          where: { id: { in: cart.orders as string[] } },
+        const fullOrders = await Promise.all(
+          cart.orders.map(async (orderId: string) => {
+            const order = await prisma.orders.findUnique({
+              where: { id: orderId },
+            });
+
+            if (order) {
+              const product = await prisma.products.findFirst({
+                where: { id: order.productId },
+              });
+              const restaurant = await prisma.companies.findFirst({
+                where: { id: order.restaurantId },
+              });
+
+              return { ...order, product, restaurant };
+            }
+
+            return null;
+          })
+        );
+
+        const client = await prisma.users.findFirst({
+          where: { id: cart.clientId },
         });
-        fullOrders.map(async(order:any) => {
-          order.product = await prisma.products.findFirst({
-            where:{
-              id:order.productId
-            }
-          })
-          order.restaurant = await prisma.companies.findFirst({
-            where:{
-              id:order.restaurantId
-            }
-          })
-        })
-        let client = await prisma.users.findFirst({
-          where:{
-            id:cart.clientId
-          }
-        })
-       
-        return { ...cart, orders: fullOrders,client:client }; // Returning the populated cart
+
+        return { ...cart, orders: fullOrders.filter(Boolean), client };
       })
     );
 
