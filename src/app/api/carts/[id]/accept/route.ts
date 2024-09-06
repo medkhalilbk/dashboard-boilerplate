@@ -11,7 +11,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         if(updatedCart){
             let user = await getUserByIdService(updatedCart.clientId)
             if(user){
-                let notificationRequest = await sendNotificationToUser(user.pushToken, "Votre commande est en cours de préparation 🔔", "Votre commande est en cours de préparation 🔥")
+                let notificationRequest = await sendNotificationToUser(user.pushToken as string , "Votre commande est en cours de préparation 🔔", "Votre commande est en cours de préparation 🔥")
                 console.log(notificationRequest)
             }
             

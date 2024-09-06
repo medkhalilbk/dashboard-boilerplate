@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function addOrderService(order: IOrder) {
+export async function addOrderService(order: any) {
     try {
         const product = await prisma.products.findUnique({
             where: { id: order.productId }
@@ -98,7 +98,7 @@ export async function getOrderByIdService(id: string) {
     }
 }
 
-export async function updateOrderByIdService(orderId: string, order: Partial<IOrder>) {
+export async function updateOrderByIdService(orderId: string, order: any) {
     try {
         const existingOrder = await prisma.orders.findUnique({
             where: { id: orderId }
