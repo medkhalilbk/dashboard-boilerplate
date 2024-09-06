@@ -227,7 +227,7 @@ export default async function getAllCartsDetailsService() {
   try {
     const carts = await prisma.carts.findMany();
     
-    const detailedCarts = await Promise.all(carts.map(async (cart) => {
+    const detailedCarts = await Promise.all(carts.map(async (cart:any) => {
       try {
         const orders = await prisma.orders.findMany({
           where: {
