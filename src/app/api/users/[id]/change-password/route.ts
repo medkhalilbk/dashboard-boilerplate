@@ -4,6 +4,7 @@ export async function PATCH(req:Request, { params }: { params: { id: string} }) 
     try {
     let body = await req.json();
     let { id } = params;
+    console.log(id)
         if(!id) {
             return Response.json({ error: "Id n'existe pas" }, { status: 404 });
         }
@@ -24,6 +25,7 @@ export async function PATCH(req:Request, { params }: { params: { id: string} }) 
         }
         return Response.json(updatedUser, { status: 200 });
     } catch (error) {
+        console.log(error);
         return Response.json({ error: "Erreur lors de la modification du mot de passe" }, { status: 500 });
     }
     
