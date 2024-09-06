@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 export default async function isValidJWT(token: string) {
     try {
         if(!token) return false;
-        const decoded = jwt.verify(token, process.env.AUTH_SECRET);
+        const decoded = jwt.verify(token, process.env.AUTH_SECRET || "secret");
         return decoded;
     } catch (error) {
         return false;

@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -8,16 +9,150 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String? 
-  password String 
-  date DateTime
+model Companies {
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  description          String
+  phoneNumber          String
+  location             Location
+  availabilityDistance Float
+  mainImage            String?
+  otherImages          String[]
+  workHours            WorkHours
+  days                 Day[]
+  type                 String    @default("Restaurant")
+  specialty            String
+  Menu                 String[]  @db.ObjectId
+  keywords             String[]
+  region               String?
 }
-model stacks {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    name String
-    iconUrl String
-    family String?
+
+type Location {
+  longitude Float
+  latitude  Float
+}
+
+type WorkHours {
+  start String
+  end   String
+}
+
+enum Day {
+  lundi
+  mardi
+  mercredi
+  jeudi
+  vendredi
+  samedi
+  dimanche
+}
+
+model Menus {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  products  String[] @db.ObjectId
+  companyId String   @db.ObjectId
+  isActive  Boolean
+}
+
+model Products {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  price          Float
+  description    String
+  mainImageUrl   String
+  otherImagesUrl String[]
+  supplements    String[] @db.ObjectId
+  inStock        Boolean
+  companyId      String
+}
+
+model Supplements {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  price Float
+  img   String
+  companyId String
+}
+
+model Users {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String
+  password        String
+  role            Roles
+  isEmailVerified Boolean
+  phoneNumber     String?
+  pushToken        String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime?
+  companyId       String?   @db.ObjectId
+  deliveryManId   String?   @db.ObjectId
+  deliveryAddress Location?
+  imgUrl          String?
+  isDeleted       Boolean   @default(false)
+  emailCode            String?
+}
+
+enum Roles {
+  user
+  deliveryMan
+  companyAdmin
+  superAdmin
+}
+
+model DeliveryMans {
+  id                   String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName             String
+  phoneNumber          String
+  socialStatus         String?
+  ordersCompleted      Int     @default(0)
+  vehiculeSerialNumber String?
+  cin                  String  @unique
+  isActive             Boolean
+  contractFile         String?
+  isDeleted            Boolean @default(false)
+  region               String?
+  lastLocation         Location?
+  cartsInProgress      Int     @default(0)
+}
+
+
+model Orders {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId  String   @db.ObjectId
+  quantity   Int
+  restaurantId String   @db.ObjectId
+  price      Float
+  createdAt            DateTime?   @default(now()) 
+  status     OrderStatus? 
+  supplementsIds       String[]   @db.ObjectId @default([])
+}
+
+
+model Carts {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  orders               String[]   @db.ObjectId
+  location             Location
+  totalPrice           Float
+  clientId             String     @db.ObjectId
+  deliveryManAccountId String?     @db.ObjectId //this should be the user id not deliveryManId
+  status               CartStatus
+  companiesIds         String[]   @db.ObjectId
+  createdAt            DateTime   @default(now())
+}
+
+enum CartStatus {
+  step0 // waiting 
+  step1 //accepta el request of delivering
+  step2 // order hdhar
+  step3 //hazha mel company
+  step4 //fi thneya
+  step5 //wselt
+}
+
+enum OrderStatus {
+  inProgress // mazel ma thazech
+  Ready // yestana f livreur 
+  Collected // collected
 }

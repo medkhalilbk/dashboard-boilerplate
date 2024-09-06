@@ -2,10 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/lib/utils";
 import { verifyPassword } from "@/lib/utils";
 import * as jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 
 export async function signUpService({ email, password }: { email: string; password: string }) {  
-    const verifyEmail = await prisma.users.findUnique({
+    const verifyEmail = await prisma.users.findFirst({
         where: {
             email: email
         }
@@ -23,26 +25,49 @@ export async function signUpService({ email, password }: { email: string; passwo
     const user = await prisma.users.create({
         data: {
             email: email,
-            password: encryptedPassword  , 
-            date: new Date()
+            password: encryptedPassword,
+            name: "",  
+            role: "user",  
+            isEmailVerified: false  
         }
     });
     return user;  
 }
-export async function authService({email,password} : {email:string,password:string}) {
-    const user = await prisma.users.findUnique({
-        where: {
-            email: email
+export async function authService({email,password,pushToken} : {email:string,password:string,pushToken?:string}) { 
+   try { 
+    const user = await prisma.users.findFirst({
+        where: {  
+            email,
+            isEmailVerified:true,
         }
-    })
+    }) 
+    
     if (!user) {
         throw new Error("User not found");
     }
-    if (!verifyPassword(user.password, password)) {
+    console.log(user)
+    if (!bcrypt.compareSync(password,user.password)) {
         throw new Error("Invalid password");
     } 
-    delete user.password;
-    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET, { expiresIn: '1h' });
-     
+    delete (user as { password?: string }).password;
+    if(user.role === "companyAdmin"){
+        let token = jwt.sign({ id: user.id, companyId:user.companyId }, process.env.AUTH_SECRET || "ABC", { expiresIn: '1h' });
+        return {user, token};
+    }
+    if(pushToken){
+       let userUpdate = await prisma.users.update({
+              where: { id: user.id },
+              data: { pushToken: pushToken }
+        })
+
+        console.log("🚀 ~ authService ~ userUpdate:", userUpdate)
+
+        
+    }
+    const token = jwt.sign({ id: user.id }, process.env.AUTH_SECRET || "ABC"); 
     return {user, token};
+   } catch (error) {
+    console.log(error)
+    throw error;
+   }
 }
