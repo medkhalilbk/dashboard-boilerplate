@@ -4,6 +4,9 @@ export async function GET()
  {
     try { 
          let carts =  await getAllUnsignedCarts()
+
+            console.log("🚀 ~ getAllUnsignedCarts:", carts)
+
             return Response.json({
                 message: "All Carts Found !",
                 data: carts,
