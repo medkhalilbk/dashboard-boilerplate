@@ -36,6 +36,7 @@ jobs:
             ls 
             git clone https://github.com/medkhalilbk/tiktak-dashboard.git
             bash stopContainer.sh 3000
+            mv ~/keys/serviceAccountKey.json ~/dashboard/src/lib/notifications/serviceAccountKey.json
             docker build -t dashboard-dev:latest .
             docker run -d -p 3000:3000 dashboard-dev:latest
             docker ps
