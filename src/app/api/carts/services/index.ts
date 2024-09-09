@@ -432,7 +432,9 @@ export async function getAllUnsignedCarts(){
         createdAt:"desc"
       }
     });
-    
+    if(carts.length == 0) {
+      return []
+    }
     const detailedCarts = await Promise.all(carts.map(async (cart:any) => {
       try {
         const orders = await prisma.orders.findMany({
