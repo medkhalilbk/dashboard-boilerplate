@@ -1,10 +1,10 @@
 import  { getAllUnsignedCarts } from "../services";
 
-export async function GET()
+export async function GET(request: Request)
  {
     try { 
          let carts =  await getAllUnsignedCarts()
-
+            console.log("hi")
             console.log("🚀 ~ getAllUnsignedCarts:", carts)
 
             return Response.json({
