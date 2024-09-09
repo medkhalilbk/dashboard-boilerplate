@@ -1,3 +1,4 @@
+import { getAllUnsignedCarts } from "@/app/api/carts/services";
 import { getCartsByDeliveryMan } from "../../services";
 
 
@@ -7,10 +8,12 @@ export async function GET(
 ) {
     try {
         const deliveryManId = params.id;
-        const user = await getCartsByDeliveryMan(deliveryManId);
+        const carts = await getCartsByDeliveryMan(deliveryManId);
+        const unsignedCarts = await getAllUnsignedCarts()
         return Response.json({
-            message: "DeliveryManFound !",
-            data: user,
+            message: "Carts found successfully",
+            assigned: carts,
+            unsisgned: unsignedCarts,
             status: 200,
         });
     } catch (error: any) {
