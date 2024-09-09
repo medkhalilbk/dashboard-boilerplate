@@ -34,6 +34,7 @@ jobs:
           script: | 
             cd ~/dashboard
             ls 
+            git clone https://github.com/medkhalilbk/tiktak-dashboard.git
             bash stopContainer.sh 3000
             docker build -t dashboard-dev:latest .
             docker run -d -p 3000:3000 dashboard-dev:latest

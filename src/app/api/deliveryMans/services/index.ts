@@ -189,7 +189,7 @@ export async function getCartsHistoryByDeliveryMan(id: string) {
 
     return null
   }
-  const carts: any = await prisma.carts.findMany({ where: { deliveryManAccountId: id, status: "step5" } })
+  const carts: any = await prisma.carts.findMany({ where: { deliveryManAccountId: id } })
   const result: any = []
   // console.log(carts)
   if (carts.length == 0) {
