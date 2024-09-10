@@ -7,3 +7,8 @@ export interface IOrder {
   createdAt: Date;
   supplementsIds?: string[];
 }
+
+export enum OrderStatus {
+  inProgress = "inProgress",
+  Collected = "Collected"
+}

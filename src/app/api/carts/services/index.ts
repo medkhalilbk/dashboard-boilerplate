@@ -95,6 +95,74 @@ export async function getCartByIdService(id: string) {
     throw error;
   }
 }
+export  async function getCartDetailsService(cartId: string) {
+  try {
+    // Fetch the specific cart by cartId
+    const cart = await prisma.carts.findUnique({
+      where: {
+        id: cartId
+      }
+    });
+
+    if (!cart) {
+      throw new Error(`Cart with id ${cartId} not found`);
+    }
+
+    // Fetch orders associated with the cart
+    const orders = await prisma.orders.findMany({
+      where: {
+        id: {
+          in: cart.orders
+        }
+      }
+    });
+
+    // Fetch detailed information for each order
+    const detailedOrders = await Promise.all(orders.map(async (order: any) => {
+      const product = await prisma.products.findFirst({
+        where: {
+          id: order.productId
+        }
+      });
+      return { ...order, product };
+    }));
+
+    // Fetch delivery man if available
+    let deliveryman = null;
+    if (cart.deliveryManAccountId) {
+      deliveryman = await prisma.deliveryMans.findFirst({
+        where: {
+          id: cart.deliveryManAccountId as string
+        }
+      });
+    }
+
+    // Fetch companies associated with the cart
+    const companies = await prisma.companies.findMany({
+      where: {
+        id: {
+          in: cart.companiesIds
+        }
+      }
+    });
+
+    const companiesName = companies.map((company: any) => company.name).join(", ");
+
+    // Fetch client information
+    const client = await prisma.users.findFirst({
+      where: {
+        id: cart.clientId
+      }
+    });
+
+    // Return detailed cart information
+    return { ...cart, orders: detailedOrders, deliveryman, companiesName, client };
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
 export async function updateCartByIdService(
   cartId: string,

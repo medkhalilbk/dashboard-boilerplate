@@ -6,7 +6,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     try {
         const { id } = params;
         const payload = await request.json(); 
-        const updatedCart = await updateCartByIdService(id, {status:"step1" as CartStatus.step0,deliveryManAccountId:payload.deliveryManId} );
+        const updatedCart = await updateCartByIdService(id, {status:"step1" as CartStatus.step1,deliveryManAccountId:payload.deliveryManId} );
         if(updatedCart){
             let user = await getUserByIdService(updatedCart.clientId) 
         }
