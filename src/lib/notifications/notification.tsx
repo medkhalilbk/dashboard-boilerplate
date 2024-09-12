@@ -19,7 +19,11 @@ export async function notificationUser({
         body: body,
     };
     try {
-        const response = await axios.post(url, data);
+        const response = await axios.post(url, data , {
+            headers:{
+                "x-api-key": process.env.PRIVATE_KEY
+            }
+        });
         console.log(response.data);
         return true 
     } catch (error: any) {
